@@ -1,0 +1,22 @@
+{
+  "name": "Box2D",
+  "version": "0.0.0",
+  "authors": [
+    "darkoverlordofdata <darkoverlordofdata@gmail.com>"
+  ],
+  "description": "Box2D Demo",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "web/js",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "cocoonjs-plugins": "git://github.com/ludei/cocoonjs-plugins#~3.0.4",
+    "ArtemisJs": "git://github.com/dongbat/ArtemisJs.git"
+  }
+}
