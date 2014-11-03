@@ -12,3 +12,14 @@ https://code.google.com/p/box2dweb/issues/detail?id=41
 This issue has been open for over a year, and it's just a faulty polyfill.
 I need a corrected version for my projects, so here it is.
 
+
+
+        /**
+        *
+        * Corrected by deleteing
+        * 10 chars.
+        * how many to document it?
+        *
+        *                      - darkoverlordofdata
+        */
+
