@@ -16,3 +16,4 @@ I need a corrected version for my projects, so here it is.
 chrysalis_box2d.js - mimic cocoon_box2d.js in the browser
 plus minified versions
 
+and the beginnins of a minimal port to coffeescript. for my spare time.
