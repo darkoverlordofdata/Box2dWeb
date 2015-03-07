@@ -1,3 +1,5 @@
 # Created by .gitignore support plugin (hsz.mobi)
 Box2dWeb-2.1a.3/
 .idea/
+node_modules
+tmp

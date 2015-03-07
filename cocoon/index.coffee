@@ -10,10 +10,12 @@
 #| it under the terms of the MIT License
 #|
 #+--------------------------------------------------------------------+
-#
-# Box2D
-#
 ###
+ *
+ *  Cocoon Box2D
+ *
+ *
+ *
 ###
 'use strict'
 module.exports =

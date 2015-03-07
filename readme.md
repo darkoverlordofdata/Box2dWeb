@@ -1,19 +1,21 @@
 # Box2DWeb
 
-## Why - It's already on Google Code
-
-The original is right here: https://code.google.com/p/box2dweb/
-
-## It's not up to date
-
-Issue 41: Box2D.js overwrite original Object.defineProperty
-https://code.google.com/p/box2dweb/issues/detail?id=41
-
-This issue has been open for over a year, and it's just a faulty polyfill.
-I need a corrected version for my projects, so here it is.
+## Work in progress
 
 
-chrysalis_box2d.js - mimic cocoon_box2d.js in the browser
-plus minified versions
+### The original Box2dWeb
 
-and the beginnins of a minimal port to coffeescript. for my spare time.
+    Issue 41: Box2D.js overwrite original Object.defineProperty
+    https://code.google.com/p/box2dweb/issues/detail?id=41
+
+    This issue has been open for over a year, and it's just a faulty polyfill.
+    It causes other code, dependant on Object.defineProperty, to fail.
+    I need a corrected version for my projects, so here it is.
+
+
+### Cocoon
+
+    ./cocoon - cocoon_box2d.js port
+        ready to test
+    ./bod2d_web - cocoon_box2d.js API, but for the browser
+        not ready
