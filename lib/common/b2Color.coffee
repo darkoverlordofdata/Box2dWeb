@@ -11,17 +11,17 @@ class Box2D.Common.b2Color
   _b: 0
 
   constructor: (rr, gg, bb) ->
-    rr = 0  if rr is `undefined`
-    gg = 0  if gg is `undefined`
-    bb = 0  if bb is `undefined`
+    rr = 0  if rr is undefined
+    gg = 0  if gg is undefined
+    bb = 0  if bb is undefined
     @_r = parseUInt(255 * b2Math.Clamp(rr, 0.0, 1.0))
     @_g = parseUInt(255 * b2Math.Clamp(gg, 0.0, 1.0))
     @_b = parseUInt(255 * b2Math.Clamp(bb, 0.0, 1.0))
 
   Set: (rr, gg, bb) ->
-    rr = 0  if rr is `undefined`
-    gg = 0  if gg is `undefined`
-    bb = 0  if bb is `undefined`
+    rr = 0  if rr is undefined
+    gg = 0  if gg is undefined
+    bb = 0  if bb is undefined
     @_r = parseUInt(255 * b2Math.Clamp(rr, 0.0, 1.0))
     @_g = parseUInt(255 * b2Math.Clamp(gg, 0.0, 1.0))
     @_b = parseUInt(255 * b2Math.Clamp(bb, 0.0, 1.0))

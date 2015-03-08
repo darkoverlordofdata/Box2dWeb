@@ -56,11 +56,11 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_impulse * @m_J.linearB.x, inv_dt * @m_impulse * @m_J.linearB.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     tMat = @m_bodyB.m_xf.R
     rX = @m_localAnchor1.x - @m_bodyB.m_sweep.localCenter.x
     rY = @m_localAnchor1.y - @m_bodyB.m_sweep.localCenter.y
@@ -75,7 +75,7 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
     @m_ratio
 
   SetRatio: (ratio) ->
-    ratio = 0  if ratio is `undefined`
+    ratio = 0  if ratio is undefined
     @m_ratio = ratio
     return
 
@@ -157,7 +157,7 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     linearError = 0.0
     bA = @m_bodyA
     bB = @m_bodyB

@@ -11,30 +11,19 @@ class Box2D.Dynamics.b2BodyDef
   angle               : 0.0
   linearVelocity      : null
   angularVelocity     : 0.0
+  linearDamping       : 0.0
   angularDamping      : 0.0
   allowSleep          : true
   awake               : true
   fixedRotation       : false
   bullet              : false
-  type                : 0
+  type                : b2Body.b2_staticBody
   active              : true
   inertiaScale        : 1.0
 
   constructor: ->
     @position = new b2Vec2()
-    @linearVelocity = new b2Vec2()
-    @userData = null
     @position.Set 0.0, 0.0
-    @angle = 0.0
+    @linearVelocity = new b2Vec2()
     @linearVelocity.Set 0, 0
-    @angularVelocity = 0.0
-    @linearDamping = 0.0
-    @angularDamping = 0.0
-    @allowSleep = true
-    @awake = true
-    @fixedRotation = false
-    @bullet = false
-    @type = b2Body.b2_staticBody
-    @active = true
-    @inertiaScale = 1.0
     return

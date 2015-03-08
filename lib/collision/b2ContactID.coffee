@@ -27,7 +27,7 @@ class Box2D.Collision.b2ContactID
     enumerable: false
     configurable: true
     set: (value) ->
-      value = 0  if value is `undefined`
+      value = 0  if value is undefined
       @_key = value
       @features._referenceEdge = @_key & 0x000000ff
       @features._incidentEdge = ((@_key & 0x0000ff00) >> 8) & 0x000000ff

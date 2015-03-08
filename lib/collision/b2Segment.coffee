@@ -9,7 +9,7 @@ class Box2D.Collision.b2Segment
     return
 
   TestSegment: (lambda, normal, segment, maxLambda) ->
-    maxLambda = 0  if maxLambda is `undefined`
+    maxLambda = 0  if maxLambda is undefined
     s = segment.p1
     rX = segment.p2.x - s.x
     rY = segment.p2.y - s.y

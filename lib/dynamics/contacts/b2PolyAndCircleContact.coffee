@@ -1,21 +1,16 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Dynamics.Contacts.b2Contact
-b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Contact  = Box2D.Dynamics.Contacts.b2Contact
 
 class Box2D.Dynamics.Contacts.b2PolyAndCircleContact extends b2Contact
 
-  constructor: ->
-    super
-    return
-
   @Create = (allocator) ->
-    new b2PolyAndCircleContact()
+    return new b2PolyAndCircleContact()
 
   @Destroy = (contact, allocator) ->
 
   Reset: (fixtureA, fixtureB) ->
-    super fixtureA, fixtureB
+    super(fixtureA, fixtureB)
     b2Settings.b2Assert fixtureA.GetType() is b2Shape.e_polygonShape
     b2Settings.b2Assert fixtureB.GetType() is b2Shape.e_circleShape
     return

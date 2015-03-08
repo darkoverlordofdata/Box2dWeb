@@ -43,7 +43,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   SetAsArray: (vertices, vertexCount) ->
-    vertexCount = 0  if vertexCount is `undefined`
+    vertexCount = 0  if vertexCount is undefined
     v = new Vector()
     i = 0
     tVec = undefined
@@ -56,13 +56,13 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   @AsArray: (vertices, vertexCount) ->
-    vertexCount = 0  if vertexCount is `undefined`
+    vertexCount = 0  if vertexCount is undefined
     polygonShape = new b2PolygonShape()
     polygonShape.SetAsArray vertices, vertexCount
     polygonShape
 
   SetAsVector: (vertices, vertexCount) ->
-    vertexCount = 0  if vertexCount is `undefined`
+    vertexCount = 0  if vertexCount is undefined
     vertexCount = vertices.length  if vertexCount is 0
     b2Settings.b2Assert 2 <= vertexCount
     @m_vertexCount = vertexCount
@@ -85,14 +85,14 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   @AsVector: (vertices, vertexCount) ->
-    vertexCount = 0  if vertexCount is `undefined`
+    vertexCount = 0  if vertexCount is undefined
     polygonShape = new b2PolygonShape()
     polygonShape.SetAsVector vertices, vertexCount
     polygonShape
 
   SetAsBox: (hx, hy) ->
-    hx = 0  if hx is `undefined`
-    hy = 0  if hy is `undefined`
+    hx = 0  if hx is undefined
+    hy = 0  if hy is undefined
     @m_vertexCount = 4
     @Reserve 4
     @m_vertices[0].Set (-hx), (-hy)
@@ -107,17 +107,17 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   @AsBox: (hx, hy) ->
-    hx = 0  if hx is `undefined`
-    hy = 0  if hy is `undefined`
+    hx = 0  if hx is undefined
+    hy = 0  if hy is undefined
     polygonShape = new b2PolygonShape()
     polygonShape.SetAsBox hx, hy
     polygonShape
 
   SetAsOrientedBox: (hx, hy, center, angle) ->
-    hx = 0  if hx is `undefined`
-    hy = 0  if hy is `undefined`
-    center = null  if center is `undefined`
-    angle = 0.0  if angle is `undefined`
+    hx = 0  if hx is undefined
+    hy = 0  if hy is undefined
+    center = null  if center is undefined
+    angle = 0.0  if angle is undefined
     @m_vertexCount = 4
     @Reserve 4
     @m_vertices[0].Set (-hx), (-hy)
@@ -141,10 +141,10 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   @AsOrientedBox: (hx, hy, center, angle) ->
-    hx = 0  if hx is `undefined`
-    hy = 0  if hy is `undefined`
-    center = null  if center is `undefined`
-    angle = 0.0  if angle is `undefined`
+    hx = 0  if hx is undefined
+    hy = 0  if hy is undefined
+    center = null  if center is undefined
+    angle = 0.0  if angle is undefined
     polygonShape = new b2PolygonShape()
     polygonShape.SetAsOrientedBox hx, hy, center, angle
     polygonShape
@@ -258,7 +258,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   ComputeMass: (massData, density) ->
-    density = 0  if density is `undefined`
+    density = 0  if density is undefined
     if @m_vertexCount is 2
       massData.center.x = 0.5 * (@m_vertices[0].x + @m_vertices[1].x)
       massData.center.y = 0.5 * (@m_vertices[0].y + @m_vertices[1].y)
@@ -304,10 +304,10 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   ComputeSubmergedArea: (normal, offset, xf, c) ->
-    offset = 0  if offset is `undefined`
+    offset = 0  if offset is undefined
     normalL = b2Math.MulTMV(xf.R, normal)
     offsetL = offset - b2Math.Dot(normal, xf.position)
-    depths = new Vector_a2j_Number()
+    depths = new Vector()
     diveCount = 0
     intoIndex = parseInt((-1))
     outoIndex = parseInt((-1))
@@ -407,7 +407,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     false
 
   Reserve: (count) ->
-    count = 0  if count is `undefined`
+    count = 0  if count is undefined
     i = parseInt(@m_vertices.length)
 
     while i < count
@@ -417,7 +417,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     return
 
   @ComputeCentroid = (vs, count) ->
-    count = 0  if count is `undefined`
+    count = 0  if count is undefined
     c = new b2Vec2()
     area = 0.0
     p1X = 0.0
@@ -443,7 +443,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
     c
 
   @ComputeOBB = (obb, vs, count) ->
-    count = 0  if count is `undefined`
+    count = 0  if count is undefined
     i = 0
     p = new Vector(count + 1)
     i = 0

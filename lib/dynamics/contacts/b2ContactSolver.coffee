@@ -1,10 +1,15 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Common.b2Settings
-b2Vec2        = Box2D.Common.Math.b2Vec2
-b2Mat22       = Box2D.Common.Math.b2Mat22
+Vector                    = Box2D.Vector
+b2TimeStep                = Box2D.Dynamics.b2TimeStep
+b2ContactConstraint       = Box2D.Dynamics.Contacts.b2ContactConstraint
+b2WorldManifold           = Box2D.Collision.b2WorldManifold
+b2PositionSolverManifold  = Box2D.Dynamics.Contacts.b2PositionSolverManifold
 
 class Box2D.Dynamics.Contacts.b2ContactSolver
+
+  @s_worldManifold = new b2WorldManifold()
+  @s_psm = new b2PositionSolverManifold()
 
   m_step              : null
   m_constraints       : null
@@ -17,7 +22,7 @@ class Box2D.Dynamics.Contacts.b2ContactSolver
     return
 
   Initialize: (step, contacts, contactCount, allocator) ->
-    contactCount = 0  if contactCount is `undefined`
+    contactCount = 0  if contactCount is undefined
     contact = undefined
     @m_step.Set step
     @m_allocator = allocator
@@ -376,7 +381,7 @@ class Box2D.Dynamics.Contacts.b2ContactSolver
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     minSeparation = 0.0
     i = 0
 
@@ -417,5 +422,3 @@ class Box2D.Dynamics.Contacts.b2ContactSolver
       i++
     minSeparation > (-1.5 * b2Settings.b2_linearSlop)
 
-  @s_worldManifold = new b2WorldManifold()
-  @s_psm = new b2PositionSolverManifold()

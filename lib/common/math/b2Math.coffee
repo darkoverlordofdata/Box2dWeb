@@ -8,7 +8,7 @@ b2Vec2      = Box2D.Common.Math.b2Vec2
 class Box2D.Common.Math.b2Math
 
   @IsValid = (x) ->
-    x = 0  if x is `undefined`
+    x = 0  if x is undefined
     return isFinite x
 
   @Dot = (a, b) ->
@@ -18,12 +18,12 @@ class Box2D.Common.Math.b2Math
     return a.x * b.y - a.y * b.x
 
   @CrossVF = (a, s) ->
-    s = 0  if s is `undefined`
+    s = 0  if s is undefined
     v = new b2Vec2(s * a.y, (-s * a.x))
     return v
 
   @CrossFV = (s, a) ->
-    s = 0  if s is `undefined`
+    s = 0  if s is undefined
     v = new b2Vec2((-s * a.y), s * a.x)
     return v
 
@@ -67,7 +67,7 @@ class Box2D.Common.Math.b2Math
     return cX * cX + cY * cY
 
   @MulFV = (s, a) ->
-    s = 0  if s is `undefined`
+    s = 0  if s is undefined
     v = new b2Vec2(s * a.x, s * a.y)
     return v
 
@@ -86,7 +86,7 @@ class Box2D.Common.Math.b2Math
     return C
 
   @Abs = (a) ->
-    a = 0  if a is `undefined`
+    a = 0  if a is undefined
     return (if a > 0.0 then a else (-a))
 
   @AbsV = (a) ->
@@ -98,8 +98,8 @@ class Box2D.Common.Math.b2Math
     return B
 
   @Min = (a, b) ->
-    a = 0  if a is `undefined`
-    b = 0  if b is `undefined`
+    a = 0  if a is undefined
+    b = 0  if b is undefined
     return (if a < b then a else b)
 
   @MinV = (a, b) ->
@@ -107,8 +107,8 @@ class Box2D.Common.Math.b2Math
     return c
 
   @Max = (a, b) ->
-    a = 0  if a is `undefined`
-    b = 0  if b is `undefined`
+    a = 0  if a is undefined
+    b = 0  if b is undefined
     return (if a > b then a else b)
 
   @MaxV = (a, b) ->
@@ -116,9 +116,9 @@ class Box2D.Common.Math.b2Math
     return c
 
   @Clamp = (a, low, high) ->
-    a = 0  if a is `undefined`
-    low = 0  if low is `undefined`
-    high = 0  if high is `undefined`
+    a = 0  if a is undefined
+    low = 0  if low is undefined
+    high = 0  if high is undefined
     return (if a < low then low else (if a > high then high else a))
 
   @ClampV = (a, low, high) ->
@@ -134,14 +134,14 @@ class Box2D.Common.Math.b2Math
     return Math.random() * 2 - 1
 
   @RandomRange = (lo, hi) ->
-    lo = 0  if lo is `undefined`
-    hi = 0  if hi is `undefined`
+    lo = 0  if lo is undefined
+    hi = 0  if hi is undefined
     r = Math.random()
     r = (hi - lo) * r + lo
     return r
 
   @NextPowerOfTwo = (x) ->
-    x = 0  if x is `undefined`
+    x = 0  if x is undefined
     x |= (x >> 1) & 0x7FFFFFFF
     x |= (x >> 2) & 0x3FFFFFFF
     x |= (x >> 4) & 0x0FFFFFFF
@@ -150,7 +150,7 @@ class Box2D.Common.Math.b2Math
     return x + 1
 
   @IsPowerOfTwo = (x) ->
-    x = 0  if x is `undefined`
+    x = 0  if x is undefined
     result = x > 0 and (x & (x - 1)) is 0
     return result
 

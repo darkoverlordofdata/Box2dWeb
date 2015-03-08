@@ -1,8 +1,9 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Common.b2Settings
-b2Vec2        = Box2D.Common.Math.b2Vec2
-b2Mat22       = Box2D.Common.Math.b2Mat22
+b2Settings            = Box2D.Common.b2Settings
+b2ContactEdge         = Box2D.Dynamics.Contacts.b2ContactConstraintPoint
+b2Vec2                = Box2D.Common.Math.b2Vec2
+b2Mat22               = Box2D.Common.Math.b2Mat22
 
 class Box2D.Dynamics.Contacts.b2ContactConstraint
 

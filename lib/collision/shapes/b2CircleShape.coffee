@@ -7,7 +7,7 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
   constructor: (radius) ->
     super radius
     @m_p = new b2Vec2()
-    radius = 0  if radius is `undefined`
+    radius = 0  if radius is undefined
     @__super.b2Shape.call this
     @m_type = b2Shape.e_circleShape
     @m_radius = radius
@@ -65,14 +65,14 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
     return
 
   ComputeMass: (massData, density) ->
-    density = 0  if density is `undefined`
+    density = 0  if density is undefined
     massData.mass = density * b2Settings.b2_pi * @m_radius * @m_radius
     massData.center.SetV @m_p
     massData.I = massData.mass * (0.5 * @m_radius * @m_radius + (@m_p.x * @m_p.x + @m_p.y * @m_p.y))
     return
 
   ComputeSubmergedArea: (normal, offset, xf, c) ->
-    offset = 0  if offset is `undefined`
+    offset = 0  if offset is undefined
     p = b2Math.MulX(xf, @m_p)
     l = (-(b2Math.Dot(normal, p) - offset))
     return 0  if l < (-@m_radius) + Number.MIN_VALUE
@@ -98,7 +98,7 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
     @m_radius
 
   SetRadius: (radius) ->
-    radius = 0  if radius is `undefined`
+    radius = 0  if radius is undefined
     @m_radius = radius
     return
 

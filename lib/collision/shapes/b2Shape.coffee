@@ -26,11 +26,11 @@ class Box2D.Collision.Shapes.b2Shape
   ComputeAABB: (aabb, xf) ->
 
   ComputeMass: (massData, density) ->
-    density = 0  if density is `undefined`
+    density = 0  if density is undefined
     return
 
   ComputeSubmergedArea: (normal, offset, xf, c) ->
-    offset = 0  if offset is `undefined`
+    offset = 0  if offset is undefined
     0
 
   @TestOverlap = (shape1, transform1, shape2, transform2) ->

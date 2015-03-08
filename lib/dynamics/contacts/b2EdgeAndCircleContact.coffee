@@ -1,8 +1,6 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Dynamics.Contacts.b2Contact
-b2Vec2        = Box2D.Common.Math.b2Vec2
-b2Mat22       = Box2D.Common.Math.b2Mat22
+b2Contact  = Box2D.Dynamics.Contacts.b2Contact
 
 class Box2D.Dynamics.Contacts.b2EdgeAndCircleContact extends b2Contact
 
@@ -10,17 +8,13 @@ class Box2D.Dynamics.Contacts.b2EdgeAndCircleContact extends b2Contact
   m_fixtureB: null
   m_manifold: null
 
-  constructor: ->
-    super
-    return
-  
   @Create: (allocator) ->
-    new b2EdgeAndCircleContact()
+    return new b2EdgeAndCircleContact()
   
   @Destroy: (contact, allocator) ->
   
   Reset: (fixtureA, fixtureB) ->
-    super fixtureA, fixtureB
+    super(fixtureA, fixtureB)
     return
   
   Evaluate: ->

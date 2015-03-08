@@ -27,7 +27,7 @@ class Box2D.Dynamics.Joints.b2PulleyJointDef extends b2JointDef
     return
 
   Initialize: (bA, bB, gaA, gaB, anchorA, anchorB, r) ->
-    r = 0  if r is `undefined`
+    r = 0  if r is undefined
     @bodyA = bA
     @bodyB = bB
     @groundAnchorA.SetV gaA

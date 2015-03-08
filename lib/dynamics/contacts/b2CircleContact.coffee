@@ -1,13 +1,8 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Dynamics.Contacts.b2Contact
-b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Contact  = Box2D.Dynamics.Contacts.b2Contact
 
 class Box2D.Dynamics.Contacts.b2CircleContact extends b2Contact
-
-  constructor: ->
-    super
-    return
 
   @Create: (allocator) ->
     return new b2CircleContact()
@@ -15,7 +10,7 @@ class Box2D.Dynamics.Contacts.b2CircleContact extends b2Contact
   @Destroy: (contact, allocator) ->
 
   Reset: (fixtureA, fixtureB) ->
-    super fixtureA, fixtureB
+    super(fixtureA, fixtureB)
     return
 
   Evaluate: ->

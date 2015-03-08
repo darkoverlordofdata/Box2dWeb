@@ -41,7 +41,7 @@ class Box2D.Collision.b2DynamicTree
     true
 
   Rebalance: (iterations) ->
-    iterations = 0  if iterations is `undefined`
+    iterations = 0  if iterations is undefined
     return  unless @m_root?
     i = 0
 

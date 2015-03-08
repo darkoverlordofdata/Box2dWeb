@@ -1,10 +1,18 @@
 Box2D = require('../index')
 
-b2ContactFilter = Box2D.Dynamics.Box2D.Dynamics.b2ContactFilter
-b2ContactListener = Box2D.Dynamics.Box2D.Dynamics.b2ContactListener
-
+b2ContactFilter           = Box2D.Dynamics.b2ContactFilter
+b2ContactListener         = Box2D.Dynamics.b2ContactListener
+b2ContactFactory          = Box2D.Dynamics.b2ContactFactory
+b2DynamicTreeBroadPhase   = Box2D.Dynamics.b2DynamicTreeBroadPhase
 
 class Box2D.Dynamics.b2ContactManager
+
+  m_world           : null
+  m_contactCount    : null
+  m_contactFilter   : null
+  m_contactListener : null
+  m_contactFactory  : null
+  m_broadPhase      : null
 
   constructor: ->
     @m_world = null

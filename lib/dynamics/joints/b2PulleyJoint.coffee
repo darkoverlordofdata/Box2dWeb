@@ -38,11 +38,11 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_impulse * @m_u2.x, inv_dt * @m_impulse * @m_u2.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     0.0
 
   GetGroundAnchorA: ->
@@ -231,7 +231,7 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     bA = @m_bodyA
     bB = @m_bodyB
     tMat = undefined

@@ -38,11 +38,11 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     inv_dt * @m_impulse.z
 
   GetJointAngle: ->
@@ -65,8 +65,8 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     @m_upperAngle
 
   SetLimits: (lower, upper) ->
-    lower = 0  if lower is `undefined`
-    upper = 0  if upper is `undefined`
+    lower = 0  if lower is undefined
+    upper = 0  if upper is undefined
     @m_lowerAngle = lower
     @m_upperAngle = upper
     return
@@ -81,7 +81,7 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     return
 
   SetMotorSpeed: (speed) ->
-    speed = 0  if speed is `undefined`
+    speed = 0  if speed is undefined
     @m_bodyA.SetAwake true
     @m_bodyB.SetAwake true
     @m_motorSpeed = speed
@@ -91,7 +91,7 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     @m_motorSpeed
 
   SetMaxMotorTorque: (torque) ->
-    torque = 0  if torque is `undefined`
+    torque = 0  if torque is undefined
     @m_maxMotorTorque = torque
     return
 
@@ -272,7 +272,7 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     oldLimitImpulse = 0
     C = 0
     tMat = undefined

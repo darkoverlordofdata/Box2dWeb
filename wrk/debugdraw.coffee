@@ -1,29 +1,17 @@
-Box2D = require('../index')
-
-class Box2D.Dynamics.b2DebugDraw
-
-  @e_shapeBit         = 0x0001
-  @e_jointBit         = 0x0002
-  @e_aabbBit          = 0x0004
-  @e_pairBit          = 0x0008
-  @e_centerOfMassBit  = 0x0010
-  @e_controllerBit    = 0x0020
-
-  m_drawScale         : 1.0
-  m_lineThickness     : 1.0
-  m_alpha             : 1.0
-  m_fillAlpha         : 1.0
-  m_xformScale        : 1.0
-  m_drawFlags         : 0
-
-  m_ctx               : null
-  
-  constructor:  ->
-
+(->
+  b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+  b2DebugDraw.b2DebugDraw = ->
+    @m_drawScale = 1.0
+    @m_lineThickness = 1.0
+    @m_alpha = 1.0
+    @m_fillAlpha = 1.0
+    @m_xformScale = 1.0
+    __this = this
+    
     ##WORKAROUND
     @m_sprite = graphics:
-      clear: =>
-        @m_ctx.clearRect 0, 0, @m_ctx.canvas.width, @m_ctx.canvas.height
+      clear: ->
+        __this.m_ctx.clearRect 0, 0, __this.m_ctx.canvas.width, __this.m_ctx.canvas.height
         return
 
     return
@@ -31,73 +19,77 @@ class Box2D.Dynamics.b2DebugDraw
   b2DebugDraw::_color = (color, alpha) ->
     "rgba(" + ((color & 0xFF0000) >> 16) + "," + ((color & 0xFF00) >> 8) + "," + (color & 0xFF) + "," + alpha + ")"
 
-  SetFlags: (flags) ->
+  b2DebugDraw::b2DebugDraw = ->
+    @m_drawFlags = 0
+    return
+
+  b2DebugDraw::SetFlags = (flags) ->
     flags = 0  if flags is `undefined`
     @m_drawFlags = flags
     return
 
-  GetFlags: ->
+  b2DebugDraw::GetFlags = ->
     @m_drawFlags
 
-  AppendFlags: (flags) ->
+  b2DebugDraw::AppendFlags = (flags) ->
     flags = 0  if flags is `undefined`
     @m_drawFlags |= flags
     return
 
-  ClearFlags: (flags) ->
+  b2DebugDraw::ClearFlags = (flags) ->
     flags = 0  if flags is `undefined`
     @m_drawFlags &= ~flags
     return
 
-  SetSprite: (sprite) ->
+  b2DebugDraw::SetSprite = (sprite) ->
     @m_ctx = sprite
     return
 
-  GetSprite: ->
+  b2DebugDraw::GetSprite = ->
     @m_ctx
 
-  SetDrawScale: (drawScale) ->
+  b2DebugDraw::SetDrawScale = (drawScale) ->
     drawScale = 0  if drawScale is `undefined`
     @m_drawScale = drawScale
     return
 
-  GetDrawScale: ->
+  b2DebugDraw::GetDrawScale = ->
     @m_drawScale
 
-  SetLineThickness: (lineThickness) ->
+  b2DebugDraw::SetLineThickness = (lineThickness) ->
     lineThickness = 0  if lineThickness is `undefined`
     @m_lineThickness = lineThickness
     @m_ctx.strokeWidth = lineThickness
     return
 
-  GetLineThickness: ->
+  b2DebugDraw::GetLineThickness = ->
     @m_lineThickness
 
-  SetAlpha: (alpha) ->
+  b2DebugDraw::SetAlpha = (alpha) ->
     alpha = 0  if alpha is `undefined`
     @m_alpha = alpha
     return
 
-  GetAlpha: ->
+  b2DebugDraw::GetAlpha = ->
     @m_alpha
 
-  SetFillAlpha: (alpha) ->
+  b2DebugDraw::SetFillAlpha = (alpha) ->
     alpha = 0  if alpha is `undefined`
     @m_fillAlpha = alpha
     return
 
-  GetFillAlpha: ->
+  b2DebugDraw::GetFillAlpha = ->
     @m_fillAlpha
 
-  SetXFormScale: (xformScale) ->
+  b2DebugDraw::SetXFormScale = (xformScale) ->
     xformScale = 0  if xformScale is `undefined`
     @m_xformScale = xformScale
     return
 
-  GetXFormScale: ->
+  b2DebugDraw::GetXFormScale = ->
     @m_xformScale
 
-  DrawPolygon: (vertices, vertexCount, color) ->
+  b2DebugDraw::DrawPolygon = (vertices, vertexCount, color) ->
     return  unless vertexCount
     s = @m_ctx
     drawScale = @m_drawScale
@@ -114,7 +106,7 @@ class Box2D.Dynamics.b2DebugDraw
     s.stroke()
     return
 
-  DrawSolidPolygon: (vertices, vertexCount, color) ->
+  b2DebugDraw::DrawSolidPolygon = (vertices, vertexCount, color) ->
     return  unless vertexCount
     s = @m_ctx
     drawScale = @m_drawScale
@@ -133,7 +125,7 @@ class Box2D.Dynamics.b2DebugDraw
     s.stroke()
     return
 
-  DrawCircle: (center, radius, color) ->
+  b2DebugDraw::DrawCircle = (center, radius, color) ->
     return  unless radius
     s = @m_ctx
     drawScale = @m_drawScale
@@ -144,7 +136,7 @@ class Box2D.Dynamics.b2DebugDraw
     s.stroke()
     return
 
-  DrawSolidCircle: (center, radius, axis, color) ->
+  b2DebugDraw::DrawSolidCircle = (center, radius, axis, color) ->
     return  unless radius
     s = @m_ctx
     drawScale = @m_drawScale
@@ -162,7 +154,7 @@ class Box2D.Dynamics.b2DebugDraw
     s.stroke()
     return
 
-  DrawSegment: (p1, p2, color) ->
+  b2DebugDraw::DrawSegment = (p1, p2, color) ->
     s = @m_ctx
     drawScale = @m_drawScale
     s.strokeStyle = @_color(color.color, @m_alpha)
@@ -173,7 +165,7 @@ class Box2D.Dynamics.b2DebugDraw
     s.stroke()
     return
 
-  DrawTransform: (xf) ->
+  b2DebugDraw::DrawTransform = (xf) ->
     s = @m_ctx
     drawScale = @m_drawScale
     s.beginPath()
@@ -186,3 +178,6 @@ class Box2D.Dynamics.b2DebugDraw
     s.closePath()
     s.stroke()
     return
+
+  return
+)()

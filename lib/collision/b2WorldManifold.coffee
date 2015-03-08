@@ -14,8 +14,8 @@ class Box2D.Collision.b2WorldManifold
     return
 
   Initialize: (manifold, xfA, radiusA, xfB, radiusB) ->
-    radiusA = 0  if radiusA is `undefined`
-    radiusB = 0  if radiusB is `undefined`
+    radiusA = 0  if radiusA is undefined
+    radiusB = 0  if radiusB is undefined
     return  if manifold.m_pointCount is 0
     i = 0
     tVec = undefined

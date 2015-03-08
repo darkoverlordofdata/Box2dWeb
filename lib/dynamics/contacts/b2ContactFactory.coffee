@@ -1,8 +1,7 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Common.b2Settings
-b2Vec2        = Box2D.Common.Math.b2Vec2
-b2Mat22       = Box2D.Common.Math.b2Mat22
+b2ContactRegister   = Box2D.Dynamics.Contacts.b2ContactRegister
+Vector              = Box2D.Vector
 
 class Box2D.Dynamics.Contacts.b2ContactFactory
 
@@ -15,8 +14,8 @@ class Box2D.Dynamics.Contacts.b2ContactFactory
     return
 
   AddType: (createFcn, destroyFcn, type1, type2) ->
-    type1 = 0  if type1 is `undefined`
-    type2 = 0  if type2 is `undefined`
+    type1 = 0  if type1 is undefined
+    type2 = 0  if type2 is undefined
     @m_registers[type1][type2].createFcn = createFcn
     @m_registers[type1][type2].destroyFcn = destroyFcn
     @m_registers[type1][type2].primary = true

@@ -25,11 +25,11 @@ class Box2D.Dynamics.Joints.b2WeldJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchorB
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     inv_dt * @m_impulse.z
 
   InitVelocityConstraints: (step) ->
@@ -118,7 +118,7 @@ class Box2D.Dynamics.Joints.b2WeldJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     tMat = undefined
     tX = 0
     bA = @m_bodyA

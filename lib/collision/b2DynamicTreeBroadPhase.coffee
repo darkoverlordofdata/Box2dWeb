@@ -86,7 +86,7 @@ class Box2D.Collision.b2DynamicTreeBroadPhase
   Validate: ->
   
   Rebalance: (iterations) ->
-    iterations = 0  if iterations is `undefined`
+    iterations = 0  if iterations is undefined
     @m_tree.Rebalance iterations
     return
   

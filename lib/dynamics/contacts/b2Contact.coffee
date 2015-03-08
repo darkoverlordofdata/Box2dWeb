@@ -1,14 +1,28 @@
 Box2D = require('../../index')
 
+b2Settings            = Box2D.Common.b2Settings
+b2ContactEdge         = Box2D.Dynamics.Contacts.b2ContactEdge
+b2Manifold            = Box2D.Collision.b2Manifold
+
 class Box2D.Dynamics.Contacts.b2Contact
 
-  m_nodeA         : null
-  m_nodeB         : null
-  m_manifold      : null
-  m_oldManifold   : null
-  m_fixtureA      : null
-  m_fixtureB      : null
-  m_touching      : false
+  @e_sensorFlag         = 0x0001
+  @e_continuousFlag     = 0x0002
+  @e_islandFlag         = 0x0004
+  @e_toiFlag            = 0x0008
+  @e_touchingFlag       = 0x0010
+  @e_enabledFlag        = 0x0020
+  @e_filterFlag         = 0x0040
+  @s_input              = new b2TOIInput()
+
+
+  m_nodeA               : null
+  m_nodeB               : null
+  m_manifold            : null
+  m_oldManifold         : null
+  m_fixtureA            : null
+  m_fixtureB            : null
+  m_touching            : false
 
 
   constructor: ->
@@ -19,7 +33,7 @@ class Box2D.Dynamics.Contacts.b2Contact
     return
 
   GetManifold: ->
-    @m_manifold
+    return @m_manifold
 
   GetWorldManifold: (worldManifold) ->
     bodyA = @m_fixtureA.GetBody()
@@ -30,10 +44,10 @@ class Box2D.Dynamics.Contacts.b2Contact
     return
 
   IsTouching: ->
-    (@m_flags & b2Contact.e_touchingFlag) is b2Contact.e_touchingFlag
+    return (@m_flags & b2Contact.e_touchingFlag) is b2Contact.e_touchingFlag
 
   IsContinuous: ->
-    (@m_flags & b2Contact.e_continuousFlag) is b2Contact.e_continuousFlag
+    return (@m_flags & b2Contact.e_continuousFlag) is b2Contact.e_continuousFlag
 
   SetSensor: (sensor) ->
     if sensor
@@ -43,7 +57,7 @@ class Box2D.Dynamics.Contacts.b2Contact
     return
 
   IsSensor: ->
-    (@m_flags & b2Contact.e_sensorFlag) is b2Contact.e_sensorFlag
+    return (@m_flags & b2Contact.e_sensorFlag) is b2Contact.e_sensorFlag
 
   SetEnabled: (flag) ->
     if flag
@@ -53,26 +67,24 @@ class Box2D.Dynamics.Contacts.b2Contact
     return
 
   IsEnabled: ->
-    (@m_flags & b2Contact.e_enabledFlag) is b2Contact.e_enabledFlag
+    return (@m_flags & b2Contact.e_enabledFlag) is b2Contact.e_enabledFlag
 
   GetNext: ->
-    @m_next
+    return @m_next
 
   GetFixtureA: ->
-    @m_fixtureA
+    return @m_fixtureA
 
   GetFixtureB: ->
-    @m_fixtureB
+    return @m_fixtureB
 
   FlagForFiltering: ->
     @m_flags |= b2Contact.e_filterFlag
     return
 
-  b2Contact::b2Contact = ->
-
   Reset: (fixtureA, fixtureB) ->
-    fixtureA = null  if fixtureA is `undefined`
-    fixtureB = null  if fixtureB is `undefined`
+    fixtureA = null  if fixtureA is undefined
+    fixtureB = null  if fixtureB is undefined
     @m_flags = b2Contact.e_enabledFlag
     if not fixtureA or not fixtureB
       @m_fixtureA = null
@@ -162,14 +174,5 @@ class Box2D.Dynamics.Contacts.b2Contact
     b2Contact.s_input.sweepA = sweepA
     b2Contact.s_input.sweepB = sweepB
     b2Contact.s_input.tolerance = b2Settings.b2_linearSlop
-    b2TimeOfImpact.TimeOfImpact b2Contact.s_input
-
-  @e_sensorFlag = 0x0001
-  @e_continuousFlag = 0x0002
-  @e_islandFlag = 0x0004
-  @e_toiFlag = 0x0008
-  @e_touchingFlag = 0x0010
-  @e_enabledFlag = 0x0020
-  @e_filterFlag = 0x0040
-  @s_input = new b2TOIInput()
+    return b2TimeOfImpact.TimeOfImpact(b2Contact.s_input)
 

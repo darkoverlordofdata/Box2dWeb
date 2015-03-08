@@ -30,18 +30,18 @@ class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_impulse * @m_u.x, inv_dt * @m_impulse * @m_u.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     0.0
 
   GetLength: ->
     @m_length
 
   SetLength: (length) ->
-    length = 0  if length is `undefined`
+    length = 0  if length is undefined
     @m_length = length
     return
 
@@ -49,7 +49,7 @@ class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
     @m_frequencyHz
 
   SetFrequency: (hz) ->
-    hz = 0  if hz is `undefined`
+    hz = 0  if hz is undefined
     @m_frequencyHz = hz
     return
 
@@ -57,7 +57,7 @@ class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
     @m_dampingRatio
 
   SetDampingRatio: (ratio) ->
-    ratio = 0  if ratio is `undefined`
+    ratio = 0  if ratio is undefined
     @m_dampingRatio = ratio
     return
 
@@ -147,7 +147,7 @@ class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     tMat = undefined
     return true  if @m_frequencyHz > 0.0
     bA = @m_bodyA

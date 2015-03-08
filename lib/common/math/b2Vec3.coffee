@@ -8,9 +8,9 @@ class Box2D.Common.Math.b2Vec3
   
   
   constructor: (x, y, z) ->
-    x = 0  if x is `undefined`
-    y = 0  if y is `undefined`
-    z = 0  if z is `undefined`
+    x = 0  if x is undefined
+    y = 0  if y is undefined
+    z = 0  if z is undefined
     @x = x
     @y = y
     @z = z
@@ -21,9 +21,9 @@ class Box2D.Common.Math.b2Vec3
     return
 
   Set: (x, y, z) ->
-    x = 0  if x is `undefined`
-    y = 0  if y is `undefined`
-    z = 0  if z is `undefined`
+    x = 0  if x is undefined
+    y = 0  if y is undefined
+    z = 0  if z is undefined
     @x = x
     @y = y
     @z = z
@@ -60,7 +60,7 @@ class Box2D.Common.Math.b2Vec3
     return
 
   Multiply: (a) ->
-    a = 0  if a is `undefined`
+    a = 0  if a is undefined
     @x *= a
     @y *= a
     @z *= a

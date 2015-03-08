@@ -44,11 +44,11 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * (@m_impulse.x * @m_perp.x + (@m_motorImpulse + @m_impulse.z) * @m_axis.x), inv_dt * (@m_impulse.x * @m_perp.y + (@m_motorImpulse + @m_impulse.z) * @m_axis.y))
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     inv_dt * @m_impulse.y
 
   GetJointTranslation: ->
@@ -109,8 +109,8 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     @m_upperTranslation
 
   SetLimits: (lower, upper) ->
-    lower = 0  if lower is `undefined`
-    upper = 0  if upper is `undefined`
+    lower = 0  if lower is undefined
+    upper = 0  if upper is undefined
     @m_bodyA.SetAwake true
     @m_bodyB.SetAwake true
     @m_lowerTranslation = lower
@@ -127,7 +127,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   SetMotorSpeed: (speed) ->
-    speed = 0  if speed is `undefined`
+    speed = 0  if speed is undefined
     @m_bodyA.SetAwake true
     @m_bodyB.SetAwake true
     @m_motorSpeed = speed
@@ -137,7 +137,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     @m_motorSpeed
 
   SetMaxMotorForce: (force) ->
-    force = 0  if force is `undefined`
+    force = 0  if force is undefined
     @m_bodyA.SetAwake true
     @m_bodyB.SetAwake true
     @m_maxMotorForce = force
@@ -311,7 +311,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     limitC = 0
     oldLimitImpulse = 0
     bA = @m_bodyA

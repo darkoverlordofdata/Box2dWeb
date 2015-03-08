@@ -1,12 +1,21 @@
 Box2D = require('../index')
 
+b2AABB            = Box2D.Collision.b2AABB
+b2Color           = Box2D.Common.b2Color
+b2Sweep           = Box2D.Common.Math.b2Sweep
 b2Vec2            = Box2D.Common.Math.b2Vec2
+b2Transform       = Box2D.Common.Math.b2Transform
 b2Body            = Box2D.Dynamics.b2Body
+b2BodyDef         = Box2D.Dynamics.b2BodyDef
 b2Joint           = Box2D.Dynamics.Joints.b2Joint
 b2Contact         = Box2D.Dynamics.b2Contact
 b2ContactManager  = Box2D.Dynamics.b2ContactManager
 b2ContactSolver   = Box2D.Dynamics.b2ContactSolver
 b2Island          = Box2D.Dynamics.b2Island
+b2TimeStep        = Box2D.Dynamics.b2TimeStep
+b2DebugDraw       = Box2D.Dynamics.b2DebugDraw
+b2RayCastInput    = Box2D.Collision.b2RayCastInput
+b2RayCastOutput   = Box2D.Collision.b2RayCastOutput
 
 class Box2D.Dynamics.b2World
 
@@ -34,21 +43,10 @@ class Box2D.Dynamics.b2World
     @m_contactManager = new b2ContactManager()
     @m_contactSolver = new b2ContactSolver()
     @m_island = new b2Island()
-    @m_destructionListener = null
-    @m_debugDraw = null
-    @m_bodyList = null
-    @m_contactList = null
-    @m_jointList = null
-    @m_controllerList = null
-    @m_bodyCount = 0
-    @m_contactCount = 0
-    @m_jointCount = 0
-    @m_controllerCount = 0
     b2World.m_warmStarting = true
     b2World.m_continuousPhysics = true
     @m_allowSleep = doSleep
     @m_gravity = gravity
-    @m_inv_dt0 = 0.0
     @m_contactManager.m_world = this
     bd = new b2BodyDef()
     @m_groundBody = @CreateBody(bd)
@@ -252,9 +250,9 @@ class Box2D.Dynamics.b2World
     @m_groundBody
 
   Step: (dt, velocityIterations, positionIterations) ->
-    dt = 0  if dt is `undefined`
-    velocityIterations = 0  if velocityIterations is `undefined`
-    positionIterations = 0  if positionIterations is `undefined`
+    dt = 0  if dt is undefined
+    velocityIterations = 0  if velocityIterations is undefined
+    positionIterations = 0  if positionIterations is undefined
     if @m_flags & b2World.e_newFixture
       @m_contactManager.FindNewContacts()
       @m_flags &= ~b2World.e_newFixture
@@ -399,7 +397,7 @@ class Box2D.Dynamics.b2World
       return callback(fixture)  if b2Shape.TestOverlap(shape, transform, fixture.GetShape(), fixture.GetBody().GetTransform())
       true
     __this = this
-    transform = null  if transform is `undefined`
+    transform = null  if transform is undefined
     unless transform?
       transform = new b2Transform()
       transform.SetIdentity()
@@ -441,7 +439,7 @@ class Box2D.Dynamics.b2World
 
   RayCastOne: (point1, point2) ->
     RayCastOneWrapper = (fixture, point, normal, fraction) ->
-      fraction = 0  if fraction is `undefined`
+      fraction = 0  if fraction is undefined
       result = fixture
       fraction
     __this = this
@@ -451,7 +449,7 @@ class Box2D.Dynamics.b2World
 
   RayCastAll: (point1, point2) ->
     RayCastAllWrapper = (fixture, point, normal, fraction) ->
-      fraction = 0  if fraction is `undefined`
+      fraction = 0  if fraction is undefined
       result[result.length] = fixture
       1
     __this = this

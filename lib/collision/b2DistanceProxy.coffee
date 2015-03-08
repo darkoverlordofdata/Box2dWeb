@@ -50,7 +50,7 @@ class Box2D.Collision.b2DistanceProxy
     @m_count
 
   GetVertex: (index) ->
-    index = 0  if index is `undefined`
+    index = 0  if index is undefined
     b2Settings.b2Assert 0 <= index and index < @m_count
     @m_vertices[index]
  

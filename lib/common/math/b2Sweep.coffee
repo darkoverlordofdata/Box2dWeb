@@ -37,7 +37,7 @@ class Box2D.Common.Math.b2Sweep
     return copy
 
   GetTransform: (xf, alpha) ->
-    alpha = 0  if alpha is `undefined`
+    alpha = 0  if alpha is undefined
     xf.position.x = (1.0 - alpha) * @c0.x + alpha * @c.x
     xf.position.y = (1.0 - alpha) * @c0.y + alpha * @c.y
     angle = (1.0 - alpha) * @a0 + alpha * @a
@@ -48,7 +48,7 @@ class Box2D.Common.Math.b2Sweep
     return
 
   Advance: (t) ->
-    t = 0  if t is `undefined`
+    t = 0  if t is undefined
     if @t0 < t and 1.0 - @t0 > Number.MIN_VALUE
       alpha = (t - @t0) / (1.0 - @t0)
       @c0.x = (1.0 - alpha) * @c0.x + alpha * @c.x

@@ -1,17 +1,12 @@
 Box2D = require('../index')
 
-b2Controller  = Box2D.Dynamics.Contacts.b2Contact
-b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Contact  = Box2D.Dynamics.Contacts.b2Contact
 
 class Box2D.Dynamics.Contacts.b2PolyAndEdgeContact extends b2Contact
 
 
-  constructor: (manifold, polygon, xf1, edge, xf2) ->
-    super
-    return
-
   @Create = (allocator) ->
-    new b2PolyAndEdgeContact()
+    return new b2PolyAndEdgeContact()
 
   @Destroy = (contact, allocator) ->
 

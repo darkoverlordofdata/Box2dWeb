@@ -6,8 +6,8 @@ class Box2D.Common.Math.b2Vec2
   y: 0
   
   constructor: (x_, y_) ->
-    x_ = 0  if x_ is `undefined`
-    y_ = 0  if y_ is `undefined`
+    x_ = 0  if x_ is undefined
+    y_ = 0  if y_ is undefined
     @x = x_
     @y = y_
     return
@@ -18,8 +18,8 @@ class Box2D.Common.Math.b2Vec2
     return
 
   Set: (x_, y_) ->
-    x_ = 0  if x_ is `undefined`
-    y_ = 0  if y_ is `undefined`
+    x_ = 0  if x_ is undefined
+    y_ = 0  if y_ is undefined
     @x = x_
     @y = y_
     return
@@ -38,8 +38,8 @@ class Box2D.Common.Math.b2Vec2
     return
 
   @Make: (x_, y_) ->
-    x_ = 0  if x_ is `undefined`
-    y_ = 0  if y_ is `undefined`
+    x_ = 0  if x_ is undefined
+    y_ = 0  if y_ is undefined
     return new b2Vec2(x_, y_)
 
   Copy: ->
@@ -56,7 +56,7 @@ class Box2D.Common.Math.b2Vec2
     return
 
   Multiply: (a) ->
-    a = 0  if a is `undefined`
+    a = 0  if a is undefined
     @x *= a
     @y *= a
     return
@@ -74,14 +74,14 @@ class Box2D.Common.Math.b2Vec2
     return
 
   CrossVF: (s) ->
-    s = 0  if s is `undefined`
+    s = 0  if s is undefined
     tX = @x
     @x = s * @y
     @y = (-s * tX)
     return
 
   CrossFV: (s) ->
-    s = 0  if s is `undefined`
+    s = 0  if s is undefined
     tX = @x
     @x = (-s * @y)
     @y = s * tX

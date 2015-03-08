@@ -16,8 +16,8 @@ class Box2D.Dynamics.Controllers.b2TensorDampingController extends b2Controller
     return
 
   b2TensorDampingController::SetAxisAligned = (xDamping, yDamping) ->
-    xDamping = 0  if xDamping is `undefined`
-    yDamping = 0  if yDamping is `undefined`
+    xDamping = 0  if xDamping is undefined
+    yDamping = 0  if yDamping is undefined
     @T.col1.x = (-xDamping)
     @T.col1.y = 0
     @T.col2.x = 0

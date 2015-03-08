@@ -38,11 +38,11 @@ class Box2D.Dynamics.Joints.b2Joint
     null
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     null
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     0.0
 
   GetBodyA: ->
@@ -97,7 +97,7 @@ class Box2D.Dynamics.Joints.b2Joint
   FinalizeVelocityConstraints: ->
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     false
 
   @e_unknownJoint = 0

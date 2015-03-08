@@ -21,15 +21,14 @@ class Box2D
 
   @parseUInt: (v) -> Math.abs parseInt(v)
 
-  @NVector: (length) ->
-    length = 0  if length is `undefined`
-    tmp = new Array(length or 0)
+  @Vector: (length=0) ->
+    tmp = new Array(length)
     i = 0
 
     while i < length
       tmp[i] = 0
       ++i
-    tmp
+    return tmp
 
   @equals: (o1, o2) ->
     return false  if o1 is null

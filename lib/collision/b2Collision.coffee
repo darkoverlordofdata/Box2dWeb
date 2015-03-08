@@ -4,7 +4,7 @@ Box2D = require('../index')
 class Box2D.Collision.b2Collision
 
   @ClipSegmentToLine: (vOut, vIn, normal, offset) ->
-    offset = 0  if offset is `undefined`
+    offset = 0  if offset is undefined
     cv = undefined
     numOut = 0
     cv = vIn[0]
@@ -33,7 +33,7 @@ class Box2D.Collision.b2Collision
     numOut
 
   @EdgeSeparation: (poly1, xf1, edge1, poly2, xf2) ->
-    edge1 = 0  if edge1 is `undefined`
+    edge1 = 0  if edge1 is undefined
     count1 = parseInt(poly1.m_vertexCount)
     vertices1 = poly1.m_vertices
     normals1 = poly1.m_normals
@@ -132,7 +132,7 @@ class Box2D.Collision.b2Collision
     bestSeparation
 
   @FindIncidentEdge: (c, poly1, xf1, edge1, poly2, xf2) ->
-    edge1 = 0  if edge1 is `undefined`
+    edge1 = 0  if edge1 is undefined
     count1 = parseInt(poly1.m_vertexCount)
     normals1 = poly1.m_normals
     count2 = parseInt(poly2.m_vertexCount)
@@ -420,8 +420,8 @@ class Box2D.Collision.b2Collision
   @s_incidentEdge = b2Collision.MakeClipPointVector()
   @s_clipPoints1 = b2Collision.MakeClipPointVector()
   @s_clipPoints2 = b2Collision.MakeClipPointVector()
-  @s_edgeAO = new Vector_a2j_Number(1)
-  @s_edgeBO = new Vector_a2j_Number(1)
+  @s_edgeAO = new Vector(1)
+  @s_edgeBO = new Vector(1)
   @s_localTangent = new b2Vec2()
   @s_localNormal = new b2Vec2()
   @s_planePoint = new b2Vec2()

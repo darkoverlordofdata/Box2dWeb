@@ -27,15 +27,15 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchorB
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_linearImpulse.x, inv_dt * @m_linearImpulse.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     inv_dt * @m_angularImpulse
 
   SetMaxForce: (force) ->
-    force = 0  if force is `undefined`
+    force = 0  if force is undefined
     @m_maxForce = force
     return
 
@@ -43,7 +43,7 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
     @m_maxForce
 
   SetMaxTorque: (torque) ->
-    torque = 0  if torque is `undefined`
+    torque = 0  if torque is undefined
     @m_maxTorque = torque
     return
 
@@ -158,6 +158,6 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     true
  

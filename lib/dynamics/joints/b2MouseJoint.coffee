@@ -35,11 +35,11 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     @m_bodyB.GetWorldPoint @m_localAnchor
 
   GetReactionForce: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
 
   GetReactionTorque: (inv_dt) ->
-    inv_dt = 0  if inv_dt is `undefined`
+    inv_dt = 0  if inv_dt is undefined
     0.0
 
   GetTarget: ->
@@ -54,7 +54,7 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     @m_maxForce
 
   SetMaxForce: (maxForce) ->
-    maxForce = 0  if maxForce is `undefined`
+    maxForce = 0  if maxForce is undefined
     @m_maxForce = maxForce
     return
 
@@ -62,7 +62,7 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     @m_frequencyHz
 
   SetFrequency: (hz) ->
-    hz = 0  if hz is `undefined`
+    hz = 0  if hz is undefined
     @m_frequencyHz = hz
     return
 
@@ -70,7 +70,7 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     @m_dampingRatio
 
   SetDampingRatio: (ratio) ->
-    ratio = 0  if ratio is `undefined`
+    ratio = 0  if ratio is undefined
     @m_dampingRatio = ratio
     return
 
@@ -148,6 +148,6 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     return
 
   SolvePositionConstraints: (baumgarte) ->
-    baumgarte = 0  if baumgarte is `undefined`
+    baumgarte = 0  if baumgarte is undefined
     true
 

@@ -28,13 +28,13 @@ class Box2D.Common.b2Settings
   @b2_angularSleepTolerance = 2.0 / 180.0 * b2Settings.b2_pi
 
   @b2MixFriction: (friction1, friction2) ->
-    friction1 = 0  if friction1 is `undefined`
-    friction2 = 0  if friction2 is `undefined`
+    friction1 = 0  if friction1 is undefined
+    friction2 = 0  if friction2 is undefined
     return Math.sqrt(friction1 * friction2)
 
   @b2MixRestitution: (restitution1, restitution2) ->
-    restitution1 = 0  if restitution1 is `undefined`
-    restitution2 = 0  if restitution2 is `undefined`
+    restitution1 = 0  if restitution1 is undefined
+    restitution2 = 0  if restitution2 is undefined
     return restitution1 > restitution2 ? restitution1 : restitution2
 
   @b2Assert: (a) ->

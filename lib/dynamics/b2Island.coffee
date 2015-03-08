@@ -1,5 +1,8 @@
 Box2D = require('../index')
 
+Vector              = Box2D.Vector
+b2ContactImpulse    = Box2D.Dynamics.b2ContactImpulse
+
 class Box2D.Dynamics.b2Island
 
   m_bodies            : null
@@ -23,9 +26,9 @@ class Box2D.Dynamics.b2Island
     return
 
   Initialize: (bodyCapacity, contactCapacity, jointCapacity, allocator, listener, contactSolver) ->
-    bodyCapacity = 0  if bodyCapacity is `undefined`
-    contactCapacity = 0  if contactCapacity is `undefined`
-    jointCapacity = 0  if jointCapacity is `undefined`
+    bodyCapacity = 0  if bodyCapacity is undefined
+    contactCapacity = 0  if contactCapacity is undefined
+    jointCapacity = 0  if jointCapacity is undefined
     i = 0
     @m_bodyCapacity = bodyCapacity
     @m_contactCapacity = contactCapacity

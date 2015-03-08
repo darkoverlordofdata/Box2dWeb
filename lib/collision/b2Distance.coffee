@@ -91,5 +91,5 @@ class Box2D.Collision.b2Distance
     return
 
   @s_simplex = new b2Simplex()
-  @s_saveA = new Vector_a2j_Number(3)
-  @s_saveB = new Vector_a2j_Number(3)
+  @s_saveA = new Vector(3)
+  @s_saveB = new Vector(3)

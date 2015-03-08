@@ -1,41 +1,54 @@
 Box2D = require('../index')
 
-b2Mat22     = Box2D.Common.Math.b2Mat22
-b2Math      = Box2D.Common.Math.b2Math
-b2Transform = Box2D.Common.Math.b2Transform
-b2Vec2      = Box2D.Common.Math.b2Vec2
-b2Fixture   = Box2D.Dynamics.b2Fixture
+b2Math          = Box2D.Common.Math.b2Math
+b2Sweep         = Box2D.Common.Math.b2Sweep
+b2Transform     = Box2D.Common.Math.b2Transform
+b2Vec2          = Box2D.Common.Math.b2Vec2
+b2Fixture       = Box2D.Dynamics.b2Fixture
+b2FixtureDef    = Box2D.Dynamics.b2FixtureDef
+b2BodyDef       = Box2D.Dynamics.b2BodyDef
 
 class Box2D.Dynamics.b2Body
 
-  m_xf                : null
-  m_sweep             : null
-  m_linearVelocity    : null
-  m_force             : null
-  m_flags             : 0
-  m_world             : null
-  m_jointList         : null
-  m_controllerList    : null
-  m_contactList       : null
-  m_controllerCount   : null
-  m_prev              : null
-  m_next              : null
-  m_linearVelocity    : null
-  m_angularVelocity   : null
-  m_linearDamping     : null
-  m_angularDamping    : null
-  m_force             : null
-  m_torque            : 0
-  m_sleepTime         : 0
-  m_type              : 0
-  m_mass              : 0
-  m_invMass           : 0
-  m_I                 : 0
-  m_invI              : 0
-  m_inertiaScale      : 0
-  m_userData          : null
-  m_fixtureList       : null
-  m_fixtureCount      : 0
+  @s_xf1                = new b2Transform()
+  @e_islandFlag         = 0x0001
+  @e_awakeFlag          = 0x0002
+  @e_allowSleepFlag     = 0x0004
+  @e_bulletFlag         = 0x0008
+  @e_fixedRotationFlag  = 0x0010
+  @e_activeFlag         = 0x0020
+  @b2_staticBody        = 0
+  @b2_kinematicBody     = 1
+  @b2_dynamicBody       = 2
+
+  m_xf                  : null
+  m_sweep               : null
+  m_linearVelocity      : null
+  m_force               : null
+  m_flags               : 0
+  m_world               : null
+  m_jointList           : null
+  m_controllerList      : null
+  m_contactList         : null
+  m_controllerCount     : null
+  m_prev                : null
+  m_next                : null
+  m_linearVelocity      : null
+  m_angularVelocity     : null
+  m_linearDamping       : null
+  m_angularDamping      : null
+  m_force               : null
+  m_torque              : 0
+  m_sleepTime           : 0
+  m_type                : 0
+  m_mass                : 0
+  m_invMass             : 0
+  m_I                   : 0
+  m_invI                : 0
+  m_inertiaScale        : 0
+  m_userData            : null
+  m_fixtureList         : null
+  m_fixtureCount        : 0
 
   constructor: (bd, world) ->
     @m_xf = new b2Transform()
@@ -91,8 +104,8 @@ class Box2D.Dynamics.b2Body
 
 
 
-  connectEdges: (s1, s2, angle1) ->
-    angle1 = 0  if angle1 is `undefined`
+  ConnectEdges: (s1, s2, angle1) ->
+    angle1 = 0  if angle1 is undefined
     angle2 = Math.atan2(s2.GetDirectionVector().y, s2.GetDirectionVector().x)
     coreOffset = Math.tan((angle2 - angle1) * 0.5)
     core = b2Math.MulFV(coreOffset, s2.GetDirectionVector())
@@ -121,8 +134,8 @@ class Box2D.Dynamics.b2Body
     @m_world.m_flags |= b2World.e_newFixture
     return fixture
 
-  b2Body::CreateFixture2 = (shape, density) ->
-    density = 0.0  if density is `undefined`
+  CreateFixture2: (shape, density) ->
+    density = 0.0  if density is undefined
     def = new b2FixtureDef()
     def.shape = shape
     def.density = density
@@ -163,7 +176,7 @@ class Box2D.Dynamics.b2Body
     return
 
   SetPositionAndAngle: (position, angle) ->
-    angle = 0  if angle is `undefined`
+    angle = 0  if angle is undefined
     f = undefined
     return  if @m_world.IsLocked() is true
     @m_xf.R.Set angle
@@ -202,7 +215,7 @@ class Box2D.Dynamics.b2Body
     return @m_sweep.a
 
   SetAngle: (angle) ->
-    angle = 0  if angle is `undefined`
+    angle = 0  if angle is undefined
     @SetPositionAndAngle @GetPosition(), angle
     return
 
@@ -221,7 +234,7 @@ class Box2D.Dynamics.b2Body
     return @m_linearVelocity
 
   SetAngularVelocity: (omega) ->
-    omega = 0  if omega is `undefined`
+    omega = 0  if omega is undefined
     return  if @m_type is b2Body.b2_staticBody
     @m_angularVelocity = omega
     return
@@ -254,7 +267,7 @@ class Box2D.Dynamics.b2Body
     return
 
   ApplyTorque: (torque) ->
-    torque = 0  if torque is `undefined`
+    torque = 0  if torque is undefined
     return  unless @m_type is b2Body.b2_dynamicBody
     @SetAwake true  if @IsAwake() is false
     @m_torque += torque
@@ -435,7 +448,7 @@ class Box2D.Dynamics.b2Body
     return @m_linearDamping
 
   SetLinearDamping: (linearDamping) ->
-    linearDamping = 0  if linearDamping is `undefined`
+    linearDamping = 0  if linearDamping is undefined
     @m_linearDamping = linearDamping
     return
 
@@ -443,12 +456,12 @@ class Box2D.Dynamics.b2Body
     return @m_angularDamping
 
   SetAngularDamping: (angularDamping) ->
-    angularDamping = 0  if angularDamping is `undefined`
+    angularDamping = 0  if angularDamping is undefined
     @m_angularDamping = angularDamping
     return
 
   SetType: (type) ->
-    type = 0  if type is `undefined`
+    type = 0  if type is undefined
     return  if @m_type is type
     @m_type = type
     @ResetMassData()
@@ -603,20 +616,10 @@ class Box2D.Dynamics.b2Body
     return true
 
   Advance: (t) ->
-    t = 0  if t is `undefined`
+    t = 0  if t is undefined
     @m_sweep.Advance t
     @m_sweep.c.SetV @m_sweep.c0
     @m_sweep.a = @m_sweep.a0
     @SynchronizeTransform()
     return
 
-  @s_xf1                = new b2Transform()
-  @e_islandFlag         = 0x0001
-  @e_awakeFlag          = 0x0002
-  @e_allowSleepFlag     = 0x0004
-  @e_bulletFlag         = 0x0008
-  @e_fixedRotationFlag  = 0x0010
-  @e_activeFlag         = 0x0020
-  @b2_staticBody        = 0
-  @b2_kinematicBody     = 1
-  @b2_dynamicBody       = 2

@@ -79,14 +79,14 @@ class Box2D.Collision.Shapes.b2EdgeShape extends b2Shape
     return
 
   ComputeMass: (massData, density) ->
-    density = 0  if density is `undefined`
+    density = 0  if density is undefined
     massData.mass = 0
     massData.center.SetV @m_v1
     massData.I = 0
     return
 
   ComputeSubmergedArea: (normal, offset, xf, c) ->
-    offset = 0  if offset is `undefined`
+    offset = 0  if offset is undefined
     v0 = new b2Vec2(normal.x * offset, normal.y * offset)
     v1 = b2Math.MulX(xf, @m_v1)
     v2 = b2Math.MulX(xf, @m_v2)
@@ -151,8 +151,8 @@ class Box2D.Collision.Shapes.b2EdgeShape extends b2Shape
     @m_prevEdge
 
   Support: (xf, dX, dY) ->
-    dX = 0  if dX is `undefined`
-    dY = 0  if dY is `undefined`
+    dX = 0  if dX is undefined
+    dY = 0  if dY is undefined
     tMat = xf.R
     v1X = xf.position.x + (tMat.col1.x * @m_coreV1.x + tMat.col2.x * @m_coreV1.y)
     v1Y = xf.position.y + (tMat.col1.y * @m_coreV1.x + tMat.col2.y * @m_coreV1.y)

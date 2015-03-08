@@ -1,7 +1,9 @@
 Box2D = require('../index')
 
-b2Vec2      = Box2D.Common.Math.b2Vec2
-b2FilterData = Box2D.Dynamics.b2FilterData
+b2Math        = Box2D.Common.Math.b2Math
+b2Vec2        = Box2D.Common.Math.b2Vec2
+b2FilterData  = Box2D.Dynamics.b2FilterData
+b2AABB        = Box2D.Collision.b2AABB
 
 class Box2D.Dynamics.b2Fixture
 
@@ -11,9 +13,9 @@ class Box2D.Dynamics.b2Fixture
   m_body            : null
   m_next            : null
   m_userData        : null
-  m_density         : null
-  m_friction        : null
-  m_restitution     : null
+  m_density         : 0.0
+  m_friction        : 0.0
+  m_restitution     : 0.0
   m_aabb            : null
   m_proxy           : null
 
@@ -75,13 +77,13 @@ class Box2D.Dynamics.b2Fixture
     return @m_shape.RayCast output, input, @m_body.GetTransform()
 
   GetMassData: (massData) ->
-    massData = null  if massData is `undefined`
+    massData = null  if massData is undefined
     massData = new b2MassData()  unless massData?
     @m_shape.ComputeMass massData, @m_density
     return massData
 
   SetDensity: (density) ->
-    density = 0  if density is `undefined`
+    density = 0  if density is undefined
     @m_density = density
     return
 
@@ -92,7 +94,7 @@ class Box2D.Dynamics.b2Fixture
     return @m_friction
 
   SetFriction: (friction) ->
-    friction = 0  if friction is `undefined`
+    friction = 0  if friction is undefined
     @m_friction = friction
     return
 
@@ -100,23 +102,13 @@ class Box2D.Dynamics.b2Fixture
     @m_restitution
 
   SetRestitution: (restitution) ->
-    restitution = 0  if restitution is `undefined`
+    restitution = 0  if restitution is undefined
     @m_restitution = restitution
     return
 
   GetAABB: ->
     return @m_aabb
 
-  b2Fixture::b2Fixture = ->
-    @m_aabb = new b2AABB()
-    @m_userData = null
-    @m_body = null
-    @m_next = null
-    @m_shape = null
-    @m_density = 0.0
-    @m_friction = 0.0
-    @m_restitution = 0.0
-    return
 
   Create: (body, xf, def) ->
     @m_userData = def.userData
