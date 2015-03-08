@@ -1,25 +1,41 @@
 Box2D = require('../index')
 
+b2Color     = Box2D.Common.b2Color
 b2Vec2      = Box2D.Common.Math.b2Vec2
 b2Body      = Box2D.Dynamics.b2Body
 b2Joint     = Box2D.Dynamics.Joints.b2Joint
 b2Contact   = Box2D.Dynamics.b2Contact
+b2DebugDraw = Box2d.Dynamics.b2DebugDraw
 
 class Box2D.Dynamics.b2World
 
+
+  @e_newFixture         = 0x0001
+  @e_locked             = 0x0002
+
   m_bodyList            : null
-  m_jointList           : null
+  m_bodyCount           : 0
+  m_jointsList          : null
   m_fixturesList        : null
   m_contactListener     : null
   m_jointsList          : null
+  m_gravity             : null
+  m_debugDraw           : null
   m_worldID             : 0
+  m_flags               : 0
+  m_controllerList      : null
+  m_contactManager      : null
 
   constructor: (gravity, doSleep) ->
-    @m_bodyList = []
-    @m_jointList = []
+    @m_gravity = gravity
+    @m_flags = 0
+    @m_bodyList = null
+    @m_jointsList = []
     @m_fixturesList = []
     @m_contactListener = null
     @m_jointsList = []
+    @m_controllerList = []
+    @m_contactManager = m_contactList: null, m_broadPhase: null
     @m_worldID = window.ext.IDTK_SRV_BOX2D.makeCall("createWorld", gravity.x, gravity.y, doSleep)
     return
 
@@ -36,21 +52,50 @@ class Box2D.Dynamics.b2World
     window.ext.IDTK_SRV_BOX2D.makeCall "setContactFilter", @m_worldID, callbackFunc
     return
 
+  IsLocked: ->
+    return (@m_flags & b2World.e_locked) > 0
+
+  GetBodyList: ->
+    return @m_bodyList
+
   CreateBody: (def) ->
+    if (@IsLocked())
+      return null
+
     b = new b2Body(def, this)
-    @m_bodyList[b.m_bodyID] = b
+    b.m_prev = null
+    b.m_next = @m_bodyList
+    if (@m_bodyList)
+      @m_bodyList.m_prev = b
+
+    @m_bodyList = b
+    ++@m_bodyCount
     return b
 
+#    b = new b2Body(def, this)
+#    @m_bodyList[b.m_bodyID] = b
+#    return b
+
   DestroyBody: (b) ->
+    if (@IsLocked())
+      return null
     window.ext.IDTK_SRV_BOX2D.makeCall "deleteBody", @m_worldID, b.m_bodyID
-    delete @m_bodyList[b.m_bodyID]
-    return
 
-    i = 0
+    if (b.m_prev)
+      b.m_prev.m_next = b.m_next
 
-    while i < b.m_fixtures.length
-      delete @m_fixturesList[b.m_fixtures[i].m_fixtureID]
-      ++i
+    if (b.m_next)
+      b.m_next.m_prev = b.m_prev
+
+    if (b is @m_bodyList)
+      @m_bodyList = b.m_next
+
+    --@m_bodyCount
+
+#    delete @m_bodyList[b.m_bodyID]
+    for fixture in b.m_fixtures
+      delete @m_fixturesList[fixture.m_fixtureID]
+
     return
 
   CreateJoint: (def) ->
@@ -88,12 +133,16 @@ class Box2D.Dynamics.b2World
     window.ext.IDTK_SRV_BOX2D.makeCall "setContinuous", @m_worldID, continuous
     return
 
+  GetGravity: () ->
+    return @m_gravity
+
   SetGravity: (gravity) ->
+    @m_gravity = gravity
     window.ext.IDTK_SRV_BOX2D.makeCall "setGravity", @m_worldID, gravity.x, gravity.y
     return
 
   Step: (dt, velocityIterations, positionIterations) ->
-    i = undefined
+    @m_flags |= b2World.e_locked
     transforms = window.ext.IDTK_SRV_BOX2D.makeCall("step", @m_worldID, dt, velocityIterations, positionIterations)
     count = transforms[0] # Array returns [ <number of elements> , elem1.bodyID , elem1.posX , elem1.posY , elem1.angle, elem2.bodyID , ....]
     i = 1
@@ -121,13 +170,112 @@ class Box2D.Dynamics.b2World
           continue
         @m_contactListener.BeginContact new b2Contact(fix1, fix2, touching)
         i += 3
+    @m_flags &= ~b2World.e_locked
     return
 
   ClearForces: ->
     window.ext.IDTK_SRV_BOX2D.makeCall "clearForces", @m_worldID
     return
 
-  SetDebugDraw: -> #d
+  SetDebugDraw: (debugDraw) -> #d
+    @m_debugDraw = debugDraw
+
+  DrawDebugData: ->
+    if (@m_debugDraw is null)
+      return
+
 
   DrawDebugData: ->
 
+    if (@m_debugDraw is null)
+      return
+    @m_debugDraw.m_sprite.graphics.clear()
+    flags = @m_debugDraw.GetFlags()
+    vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()]
+    color = new b2Color(0, 0, 0)
+    if (flags & b2DebugDraw.e_shapeBit)
+
+      b = @m_bodyList
+      while b
+        xf = b.m_xf
+        for f in b.GetFixtureList()
+          s = f.GetShape()
+          if (b.IsActive() is false)
+            color.Set(0.5, 0.5, 0.3)
+            @DrawShape(s, xf, color)
+
+          else if (b.GetType() is b2Body.b2_staticBody)
+            color.Set(0.5, 0.9, 0.5)
+            @DrawShape(s, xf, color)
+
+          else if (b.GetType() is b2Body.b2_kinematicBody)
+            color.Set(0.5, 0.5, 0.9)
+            @DrawShape(s, xf, color)
+
+          else if (b.IsAwake() is false)
+            color.Set(0.6, 0.6, 0.6)
+            @DrawShape(s, xf, color)
+
+          else
+            color.Set(0.9, 0.7, 0.7)
+            @DrawShape(s, xf, color)
+
+        b = b.m_next
+
+    if (flags & b2DebugDraw.e_jointBit)
+      for j in @m_jointsList
+        @DrawJoint(j)
+
+
+    if (flags & b2DebugDraw.e_controllerBit)
+      for c in @m_controllerList
+        c.Draw(@m_debugDraw)
+
+
+    if (flags & b2DebugDraw.e_pairBit)
+      color.Set(0.3, 0.9, 0.9)
+      contact = @m_contactManager.m_contactList
+      while contact
+        fixtureA = contact.GetFixtureA()
+        fixtureB = contact.GetFixtureB()
+        cA = fixtureA.GetAABB().GetCenter()
+        cB = fixtureB.GetAABB().GetCenter()
+        @m_debugDraw.DrawSegment(cA, cB, color)
+        contact = contact.GetNext()
+
+
+    if (flags & b2DebugDraw.e_aabbBit)
+      bp = @m_contactManager.m_broadPhase
+      vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()]
+      b = @m_bodyList
+      while b
+        if (b.IsActive() is false)
+          continue
+
+        for f in b.GetFixtureList()
+          aabb = bp.GetFatAABB(f.m_proxy)
+          vs[0].Set(aabb.lowerBound.x, aabb.lowerBound.y)
+          vs[1].Set(aabb.upperBound.x, aabb.lowerBound.y)
+          vs[2].Set(aabb.upperBound.x, aabb.upperBound.y)
+          vs[3].Set(aabb.lowerBound.x, aabb.upperBound.y)
+          @m_debugDraw.DrawPolygon(vs, 4, color)
+
+        b = b.GetNext()
+
+
+    if (flags & b2DebugDraw.e_centerOfMassBit)
+      b = @m_bodyList
+      while b
+        xf = b2World.s_xf
+        xf.R = b.m_xf.R
+        xf.position = b.GetWorldCenter()
+        @m_debugDraw.DrawTransform(xf)
+        b = b.m_next
+
+
+
+
+
+  DrawShape: (shape, xf, color) ->
+
+  DrawJoint: (joint) ->

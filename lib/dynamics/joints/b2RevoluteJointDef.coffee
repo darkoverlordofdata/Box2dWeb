@@ -3,7 +3,9 @@ Box2D = require('../../index')
 b2Joint = Box2D.Dynamics.Joints.b2Joint
 b2Vec2 = Box2D.Common.Math.b2Vec2
 
-class Box2D.Dynamics.Joints.b2RevoluteJointDef
+b2JointDef = Box2D.Dynamics.Joints.b2JointDef
+
+class Box2D.Dynamics.Joints.b2RevoluteJointDef extends b2JointDef
 
   type                : 0
   localAnchorA        : null
@@ -19,15 +21,13 @@ class Box2D.Dynamics.Joints.b2RevoluteJointDef
   enableLimit         : false
   enableMotor         : false
 
-  constructor: (bA, bB, anchorA, anchorB) ->
-    @type = b2Joint.e_revoluteJoint
+  constructor: ->
+    super
     @localAnchorA = new b2Vec2()
     @localAnchorB = new b2Vec2()
-    @userData = null
-    @bodyA = bA  if bA isnt undefined
-    @bodyB = bB  if bB isnt undefined
-    @localAnchorA.SetV anchorA  if anchorA isnt undefined
-    @localAnchorB.SetV anchorB  if anchorB isnt undefined
+    @type = b2Joint.e_revoluteJoint
+    @localAnchorA.Set 0.0, 0.0
+    @localAnchorB.Set 0.0, 0.0
     @referenceAngle = 0.0
     @lowerAngle = 0.0
     @upperAngle = 0.0

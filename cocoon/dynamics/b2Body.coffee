@@ -18,7 +18,9 @@ class Box2D.Dynamics.b2Body
   m_xf          : null
   m_fixtures    : null
   m_active      : false
-
+  m_prev        : null
+  m_next        : null
+  m_type        : null
 
   constructor: (bd, world) ->
     # Backup userdata and set it to null so Cocoon Doesn't read it
@@ -29,6 +31,7 @@ class Box2D.Dynamics.b2Body
     @m_xf       = new b2Transform(bd.position, b2Mat22.FromAngle(bd.angle))
     @m_fixtures = []
     @m_active   = bd.active
+    @m_type     = bd.type
 
     if (bd.type is b2Body.b2_staticBody)
       bd.density = 0
@@ -145,8 +148,12 @@ class Box2D.Dynamics.b2Body
     return
 
   SetType: (type) ->
+    @m_type = type
     window.ext.IDTK_SRV_BOX2D.makeCall('setType', @m_world.m_worldID, @m_bodyID, type)
     return
+
+  GetType: () ->
+    return @m_type
 
   GetContactList: ->
     contacts = window.ext.IDTK_SRV_BOX2D.makeCall('getObjectContacts', @m_world.m_worldID, @m_bodyID)
@@ -159,6 +166,8 @@ class Box2D.Dynamics.b2Body
   GetWorld: ->
     return @m_world
 
+  GetNext: ->
+    return @m_next
 
   ApplyImpulse: (impulse, point, wake) ->
     window.ext.IDTK_SRV_BOX2D.makeCall('applyImpulse', @m_world.m_worldID, @m_bodyID, impulse.x, impulse.y, point.x, point.y, wake)

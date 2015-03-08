@@ -19,11 +19,12 @@ class Box2D.Dynamics.b2BodyDef
   type                : 0
   active              : true
   inertiaScale        : 1.0
-  
+
   constructor: ->
-    @position = new b2Vec2(0, 0)
+    @position = new b2Vec2()
     @linearVelocity = new b2Vec2()
     @userData = null
+    @position.Set 0.0, 0.0
     @angle = 0.0
     @linearVelocity.Set 0, 0
     @angularVelocity = 0.0
@@ -36,5 +37,4 @@ class Box2D.Dynamics.b2BodyDef
     @type = b2Body.b2_staticBody
     @active = true
     @inertiaScale = 1.0
-
-
+    return

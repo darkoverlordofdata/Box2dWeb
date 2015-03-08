@@ -2,9 +2,10 @@ Box2D = require('../../index')
 
 b2Joint = Box2D.Dynamics.Joints.b2Joint
 b2Vec2 = Box2D.Common.Math.b2Vec2
+b2JointDef = Box2D.Dynamics.Joints.b2JointDef
 
 
-class Box2D.Dynamics.Joints.b2DistanceJointDef
+class Box2D.Dynamics.Joints.b2DistanceJointDef extends b2JointDef
 
   type              : 0
   localAnchorA      : null
@@ -16,19 +17,23 @@ class Box2D.Dynamics.Joints.b2DistanceJointDef
   frequencyHz       : 0.0
   dampingRatio      : 0.0
 
-  constructor: (bA, bB, anchorA, anchorB) ->
-    @type = b2Joint.e_distanceJoint
+  constructor: ->
+    super
     @localAnchorA = new b2Vec2()
-    @localAnchorB = new b2Vec2()
-    @userData = null
-    @bodyA = bA  if bA isnt undefined
-    @bodyB = bB  if bB isnt undefined
-    @localAnchorA.SetV anchorA  if anchorA isnt undefined
-    @localAnchorB.SetV anchorB  if anchorB isnt undefined
-    if anchorA isnt undefined and anchorB isnt undefined
-      dX = anchorB.x - anchorA.x
-      dY = anchorB.y - anchorA.y
-      @length = Math.sqrt(dX * dX + dY * dY)
+    @type = b2Joint.e_distanceJoint
+    @length = 1.0
+    @frequencyHz = 0.0
+    @dampingRatio = 0.0
+    return
+
+  Initialize: (bA, bB, anchorA, anchorB) ->
+    @bodyA = bA
+    @bodyB = bB
+    @localAnchorA.SetV @bodyA.GetLocalPoint(anchorA)
+    @localAnchorB.SetV @bodyB.GetLocalPoint(anchorB)
+    dX = anchorB.x - anchorA.x
+    dY = anchorB.y - anchorA.y
+    @length = Math.sqrt(dX * dX + dY * dY)
     @frequencyHz = 0.0
     @dampingRatio = 0.0
     return

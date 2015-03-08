@@ -21,13 +21,15 @@
 module.exports =
 class Box2D
 
-  class Box2D.Common
+class Box2D.Common
 
 class Box2D.Common.Math
 require './common/math/b2Vec2'
 require './common/math/b2Mat22'
 require './common/math/b2Transform'
 require './common/math/b2Math'
+
+require './common/b2Color'
 
 class Box2D.Collision
 

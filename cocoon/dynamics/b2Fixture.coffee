@@ -30,7 +30,8 @@ class Box2D.Dynamics.b2Fixture
     @m_body
 
   GetShape: ->
-    console.log "fixture.GetShape not yet supported in CocoonJS Box2D binding"
+    return this.m_shape
+#    console.log "fixture.GetShape not yet supported in CocoonJS Box2D binding"
     return null
 
   GetUserData: ->

@@ -1,65 +1,112 @@
 Box2D = require('../../index')
 
 class Box2D.Common.Math.b2Vec2
-
+  
   x: 0
   y: 0
-
-  constructor: (@x=0, @y=0) ->
+  
+  constructor: (x_, y_) ->
+    x_ = 0  if x_ is `undefined`
+    y_ = 0  if y_ is `undefined`
+    @x = x_
+    @y = y_
+    return
 
   SetZero: ->
     @x = 0.0
     @y = 0.0
     return
 
-  Set: (x=0, y=0) ->
-    @x = x
-    @y = y
+  Set: (x_, y_) ->
+    x_ = 0  if x_ is `undefined`
+    y_ = 0  if y_ is `undefined`
+    @x = x_
+    @y = y_
     return
 
   SetV: (v) ->
-    console.error "undefined 'v' in b2Vec2.SetV"  if v is undefined
     @x = v.x
     @y = v.y
     return
 
-  @Make = (x=0, y=0) ->
-    new b2Vec2(x, y)
+  GetNegative: ->
+    new b2Vec2((-@x), (-@y))
 
+  NegativeSelf: ->
+    @x = (-@x)
+    @y = (-@y)
+    return
 
-  # Functions to mimic Construct2's b2vec2 cache interface so this extension
-  # can be included in Construct2 games without modification
-  if b2Vec2.Get is undefined
-    b2Vec2.Get = b2Vec2.Make
-    b2Vec2._freeCache = []
-    b2Vec2.Free = ->
+  @Make: (x_, y_) ->
+    x_ = 0  if x_ is `undefined`
+    y_ = 0  if y_ is `undefined`
+    return new b2Vec2(x_, y_)
 
   Copy: ->
-    new b2Vec2(@x, @y)
+    return new b2Vec2(@x, @y)
 
   Add: (v) ->
-    console.error "undefined 'v' in b2Vec2.Add"  if v is undefined
     @x += v.x
     @y += v.y
     return
 
   Subtract: (v) ->
-    console.error "undefined 'v' in b2Vec2.Subtract"  if v is undefined
     @x -= v.x
     @y -= v.y
     return
 
   Multiply: (a) ->
-    a = 0  if a is undefined
+    a = 0  if a is `undefined`
     @x *= a
     @y *= a
     return
 
+  MulM: (A) ->
+    tX = @x
+    @x = A.col1.x * tX + A.col2.x * @y
+    @y = A.col1.y * tX + A.col2.y * @y
+    return
+
+  MulTM: (A) ->
+    tX = b2Math.Dot(this, A.col1)
+    @y = b2Math.Dot(this, A.col2)
+    @x = tX
+    return
+
+  CrossVF: (s) ->
+    s = 0  if s is `undefined`
+    tX = @x
+    @x = s * @y
+    @y = (-s * tX)
+    return
+
+  CrossFV: (s) ->
+    s = 0  if s is `undefined`
+    tX = @x
+    @x = (-s * @y)
+    @y = s * tX
+    return
+
+  MinV: (b) ->
+    @x = (if @x < b.x then @x else b.x)
+    @y = (if @y < b.y then @y else b.y)
+    return
+
+  MaxV: (b) ->
+    @x = (if @x > b.x then @x else b.x)
+    @y = (if @y > b.y then @y else b.y)
+    return
+
+  Abs: ->
+    @x = (-@x)  if @x < 0
+    @y = (-@y)  if @y < 0
+    return
+
   Length: ->
-    Math.sqrt @x * @x + @y * @y
+    return Math.sqrt @x * @x + @y * @y
 
   LengthSquared: ->
-    @x * @x + @y * @y
+    return @x * @x + @y * @y
 
   Normalize: ->
     length = Math.sqrt(@x * @x + @y * @y)
@@ -67,11 +114,7 @@ class Box2D.Common.Math.b2Vec2
     invLength = 1.0 / length
     @x *= invLength
     @y *= invLength
-    length
+    return length
 
-  NegativeSelf: ->
-    @x = (-@x)
-    @y = (-@y)
-    return
-
-
+  IsValid: ->
+    return b2Math.IsValid(@x) and b2Math.IsValid(@y)
