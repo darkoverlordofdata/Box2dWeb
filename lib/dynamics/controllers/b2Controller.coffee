@@ -1,7 +1,6 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
 b2ControllerEdge  = Box2D.Dynamics.Controllers.b2ControllerEdge
-b2Vec2        = Box2D.Common.Math.b2Vec2
 
 class Box2D.Dynamics.Controllers.b2Controller
 

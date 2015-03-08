@@ -1,11 +1,28 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint             = Box2D.Dynamics.Joints.b2Joint
+b2Vec2              = Box2D.Common.Math.b2Vec2
+b2Jacobian          = Box2D.Dynamics.Joints.b2Jacobian
+
 
 class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
 
-  b2GearJoint.b2GearJoint = (def) ->
-    super def
+  m_groundAnchor1         : null
+  m_groundAnchor2         : null
+  m_J                     : null
+  m_revolute1             : null
+  m_prismatic1            : null
+  m_revolute2             : null
+  m_prismatic2            : null
+  m_ground1               : null
+  m_ground2               : null
+  m_ratio                 : 0
+  m_constant              : 0
+  m_impulse               : 0.0
+
+
+  constructor: (def) ->
+    super(def)
     @m_groundAnchor1 = new b2Vec2()
     @m_groundAnchor2 = new b2Vec2()
     @m_localAnchor1 = new b2Vec2()
@@ -13,10 +30,6 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
     @m_J = new b2Jacobian()
     type1 = parseInt(def.joint1.m_type)
     type2 = parseInt(def.joint2.m_type)
-    @m_revolute1 = null
-    @m_prismatic1 = null
-    @m_revolute2 = null
-    @m_prismatic2 = null
     coordinate1 = 0
     coordinate2 = 0
     @m_ground1 = def.joint1.GetBodyA()
@@ -45,19 +58,18 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
       coordinate2 = @m_prismatic2.GetJointTranslation()
     @m_ratio = def.ratio
     @m_constant = coordinate1 + @m_ratio * coordinate2
-    @m_impulse = 0.0
     return
 
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchor1
+    return @m_bodyA.GetWorldPoint @m_localAnchor1
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchor2
+    return @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_impulse * @m_J.linearB.x, inv_dt * @m_impulse * @m_J.linearB.y)
+    return new b2Vec2(inv_dt * @m_impulse * @m_J.linearB.x, inv_dt * @m_impulse * @m_J.linearB.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
@@ -69,10 +81,10 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
     rX = tX
     PX = @m_impulse * @m_J.linearB.x
     PY = @m_impulse * @m_J.linearB.y
-    inv_dt * (@m_impulse * @m_J.angularB - rX * PY + rY * PX)
+    return inv_dt * (@m_impulse * @m_J.angularB - rX * PY + rY * PX)
 
   GetRatio: ->
-    @m_ratio
+    return @m_ratio
 
   SetRatio: (ratio) ->
     ratio = 0  if ratio is undefined
@@ -181,5 +193,5 @@ class Box2D.Dynamics.Joints.b2GearJoint extends b2Joint
     bB.m_sweep.a += bB.m_invI * impulse * @m_J.angularB
     bA.SynchronizeTransform()
     bB.SynchronizeTransform()
-    linearError < b2Settings.b2_linearSlop
+    return linearError < b2Settings.b2_linearSlop
 

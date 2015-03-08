@@ -7,19 +7,22 @@ b2JointDef = Box2D.Dynamics.Joints.b2JointDef
 
 class Box2D.Dynamics.Joints.b2LineJointDef extends b2JointDef
 
+  type                : b2Joint.e_lineJoint
+  localAnchorA        : null
+  localAnchorB        : null
+  localAxisA          : null
+  enableLimit         : false
+  lowerTranslation    : 0.0
+  upperTranslation    : 0.0
+  enableMotor         : false
+  maxMotorForce       : 0.0
+  motorSpeed          : 0.0
+
   constructor: ->
-    super
     @localAnchorA = new b2Vec2()
     @localAnchorB = new b2Vec2()
     @localAxisA = new b2Vec2()
-    @type = b2Joint.e_lineJoint
     @localAxisA.Set 1.0, 0.0
-    @enableLimit = false
-    @lowerTranslation = 0.0
-    @upperTranslation = 0.0
-    @enableMotor = false
-    @maxMotorForce = 0.0
-    @motorSpeed = 0.0
     return
 
   Initialize: (bA, bB, anchor, axis) ->

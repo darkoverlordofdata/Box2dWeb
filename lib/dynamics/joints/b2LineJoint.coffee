@@ -1,9 +1,27 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
+
 
 class Box2D.Dynamics.Joints.b2LineJoint extends b2Joint
-  
+
+  m_localXAxis1             : null
+  m_localYAxis1             : null
+  m_axis                    : null
+  m_perp                    : null
+  m_K                       : null
+  m_impulse                 : null
+  m_motorMass               : 0.0
+  m_motorImpulse            : 0.0
+  m_lowerTranslation        : 0.0
+  m_upperTranslation        : 0.0
+  m_maxMotorForce           : 0.0
+  m_motorSpeed              : 0.0
+  m_enableLimit             : false
+  m_enableMotor             : false
+  m_limitState              : b2Joint.e_inactiveLimit
+
   constructor: (def) ->
     super def
     @m_localAnchor1 = new b2Vec2()
@@ -14,24 +32,19 @@ class Box2D.Dynamics.Joints.b2LineJoint extends b2Joint
     @m_perp = new b2Vec2()
     @m_K = new b2Mat22()
     @m_impulse = new b2Vec2()
-    tMat = undefined
-    tX = 0
-    tY = 0
+
     @m_localAnchor1.SetV def.localAnchorA
     @m_localAnchor2.SetV def.localAnchorB
     @m_localXAxis1.SetV def.localAxisA
     @m_localYAxis1.x = (-@m_localXAxis1.y)
     @m_localYAxis1.y = @m_localXAxis1.x
     @m_impulse.SetZero()
-    @m_motorMass = 0.0
-    @m_motorImpulse = 0.0
     @m_lowerTranslation = def.lowerTranslation
     @m_upperTranslation = def.upperTranslation
     @m_maxMotorForce = def.maxMotorForce
     @m_motorSpeed = def.motorSpeed
     @m_enableLimit = def.enableLimit
     @m_enableMotor = def.enableMotor
-    @m_limitState = b2Joint.e_inactiveLimit
     @m_axis.SetZero()
     @m_perp.SetZero()
     return

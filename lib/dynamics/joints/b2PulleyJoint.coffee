@@ -1,8 +1,29 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Mat22       = Box2D.Common.Math.b2Mat22
+b2Vec3        = Box2D.Common.Math.b2Vec3
+b2Math        = Box2D.Common.Math.b2Math
 
 class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
+
+  @b2_minPulleyLength       = 2.0
+
+
+  m_localXAxis1             : null
+  m_localYAxis1             : null
+  m_u1                      : null
+  m_u2                      : null
+  m_ground                  : null
+  m_ratio                   : 0.0
+  m_constant                : 0.0
+  m_maxLength1              : 0.0
+  m_maxLength2              : 0.0
+  m_impulse                 : 0.0
+  m_limitImpulse1           : 0.0
+  m_limitImpulse2           : 0.0
+
 
   constructor (def) ->
     super def
@@ -12,9 +33,6 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     @m_localAnchor2 = new b2Vec2()
     @m_u1 = new b2Vec2()
     @m_u2 = new b2Vec2()
-    tMat = undefined
-    tX = 0
-    tY = 0
     @m_ground = @m_bodyA.m_world.m_groundBody
     @m_groundAnchor1.x = def.groundAnchorA.x - @m_ground.m_xf.position.x
     @m_groundAnchor1.y = def.groundAnchorA.y - @m_ground.m_xf.position.y
@@ -32,28 +50,28 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     return
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchor1
+    return @m_bodyA.GetWorldPoint @m_localAnchor1
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchor2
+    return @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_impulse * @m_u2.x, inv_dt * @m_impulse * @m_u2.y)
+    return new b2Vec2(inv_dt * @m_impulse * @m_u2.x, inv_dt * @m_impulse * @m_u2.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    0.0
+    return 0.0
 
   GetGroundAnchorA: ->
     a = @m_ground.m_xf.position.Copy()
     a.Add @m_groundAnchor1
-    a
+    return a
 
   GetGroundAnchorB: ->
     a = @m_ground.m_xf.position.Copy()
     a.Add @m_groundAnchor2
-    a
+    return a
 
   b2PulleyJoint::GetLength1 = ->
     p = @m_bodyA.GetWorldPoint(@m_localAnchor1)
@@ -61,7 +79,7 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     sY = @m_ground.m_xf.position.y + @m_groundAnchor1.y
     dX = p.x - sX
     dY = p.y - sY
-    Math.sqrt dX * dX + dY * dY
+    return Math.sqrt dX * dX + dY * dY
 
   b2PulleyJoint::GetLength2 = ->
     p = @m_bodyB.GetWorldPoint(@m_localAnchor2)
@@ -72,7 +90,7 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     Math.sqrt dX * dX + dY * dY
 
   GetRatio: ->
-    @m_ratio
+    return @m_ratio
 
 
   InitVelocityConstraints: (step) ->
@@ -352,6 +370,5 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
       bB.m_sweep.c.y += bB.m_invMass * p2Y
       bB.m_sweep.a += bB.m_invI * (r2X * p2Y - r2Y * p2X)
       bB.SynchronizeTransform()
-    linearError < b2Settings.b2_linearSlop
+    return linearError < b2Settings.b2_linearSlop
 
-  @b2_minPulleyLength = 2.0

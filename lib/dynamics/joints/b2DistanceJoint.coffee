@@ -1,44 +1,47 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
 
 class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
+
+  m_u                     : null
+  m_length                : 0
+  m_frequencyHz           : 0
+  m_dampingRatio          : 0
+  m_impulse               : 0.0
+  m_gamma                 : 0.0
+  m_bias                  : 0.0
 
   constructor: (def) ->
     super def
     @m_localAnchor1 = new b2Vec2()
     @m_localAnchor2 = new b2Vec2()
     @m_u = new b2Vec2()
-    tMat = undefined
-    tX = 0
-    tY = 0
     @m_localAnchor1.SetV def.localAnchorA
     @m_localAnchor2.SetV def.localAnchorB
     @m_length = def.length
     @m_frequencyHz = def.frequencyHz
     @m_dampingRatio = def.dampingRatio
-    @m_impulse = 0.0
-    @m_gamma = 0.0
-    @m_bias = 0.0
     return
 
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchor1
+    return @m_bodyA.GetWorldPoint @m_localAnchor1
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchor2
+    return @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_impulse * @m_u.x, inv_dt * @m_impulse * @m_u.y)
+    return new b2Vec2(inv_dt * @m_impulse * @m_u.x, inv_dt * @m_impulse * @m_u.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
     0.0
 
   GetLength: ->
-    @m_length
+    return @m_length
 
   SetLength: (length) ->
     length = 0  if length is undefined
@@ -46,7 +49,7 @@ class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
     return
 
   GetFrequency: ->
-    @m_frequencyHz
+    return @m_frequencyHz
 
   SetFrequency: (hz) ->
     hz = 0  if hz is undefined
@@ -54,7 +57,7 @@ class Box2D.Dynamics.Joints.b2DistanceJoint extends b2Joint
     return
 
   GetDampingRatio: ->
-    @m_dampingRatio
+    return @m_dampingRatio
 
   SetDampingRatio: (ratio) ->
     ratio = 0  if ratio is undefined

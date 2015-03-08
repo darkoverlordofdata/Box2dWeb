@@ -1,8 +1,33 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Mat22       = Box2D.Common.Math.b2Mat22
+b2Vec3        = Box2D.Common.Math.b2Vec3
+b2Math        = Box2D.Common.Math.b2Math
 
 class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
+
+  @tImpulse               = new b2Vec2()
+
+  K                       : null
+  K1                      : null
+  K2                      : null
+  K3                      : null
+  impulse2                : null
+  impulse3                : null
+  reduced                 : null
+  m_impulse               : null
+  m_mass                  : 0.0
+  m_referenceAngle        : 0.0
+  m_motorImpulse          : 0.0
+  m_lowerAngle            : 0.0
+  m_upperAngle            : 0.0
+  m_maxMotorTorque        : 0.0
+  m_motorSpeed            : 0.0
+  m_enableLimit           : 0.0
+  m_enableMotor           : false
+  m_limitState            : b2Joint.e_inactiveLimit
 
   constructor: (def) ->
     super def
@@ -21,48 +46,46 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     @m_localAnchor2.SetV def.localAnchorB
     @m_referenceAngle = def.referenceAngle
     @m_impulse.SetZero()
-    @m_motorImpulse = 0.0
     @m_lowerAngle = def.lowerAngle
     @m_upperAngle = def.upperAngle
     @m_maxMotorTorque = def.maxMotorTorque
     @m_motorSpeed = def.motorSpeed
     @m_enableLimit = def.enableLimit
     @m_enableMotor = def.enableMotor
-    @m_limitState = b2Joint.e_inactiveLimit
     return
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchor1
+    return @m_bodyA.GetWorldPoint @m_localAnchor1
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchor2
+    return @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
+    return new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    inv_dt * @m_impulse.z
+    return inv_dt * @m_impulse.z
 
   GetJointAngle: ->
-    @m_bodyB.m_sweep.a - @m_bodyA.m_sweep.a - @m_referenceAngle
+    return @m_bodyB.m_sweep.a - @m_bodyA.m_sweep.a - @m_referenceAngle
 
   GetJointSpeed: ->
-    @m_bodyB.m_angularVelocity - @m_bodyA.m_angularVelocity
+    return @m_bodyB.m_angularVelocity - @m_bodyA.m_angularVelocity
 
   IsLimitEnabled: ->
-    @m_enableLimit
+    return @m_enableLimit
 
   EnableLimit: (flag) ->
     @m_enableLimit = flag
     return
 
   GetLowerLimit: ->
-    @m_lowerAngle
+    return @m_lowerAngle
 
   GetUpperLimit: ->
-    @m_upperAngle
+    return @m_upperAngle
 
   SetLimits: (lower, upper) ->
     lower = 0  if lower is undefined
@@ -74,7 +97,7 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
   IsMotorEnabled: ->
     @m_bodyA.SetAwake true
     @m_bodyB.SetAwake true
-    @m_enableMotor
+    return @m_enableMotor
 
   EnableMotor: (flag) ->
     @m_enableMotor = flag
@@ -88,7 +111,7 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     return
 
   GetMotorSpeed: ->
-    @m_motorSpeed
+    return @m_motorSpeed
 
   SetMaxMotorTorque: (torque) ->
     torque = 0  if torque is undefined
@@ -96,7 +119,7 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     return
 
   GetMotorTorque: ->
-    @m_maxMotorTorque
+    return @m_maxMotorTorque
 
 
   InitVelocityConstraints: (step) ->
@@ -366,6 +389,5 @@ class Box2D.Dynamics.Joints.b2RevoluteJoint extends b2Joint
     bB.m_sweep.a += bB.m_invI * (r2X * impulseY - r2Y * impulseX)
     bA.SynchronizeTransform()
     bB.SynchronizeTransform()
-    positionError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop
+    return positionError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop
 
-  @tImpulse = new b2Vec2()

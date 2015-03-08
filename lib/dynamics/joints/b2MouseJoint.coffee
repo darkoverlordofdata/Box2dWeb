@@ -1,8 +1,25 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Mat22       = Box2D.Common.Math.b2Mat22
+
 
 class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
+
+  K               : null
+  K1              : null
+  K2              : null
+  m_localAnchor   : null
+  m_target        : null
+  m_impulse       : null
+  m_mass          : null
+  m_C             : null
+  m_frequencyHz   : 0.0
+  m_dampingRatio  : 0.0
+  m_beta          : 0.0
+  m_gamma         : 0.0
+
 
   constructor: (def) ->
     super def
@@ -24,26 +41,24 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     @m_impulse.SetZero()
     @m_frequencyHz = def.frequencyHz
     @m_dampingRatio = def.dampingRatio
-    @m_beta = 0.0
-    @m_gamma = 0.0
     return
 
   GetAnchorA: ->
-    @m_target
+    return @m_target
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchor
+    return @m_bodyB.GetWorldPoint @m_localAnchor
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
+    return new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    0.0
+    return 0.0
 
   GetTarget: ->
-    @m_target
+    return @m_target
 
   SetTarget: (target) ->
     @m_bodyB.SetAwake true  if @m_bodyB.IsAwake() is false
@@ -51,7 +66,7 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     return
 
   GetMaxForce: ->
-    @m_maxForce
+    return @m_maxForce
 
   SetMaxForce: (maxForce) ->
     maxForce = 0  if maxForce is undefined
@@ -59,7 +74,7 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     return
 
   GetFrequency: ->
-    @m_frequencyHz
+    return @m_frequencyHz
 
   SetFrequency: (hz) ->
     hz = 0  if hz is undefined
@@ -67,7 +82,7 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
     return
 
   GetDampingRatio: ->
-    @m_dampingRatio
+    return @m_dampingRatio
 
   SetDampingRatio: (ratio) ->
     ratio = 0  if ratio is undefined
@@ -149,5 +164,5 @@ class Box2D.Dynamics.Joints.b2MouseJoint extends b2Joint
 
   SolvePositionConstraints: (baumgarte) ->
     baumgarte = 0  if baumgarte is undefined
-    true
+    return true
 

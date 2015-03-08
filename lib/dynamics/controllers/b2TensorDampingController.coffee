@@ -1,4 +1,4 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
 b2Controller  = Box2D.Dynamics.Controllers.b2Controller
 b2Vec2        = Box2D.Common.Math.b2Vec2
@@ -6,8 +6,8 @@ b2Mat22       = Box2D.Common.Math.b2Mat22
 
 class Box2D.Dynamics.Controllers.b2TensorDampingController extends b2Controller
 
-  T: null
-  maxTimestep: 0
+  T             : null
+  maxTimestep   : 0
 
   constructor: ->
     super

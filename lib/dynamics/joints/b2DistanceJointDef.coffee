@@ -1,8 +1,8 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
-b2Vec2 = Box2D.Common.Math.b2Vec2
-b2JointDef = Box2D.Dynamics.Joints.b2JointDef
+b2Joint           = Box2D.Dynamics.Joints.b2Joint
+b2Vec2            = Box2D.Common.Math.b2Vec2
+b2JointDef        = Box2D.Dynamics.Joints.b2JointDef
 
 
 class Box2D.Dynamics.Joints.b2DistanceJointDef extends b2JointDef
@@ -13,17 +13,13 @@ class Box2D.Dynamics.Joints.b2DistanceJointDef extends b2JointDef
   userData          : null
   bodyA             : null
   bodyB             : null
-  length            : 0
+  length            : 1.0
   frequencyHz       : 0.0
   dampingRatio      : 0.0
 
   constructor: ->
-    super
     @localAnchorA = new b2Vec2()
     @type = b2Joint.e_distanceJoint
-    @length = 1.0
-    @frequencyHz = 0.0
-    @dampingRatio = 0.0
     return
 
   Initialize: (bA, bB, anchorA, anchorB) ->

@@ -1,8 +1,14 @@
 Box2D = require('../../index')
 
+b2Vec2              = Box2D.Common.Math.b2Vec2
 
 class Box2D.Dynamics.Joints.b2Jacobian
 
+  linearA           : null
+  linearB           : null
+  angularA          : null
+  angularB          : null
+  
   constructor: ->
     @linearA = new b2Vec2()
     @linearB = new b2Vec2()

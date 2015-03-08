@@ -1,4 +1,4 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
 b2Settings            = Box2D.Common.b2Settings
 b2ContactEdge         = Box2D.Dynamics.Contacts.b2ContactConstraintPoint

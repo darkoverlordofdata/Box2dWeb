@@ -1,8 +1,16 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Vec2              = Box2D.Common.Math.b2Vec2
+b2Vec3              = Box2D.Common.Math.b2Vec3
+b2Mat33             = Box2D.Common.Math.b2Mat33
+b2Joint             = Box2D.Dynamics.Joints.b2Joint
 
 class Box2D.Dynamics.Joints.b2WeldJoint extends b2Joint
+
+  m_impulse             : null
+  m_mass                : null
+  m_referenceAngle      : 0.0
+
 
   constructor: (def) ->
     super def
@@ -19,18 +27,18 @@ class Box2D.Dynamics.Joints.b2WeldJoint extends b2Joint
 
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchorA
+    return @m_bodyA.GetWorldPoint @m_localAnchorA
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchorB
+    return @m_bodyB.GetWorldPoint @m_localAnchorB
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
+    return new b2Vec2(inv_dt * @m_impulse.x, inv_dt * @m_impulse.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    inv_dt * @m_impulse.z
+    return inv_dt * @m_impulse.z
 
   InitVelocityConstraints: (step) ->
     tMat = undefined
@@ -167,4 +175,4 @@ class Box2D.Dynamics.Joints.b2WeldJoint extends b2Joint
     bB.m_sweep.a += iB * (rBX * impulse.y - rBY * impulse.x + impulse.z)
     bA.SynchronizeTransform()
     bB.SynchronizeTransform()
-    positionError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop
+    return positionError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop

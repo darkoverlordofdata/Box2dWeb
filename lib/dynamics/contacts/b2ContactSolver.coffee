@@ -1,4 +1,4 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
 Vector                    = Box2D.Vector
 b2TimeStep                = Box2D.Dynamics.b2TimeStep

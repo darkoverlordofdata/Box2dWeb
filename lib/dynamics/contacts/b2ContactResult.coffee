@@ -1,4 +1,4 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
 b2ContactID   = Box2D.Collision.b2ContactID
 b2Vec2        = Box2D.Common.Math.b2Vec2

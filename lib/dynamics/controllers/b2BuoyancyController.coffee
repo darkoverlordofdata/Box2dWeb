@@ -1,5 +1,6 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
+b2Color       = Box2D.Commin.b2Color
 b2Controller  = Box2D.Dynamics.Controllers.b2Controller
 b2Vec2        = Box2D.Common.Math.b2Vec2
 
@@ -18,14 +19,7 @@ class Box2D.Dynamics.Controllers.b2BuoyancyController extends b2Controller
   constructor: ->
     super
     @normal = new b2Vec2(0, (-1))
-    @offset = 0
-    @density = 0
     @velocity = new b2Vec2(0, 0)
-    @linearDrag = 2
-    @angularDrag = 1
-    @useDensity = false
-    @useWorldGravity = true
-    @gravity = null
     return
 
   Step: (step) ->

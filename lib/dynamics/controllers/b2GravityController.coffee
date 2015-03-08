@@ -1,12 +1,12 @@
-Box2D = require('../index')
+Box2D = require('../../index')
 
 b2Controller  = Box2D.Dynamics.Controllers.b2Controller
 b2Vec2        = Box2D.Common.Math.b2Vec2
 
 class Box2D.Dynamics.Controllers.b2GravityController extends b2Controller
 
-  G: 1
-  invSqr: true
+  G             : 1
+  invSqr        : true
 
   constructor: ->
     super

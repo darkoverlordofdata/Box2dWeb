@@ -1,16 +1,58 @@
 Box2D = require('../../index')
 
+b2Vec2              = Box2D.Common.Math.b2Vec2
+b2JointEdge         = Box2D.Dynamics.Joints.b2JointEdge
+b2DistanceJoint     = Box2D.Dynamics.Joints.b2DistanceJoint
+b2MouseJoint        = Box2D.Dynamics.Joints.b2MouseJoint
+b2PrismaticJoint    = Box2D.Dynamics.Joints.b2PrismaticJoint
+b2RevoluteJoint     = Box2D.Dynamics.Joints.b2RevoluteJoint
+b2PulleyJoint       = Box2D.Dynamics.Joints.b2PulleyJoint
+b2GearJoint         = Box2D.Dynamics.Joints.b2GearJoint
+b2LineJoint         = Box2D.Dynamics.Joints.b2LineJoint
+b2WeldJoint         = Box2D.Dynamics.Joints.b2WeldJoint
+b2FrictionJoint     = Box2D.Dynamics.Joints.b2FrictionJoint
+b2DistanceJointDef  = Box2D.Dynamics.Joints.b2DistanceJointDef
+b2MouseJointDef     = Box2D.Dynamics.Joints.b2MouseJointDef
+b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef
+b2RevoluteJointDef  = Box2D.Dynamics.Joints.b2RevoluteJointDef
+b2PulleyJointDef    = Box2D.Dynamics.Joints.b2PulleyJointDef
+b2GearJointDef      = Box2D.Dynamics.Joints.b2GearJointDef
+b2LineJointDef      = Box2D.Dynamics.Joints.b2LineJointDef
+b2WeldJointDef      = Box2D.Dynamics.Joints.b2WeldJointDef
+b2FrictionJointDef  = Box2D.Dynamics.Joints.b2FrictionJointDef
+
 class Box2D.Dynamics.Joints.b2Joint
 
-  @e_distanceJoint = 0
-  @e_revoluteJoint = 1
+  @e_unknownJoint     = 0
+  @e_revoluteJoint    = 1
+  @e_prismaticJoint   = 2
+  @e_distanceJoint    = 3
+  @e_pulleyJoint      = 4
+  @e_mouseJoint       = 5
+  @e_gearJoint        = 6
+  @e_lineJoint        = 7
+  @e_weldJoint        = 8
+  @e_frictionJoint    = 9
+  @e_inactiveLimit    = 0
+  @e_atLowerLimit     = 1
+  @e_atUpperLimit     = 2
+  @e_equalLimits      = 3
 
 
-  userData      : null
-  bodyA         : null
-  bodyB         : null
-  length        : 0
-  next          : null
+  m_type                  : b2Joint.e_unknownJoint
+  m_edgeA                 : null
+  m_edgeB                 : null
+  m_localAnchor1          : null
+  m_localAnchor2          : null
+  m_localCenterA          : null
+  m_localCenterB          : null
+  m_prev                  : null
+  m_next                  : null
+  m_bodyA                 : null
+  m_bodyB                 : null
+  m_collideConnected      : null
+  m_islandFlag            : null
+  m_userData              : null
 
   constructor: (def) ->
     @m_edgeA = new b2JointEdge()
@@ -100,17 +142,3 @@ class Box2D.Dynamics.Joints.b2Joint
     baumgarte = 0  if baumgarte is undefined
     false
 
-  @e_unknownJoint = 0
-  @e_revoluteJoint = 1
-  @e_prismaticJoint = 2
-  @e_distanceJoint = 3
-  @e_pulleyJoint = 4
-  @e_mouseJoint = 5
-  @e_gearJoint = 6
-  @e_lineJoint = 7
-  @e_weldJoint = 8
-  @e_frictionJoint = 9
-  @e_inactiveLimit = 0
-  @e_atLowerLimit = 1
-  @e_atUpperLimit = 2
-  @e_equalLimits = 3

@@ -1,11 +1,24 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
-b2Vec2 = Box2D.Common.Math.b2Vec2
+b2Joint           = Box2D.Dynamics.Joints.b2Joint
+b2Vec2            = Box2D.Common.Math.b2Vec2
+b2JointDef        = Box2D.Dynamics.Joints.b2JointDef
 
-b2JointDef = Box2D.Dynamics.Joints.b2JointDef
 
 class Box2D.Dynamics.Joints.b2PulleyJointDef extends b2JointDef
+  
+  
+  type                : b2Joint.e_pulleyJoint
+  groundAnchorA       : null
+  groundAnchorB       : null
+  localAnchorA        : null
+  localAnchorB        : null
+  lengthA             : 0.0
+  maxLengthA          : 0.0
+  lengthB             : 0.0
+  maxLengthB          : 0.0
+  ratio               : 1.0
+  collideConnected    : true
 
   constructor: ->
     super
@@ -13,17 +26,10 @@ class Box2D.Dynamics.Joints.b2PulleyJointDef extends b2JointDef
     @groundAnchorB = new b2Vec2()
     @localAnchorA = new b2Vec2()
     @localAnchorB = new b2Vec2()
-    @type = b2Joint.e_pulleyJoint
     @groundAnchorA.Set (-1.0), 1.0
     @groundAnchorB.Set 1.0, 1.0
     @localAnchorA.Set (-1.0), 0.0
     @localAnchorB.Set 1.0, 0.0
-    @lengthA = 0.0
-    @maxLengthA = 0.0
-    @lengthB = 0.0
-    @maxLengthB = 0.0
-    @ratio = 1.0
-    @collideConnected = true
     return
 
   Initialize: (bA, bB, gaA, gaB, anchorA, anchorB, r) ->

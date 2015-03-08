@@ -1,11 +1,21 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Mat22       = Box2D.Common.Math.b2Mat22
 
 class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
 
+  m_linearMass        : null
+  m_linearImpulse     : null
+  m_angularMass       : 0.0
+  m_angularImpulse    : 0.0
+  m_maxForce          : 0
+  m_maxTorque         : 0
+
+
   constructor: (def) ->
-    super def
+    super(def)
     @m_localAnchorA = new b2Vec2()
     @m_localAnchorB = new b2Vec2()
     @m_linearMass = new b2Mat22()
@@ -13,26 +23,24 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
     @m_localAnchorA.SetV def.localAnchorA
     @m_localAnchorB.SetV def.localAnchorB
     @m_linearMass.SetZero()
-    @m_angularMass = 0.0
     @m_linearImpulse.SetZero()
-    @m_angularImpulse = 0.0
     @m_maxForce = def.maxForce
     @m_maxTorque = def.maxTorque
     return
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchorA
+    return @m_bodyA.GetWorldPoint @m_localAnchorA
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchorB
+    return @m_bodyB.GetWorldPoint @m_localAnchorB
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * @m_linearImpulse.x, inv_dt * @m_linearImpulse.y)
+    return new b2Vec2(inv_dt * @m_linearImpulse.x, inv_dt * @m_linearImpulse.y)
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    inv_dt * @m_angularImpulse
+    return inv_dt * @m_angularImpulse
 
   SetMaxForce: (force) ->
     force = 0  if force is undefined
@@ -40,7 +48,7 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
     return
 
   GetMaxForce: ->
-    @m_maxForce
+    return @m_maxForce
 
   SetMaxTorque: (torque) ->
     torque = 0  if torque is undefined
@@ -48,7 +56,7 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
     return
 
   GetMaxTorque: ->
-    @m_maxTorque
+    return @m_maxTorque
 
   InitVelocityConstraints: (step) ->
     tMat = undefined
@@ -159,5 +167,5 @@ class Box2D.Dynamics.Joints.b2FrictionJoint extends b2Joint
 
   SolvePositionConstraints: (baumgarte) ->
     baumgarte = 0  if baumgarte is undefined
-    true
+    return true
  

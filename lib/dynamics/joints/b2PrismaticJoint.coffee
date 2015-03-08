@@ -1,8 +1,30 @@
 Box2D = require('../../index')
 
-b2Joint = Box2D.Dynamics.Joints.b2Joint
+b2Joint       = Box2D.Dynamics.Joints.b2Joint
+b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Mat22       = Box2D.Common.Math.b2Mat22
+b2Vec3        = Box2D.Common.Math.b2Vec3
+b2Math        = Box2D.Common.Math.b2Math
 
 class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
+
+  m_localXAxis1             : null
+  m_localYAxis1             : null
+  m_axis                    : null
+  m_perp                    : null
+  m_K                       : null
+  m_refAngle                : null
+  m_impulse                 : null
+  m_motorMass               : 0.0
+  m_motorImpulse            : 0.0
+  m_lowerTranslation        : 0.0
+  m_upperTranslation        : 0.0
+  m_maxMotorForce           : 0.0
+  m_motorSpeed              : 0.0
+  m_enableLimit             : false
+  m_enableMotor             : false
+  m_limitState              : b2Joint.e_inactiveLimit
+
 
   constructor: (def) ->
     super
@@ -14,9 +36,6 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     @m_perp = new b2Vec2()
     @m_K = new b2Mat33()
     @m_impulse = new b2Vec3()
-    tMat = undefined
-    tX = 0
-    tY = 0
     @m_localAnchor1.SetV def.localAnchorA
     @m_localAnchor2.SetV def.localAnchorB
     @m_localXAxis1.SetV def.localAxisA
@@ -38,18 +57,18 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   GetAnchorA: ->
-    @m_bodyA.GetWorldPoint @m_localAnchor1
+    return @m_bodyA.GetWorldPoint @m_localAnchor1
 
   GetAnchorB: ->
-    @m_bodyB.GetWorldPoint @m_localAnchor2
+    return @m_bodyB.GetWorldPoint @m_localAnchor2
 
   GetReactionForce: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    new b2Vec2(inv_dt * (@m_impulse.x * @m_perp.x + (@m_motorImpulse + @m_impulse.z) * @m_axis.x), inv_dt * (@m_impulse.x * @m_perp.y + (@m_motorImpulse + @m_impulse.z) * @m_axis.y))
+    return new b2Vec2(inv_dt * (@m_impulse.x * @m_perp.x + (@m_motorImpulse + @m_impulse.z) * @m_axis.x), inv_dt * (@m_impulse.x * @m_perp.y + (@m_motorImpulse + @m_impulse.z) * @m_axis.y))
 
   GetReactionTorque: (inv_dt) ->
     inv_dt = 0  if inv_dt is undefined
-    inv_dt * @m_impulse.y
+    return inv_dt * @m_impulse.y
 
   GetJointTranslation: ->
     bA = @m_bodyA
@@ -61,7 +80,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     dY = p2.y - p1.y
     axis = bA.GetWorldVector(@m_localXAxis1)
     translation = axis.x * dX + axis.y * dY
-    translation
+    return translation
 
   GetJointSpeed: ->
     bA = @m_bodyA
@@ -91,7 +110,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     w1 = bA.m_angularVelocity
     w2 = bB.m_angularVelocity
     speed = (dX * (-w1 * axis.y) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + (-w2 * r2Y)) - v1.x) - (-w1 * r1Y)) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)))
-    speed
+    return speed
 
   IsLimitEnabled: ->
     @m_enableLimit
@@ -103,10 +122,10 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   GetLowerLimit: ->
-    @m_lowerTranslation
+    return @m_lowerTranslation
 
   GetUpperLimit: ->
-    @m_upperTranslation
+    return @m_upperTranslation
 
   SetLimits: (lower, upper) ->
     lower = 0  if lower is undefined
@@ -118,7 +137,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   IsMotorEnabled: ->
-    @m_enableMotor
+    return @m_enableMotor
 
   EnableMotor: (flag) ->
     @m_bodyA.SetAwake true
@@ -134,7 +153,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   GetMotorSpeed: ->
-    @m_motorSpeed
+    return @m_motorSpeed
 
   SetMaxMotorForce: (force) ->
     force = 0  if force is undefined
@@ -144,7 +163,7 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     return
 
   GetMotorForce: ->
-    @m_motorImpulse
+    return @m_motorImpulse
 
 
   InitVelocityConstraints: (step) ->
@@ -414,5 +433,5 @@ class Box2D.Dynamics.Joints.b2PrismaticJoint extends b2Joint
     bB.m_sweep.a = a2
     bA.SynchronizeTransform()
     bB.SynchronizeTransform()
-    linearError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop
+    return linearError <= b2Settings.b2_linearSlop and angularError <= b2Settings.b2_angularSlop
 
