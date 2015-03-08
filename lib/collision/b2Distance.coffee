@@ -1,5 +1,8 @@
 Box2D = require('../index')
 
+Vector        = Box2D.Vector
+b2Simplex     = Box2D.Collision.b2Simplex
+
 
 class Box2D.Collision.b2Distance
 

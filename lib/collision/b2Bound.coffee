@@ -3,6 +3,11 @@ Box2D = require('../index')
 
 class Box2D.Collision.b2Bound
 
+  value: 0
+  proxy: null
+  stabbingCount: 0
+
+
   IsLower: ->
     (@value & 1) is 0
 

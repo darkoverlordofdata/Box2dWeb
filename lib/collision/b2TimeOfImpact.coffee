@@ -1,7 +1,28 @@
 Box2D = require('../index')
 
+b2Settings                = Box2d.Common.b2Settings
+b2Math                    = Box2d.Common.Math.b2Math
+b2Transform               = Box2d.Common.Math.b2Transform
+b2Distance                = Box2D.Collision.b2Distance
+b2SimplexCache            = Box2D.Collision.b2SimplexCache
+b2SeparationFunction      = Box2D.Collision.b2SeparationFunction
+b2DistanceOutput          = Box2D.Collision.b2DistanceOutput
+b2DistanceInput           = Box2D.Collision.b2DistanceInput
 
 class Box2D.Collision.b2TimeOfImpact
+
+  @b2_toiCalls        = 0
+  @b2_toiIters        = 0
+  @b2_toiMaxIters     = 0
+  @b2_toiRootIters    = 0
+  @b2_toiMaxRootIters = 0
+  @s_cache            = new b2SimplexCache()
+  @s_distanceInput    = new b2DistanceInput()
+  @s_xfA              = new b2Transform()
+  @s_xfB              = new b2Transform()
+  @s_fcn              = new b2SeparationFunction()
+  @s_distanceOutput   = new b2DistanceOutput()
+
 
   @TimeOfImpact: (input) ->
     ++b2TimeOfImpact.b2_toiCalls
@@ -86,14 +107,3 @@ class Box2D.Collision.b2TimeOfImpact
     b2TimeOfImpact.b2_toiMaxIters = b2Math.Max(b2TimeOfImpact.b2_toiMaxIters, iter)
     alpha
 
-  @b2_toiCalls = 0
-  @b2_toiIters = 0
-  @b2_toiMaxIters = 0
-  @b2_toiRootIters = 0
-  @b2_toiMaxRootIters = 0
-  @s_cache = new b2SimplexCache()
-  @s_distanceInput = new b2DistanceInput()
-  @s_xfA = new b2Transform()
-  @s_xfB = new b2Transform()
-  @s_fcn = new b2SeparationFunction()
-  @s_distanceOutput = new b2DistanceOutput()

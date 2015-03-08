@@ -1,7 +1,13 @@
 Box2D = require('../index')
 
+b2Vec2          = Box2D.Common.Math.b2Vec2
+
 
 class Box2D.Collision.b2RayCastInput
+
+  p1            : null
+  p2            : null
+  maxFraction   : 1
 
   constructor: (p1, p2, maxFraction) ->
     @p1 = new b2Vec2()

@@ -33,7 +33,7 @@ class Box2D
   @equals: (o1, o2) ->
     return false  if o1 is null
     return true  if (o2 instanceof Function) and (o1 instanceof o2)
-    return true  if (o1.constructor.__implements?) and (o1.constructor.__implements[o2])
+    return true  if (o1.constructor.__implements?[o2.name])
     false
 
 

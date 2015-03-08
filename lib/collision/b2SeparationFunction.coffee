@@ -1,7 +1,14 @@
 Box2D = require('../index')
 
+b2Settings        = Box2d.Common.b2Settings
+b2Math            = Box2d.Common.Math.b2Math
 
 class Box2D.Collision.b2SeparationFunction
+
+  m_localPoint        : null
+  m_axis              : null
+  m_proxyA            : null
+  m_proxyB            : null
 
   constructor: ->
     @m_localPoint = new b2Vec2()

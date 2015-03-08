@@ -1,7 +1,16 @@
 Box2D = require('../index')
 
+b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+Vector        = Box2D.Vector
+b2Settings    = Box2D.Common.b2Settings
 
 class Box2D.Collision.b2DistanceProxy
+
+  m_vertices      : null
+  m_count         : 0
+  m_radius        : 0
+
+
 
   Set: (shape) ->
     switch shape.GetType()

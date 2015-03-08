@@ -1,7 +1,13 @@
 Box2D = require('../index')
 
+Vector                    = Box2D.Vector
+b2Settings                = Box2d.Common.b2Settings
+b2Vec2                    = Box2D.Common.Math.b2Vec2
 
 class Box2D.Collision.b2WorldManifold
+
+  m_normal          : null
+  m_points          : null
 
   constructor: ->
     @m_normal = new b2Vec2()

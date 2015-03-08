@@ -1,13 +1,21 @@
 Box2D = require('../index')
 
+Vector                = Box2D.Vector
+b2DynamicTree         = Box2D.Collision.b2DynamicTree
+IBroadPhase           = Box2D.Collision.IBroadPhase
 
 class Box2D.Collision.b2DynamicTreeBroadPhase
+
+  m_tree              : null
+  m_moveBuffer        : null
+  m_pairBuffer        : null
+  m_pairCount         : 0
+  @m_proxyCount       : 0
 
   constructor: ->
     @m_tree = new b2DynamicTree()
     @m_moveBuffer = new Vector()
     @m_pairBuffer = new Vector()
-    @m_pairCount = 0
     return
 
   CreateProxy: (aabb, userData) ->
@@ -100,7 +108,7 @@ class Box2D.Collision.b2DynamicTreeBroadPhase
     return
   
   ComparePairs: (pair1, pair2) ->
-    0
+    return 0
   
   @__implements = {}
-  @__implements[IBroadPhase] = true
+  @__implements[IBroadPhase.name] = true

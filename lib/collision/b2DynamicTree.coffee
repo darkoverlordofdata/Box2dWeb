@@ -1,5 +1,11 @@
 Box2D = require('../index')
 
+Vector                = Box2D.Vector
+b2Settings            = Box2D.Common.b2Settings
+b2Math                = Box2D.Collision.Math.b2Math
+b2AABB                = Box2D.Collision.b2AABB
+b2RayCastInput        = Box2d.Collision.b2RayCastInput
+b2DynamicTreeNode     = Box2d.Collision.b2DynamicTreeNode
 
 class Box2D.Collision.b2DynamicTree
 

@@ -1,7 +1,25 @@
 Box2D = require('../index')
 
+b2Vec2          = Box2D.Common.Math.b2Vec2
+Vector          = Box2D.Vector
+
 
 class Box2D.Collision.b2Collision
+
+  @b2_nullFeature         = 0x000000ff
+
+  @s_edgeAO               = new Vector(1)
+  @s_edgeBO               = new Vector(1)
+  @s_localTangent         = new b2Vec2()
+  @s_localNormal          = new b2Vec2()
+  @s_planePoint           = new b2Vec2()
+  @s_normal               = new b2Vec2()
+  @s_tangent              = new b2Vec2()
+  @s_tangent2             = new b2Vec2()
+  @s_v11                  = new b2Vec2()
+  @s_v12                  = new b2Vec2()
+  @b2CollidePolyTempVec   = new b2Vec2()
+
 
   @ClipSegmentToLine: (vOut, vIn, normal, offset) ->
     offset = 0  if offset is undefined
@@ -420,15 +438,3 @@ class Box2D.Collision.b2Collision
   @s_incidentEdge = b2Collision.MakeClipPointVector()
   @s_clipPoints1 = b2Collision.MakeClipPointVector()
   @s_clipPoints2 = b2Collision.MakeClipPointVector()
-  @s_edgeAO = new Vector(1)
-  @s_edgeBO = new Vector(1)
-  @s_localTangent = new b2Vec2()
-  @s_localNormal = new b2Vec2()
-  @s_planePoint = new b2Vec2()
-  @s_normal = new b2Vec2()
-  @s_tangent = new b2Vec2()
-  @s_tangent2 = new b2Vec2()
-  @s_v11 = new b2Vec2()
-  @s_v12 = new b2Vec2()
-  @b2CollidePolyTempVec = new b2Vec2()
-  @b2_nullFeature = 0x000000ff

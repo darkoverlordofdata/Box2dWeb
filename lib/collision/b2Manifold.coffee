@@ -1,7 +1,20 @@
 Box2D = require('../index')
 
+Vector          = Box2D.Vector
+b2Settings      = Box2D.Common.b2Settings
+b2Vec2          = Box2D.Common.Math.b2Vec2
 
 class Box2D.Collision.b2Manifold
+
+  @e_circles            = 0x0001
+  @e_faceA              = 0x0002
+  @e_faceB              = 0x0004
+
+  m_type                : 0
+  m_pointCount          : 0
+  m_points              : null
+  m_localPlaneNormal    : null
+  m_localPoint          : null
 
   constructor: ->
     @m_pointCount = 0
@@ -44,6 +57,3 @@ class Box2D.Collision.b2Manifold
     copy.Set this
     copy
 
-  @e_circles = 0x0001
-  @e_faceA = 0x0002
-  @e_faceB = 0x0004

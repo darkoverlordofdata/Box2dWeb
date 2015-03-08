@@ -1,5 +1,7 @@
 Box2D = require('../index')
 
+Vector = Box2D.Vector
+
 
 class Box2D.Collision.b2BoundValues
 
@@ -7,10 +9,10 @@ class Box2D.Collision.b2BoundValues
   upperValues: null
 
   constructor: ->
-    @lowerValues = new Box2D.Vector()
+    @lowerValues = new Vector()
     @lowerValues[0] = 0.0
     @lowerValues[1] = 0.0
-    @upperValues = new Box2D.Vector()
+    @upperValues = new Vector()
     @upperValues[0] = 0.0
     @upperValues[1] = 0.0
     return
