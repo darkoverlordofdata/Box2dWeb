@@ -1,5 +1,7 @@
 Box2D = require('../../index')
 
+b2Math = Box2D.Common.Math.b2Math
+
 class Box2D.Common.Math.b2Vec2
   
   x: 0

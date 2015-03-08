@@ -1,27 +1,42 @@
 Box2D = require('../../index')
 
+b2Settings                = Box2d.Common.b2Settings
+b2SimplexCache            = Box2D.Collision.b2SimplexCache
+b2Distance                = Box2D.Collision.b2Distance
+b2DistanceOutput          = Box2D.Collision.b2DistanceOutput
+b2DistanceInput           = Box2D.Collision.b2DistanceInput
+b2DistanceProxy           = Box2D.Collision.b2DistanceProxy
+
 class Box2D.Collision.Shapes.b2Shape
 
-  constructor: ->
-    @m_type = b2Shape.e_unknownShape
-    @m_radius = b2Settings.b2_linearSlop
-    return
+  @e_unknownShape         = parseInt((-1))
+  @e_circleShape          = 0
+  @e_polygonShape         = 1
+  @e_edgeShape            = 2
+  @e_shapeTypeCount       = 3
+  @e_hitCollide           = 1
+  @e_missCollide          = 0
+  @e_startsInsideCollide  = parseInt((-1))
+
+  m_type        : b2Shape.e_unknownShape
+  m_radius      : b2Settings.b2_linearSlop
+
 
   Copy: ->
-    null
+    return null
 
   Set: (other) ->
     @m_radius = other.m_radius
     return
 
   GetType: ->
-    @m_type
+    return @m_type
 
   TestPoint: (xf, p) ->
-    false
+    return false
 
   RayCast: (output, input, transform) ->
-    false
+    return false
 
   ComputeAABB: (aabb, xf) ->
 
@@ -31,7 +46,7 @@ class Box2D.Collision.Shapes.b2Shape
 
   ComputeSubmergedArea: (normal, offset, xf, c) ->
     offset = 0  if offset is undefined
-    0
+    return 0
 
   @TestOverlap = (shape1, transform1, shape2, transform2) ->
     input = new b2DistanceInput()
@@ -46,14 +61,6 @@ class Box2D.Collision.Shapes.b2Shape
     simplexCache.count = 0
     output = new b2DistanceOutput()
     b2Distance.Distance output, simplexCache, input
-    output.distance < 10.0 * Number.MIN_VALUE
+    return output.distance < 10.0 * Number.MIN_VALUE
 
 
-  @e_unknownShape = parseInt((-1))
-  @e_circleShape = 0
-  @e_polygonShape = 1
-  @e_edgeShape = 2
-  @e_shapeTypeCount = 3
-  @e_hitCollide = 1
-  @e_missCollide = 0
-  @e_startsInsideCollide = parseInt((-1))

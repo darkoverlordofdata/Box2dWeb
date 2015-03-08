@@ -1,21 +1,24 @@
 Box2D = require('../../index')
 
-b2Shape = Box2D.Collision.Shapes.b2Shape
+Vector                    = Box2D.Vector
+b2Settings                = Box2d.Common.b2Settings
+b2Math                    = Box2d.Common.Math.b2Math
+b2Vec2                    = Box2D.Common.Math.b2Vec2
+b2Transform               = Box2D.Common.Math.b2Transform
+b2Shape                   = Box2D.Collision.Shapes.b2Shape
+
 
 class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
 
-  type          : ''
-  width         : 0
-  height        : 0
-  p1x           : 0
-  p1y           : 0
-  p2x           : 0
-  p2y           : 0
-  vertices      : null
+  @s_mat            = new b2Mat22()
+
+  m_type            : b2Shape.e_polygonShape
+  m_centroid        : null
+  m_vertices        : null
+  m_normals         : null
+  m_vertexCount     : 0
 
   constructor: ->
-    super
-    @m_type = b2Shape.e_polygonShape
     @m_centroid = new b2Vec2()
     @m_vertices = new Vector()
     @m_normals = new Vector()
@@ -495,4 +498,3 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
       ++i
     return
 
-  @b2PolygonShape.s_mat = new b2Mat22()

@@ -1,14 +1,20 @@
 Box2D = require('../../index')
 
-b2Shape = Box2D.Collision.Shapes.b2Shape
+Vector                    = Box2D.Vector
+b2Settings                = Box2d.Common.b2Settings
+b2Math                    = Box2d.Common.Math.b2Math
+b2Vec2                    = Box2D.Common.Math.b2Vec2
+b2Shape                   = Box2D.Collision.Shapes.b2Shape
 
 class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
 
+  m_type          : b2Shape.e_circleShape
+  m_p             : null
+
   constructor: (radius) ->
+    radius = 0  if radius is undefined
     super radius
     @m_p = new b2Vec2()
-    radius = 0  if radius is undefined
-    @__super.b2Shape.call this
     @m_type = b2Shape.e_circleShape
     @m_radius = radius
     return
@@ -16,10 +22,10 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
   Copy: ->
     s = new b2CircleShape()
     s.Set this
-    s
+    return s
 
   Set: (other) ->
-    @__super.Set.call this, other
+   super other
     if Box2D.is(other, b2CircleShape)
       other2 = ((if other instanceof b2CircleShape then other else null))
       @m_p.SetV other2.m_p
@@ -31,7 +37,7 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
     dY = transform.position.y + (tMat.col1.y * @m_p.x + tMat.col2.y * @m_p.y)
     dX = p.x - dX
     dY = p.y - dY
-    (dX * dX + dY * dY) <= @m_radius * @m_radius
+    return (dX * dX + dY * dY) <= @m_radius * @m_radius
 
   RayCast: (output, input, transform) ->
     tMat = transform.R
@@ -54,7 +60,7 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
       output.normal.y = sY + a * rY
       output.normal.Normalize()
       return true
-    false
+    return false
 
   ComputeAABB: (aabb, transform) ->
     tMat = transform.R
@@ -85,17 +91,17 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
     com = (-2 / 3 * Math.pow(r2 - l2, 1.5) / area)
     c.x = p.x + normal.x * com
     c.y = p.y + normal.y * com
-    area
+    return area
 
   GetLocalPosition: ->
-    @m_p
+    return @m_p
 
   SetLocalPosition: (position) ->
     @m_p.SetV position
     return
 
   GetRadius: ->
-    @m_radius
+    return @m_radius
 
   SetRadius: (radius) ->
     radius = 0  if radius is undefined
