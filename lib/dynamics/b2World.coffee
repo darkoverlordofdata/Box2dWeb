@@ -1,7 +1,10 @@
 Box2D = require('../index')
 
+#Array = Box2D.Array
 b2AABB            = Box2D.Collision.b2AABB
 b2Color           = Box2D.Common.b2Color
+b2Settings        = Box2D.Common.b2Settings
+b2Math            = Box2D.Common.Math.b2Math
 b2Sweep           = Box2D.Common.Math.b2Sweep
 b2Vec2            = Box2D.Common.Math.b2Vec2
 b2Transform       = Box2D.Common.Math.b2Transform
@@ -10,14 +13,46 @@ b2BodyDef         = Box2D.Dynamics.b2BodyDef
 b2Joint           = Box2D.Dynamics.Joints.b2Joint
 b2Contact         = Box2D.Dynamics.b2Contact
 b2ContactManager  = Box2D.Dynamics.b2ContactManager
-b2ContactSolver   = Box2D.Dynamics.b2ContactSolver
+b2ContactSolver   = Box2D.Dynamics.Contacts.b2ContactSolver
 b2Island          = Box2D.Dynamics.b2Island
 b2TimeStep        = Box2D.Dynamics.b2TimeStep
 b2DebugDraw       = Box2D.Dynamics.b2DebugDraw
 b2RayCastInput    = Box2D.Collision.b2RayCastInput
 b2RayCastOutput   = Box2D.Collision.b2RayCastOutput
+b2Shape           = Box2D.Collision.Shapes.b2Shape
+b2PolygonShape    = Box2D.Collision.Shapes.b2PolygonShape
+b2EdgeShape       = Box2D.Collision.Shapes.b2EdgeShape
 
 class Box2D.Dynamics.b2World
+
+  b2Contact_sensorFlag        = 0x0001
+  b2Contact_continuousFlag    = 0x0002
+  b2Contact_islandFlag        = 0x0004
+  b2Contact_toiFlag           = 0x0008
+  b2Contact_touchingFlag      = 0x0010
+  b2Contact_enabledFlag       = 0x0020
+  b2Contact_filterFlag        = 0x0040
+  b2Body_islandFlag         	= 0x0001
+  b2Body_awakeFlag          	= 0x0002
+  b2Body_allowSleepFlag     	= 0x0004
+  b2Body_bulletFlag         	= 0x0008
+  b2Body_fixedRotationFlag  	= 0x0010
+  b2Body_activeFlag         	= 0x0020
+  b2Body_staticBody        	  = 0
+  b2Body_kinematicBody     	  = 1
+  b2Body_dynamicBody       	  = 2
+
+
+  @s_timestep2            = new b2TimeStep()
+  @s_xf                   = new b2Transform()
+  @s_backupA              = new b2Sweep()
+  @s_backupB              = new b2Sweep()
+  @s_timestep             = new b2TimeStep()
+  @s_queue                = new Array()
+  @s_jointColor           = new b2Color(0.5, 0.8, 0.8)
+  @e_newFixture           = 0x0001
+  @e_locked               = 0x0002
+
 
   s_stack                 : null
   m_contactManager        : null
@@ -39,7 +74,7 @@ class Box2D.Dynamics.b2World
   m_groundBody            : null
 
   constructor: (gravity, doSleep) ->
-    @s_stack = new Vector()
+    @s_stack = new Array()
     @m_contactManager = new b2ContactManager()
     @m_contactSolver = new b2ContactSolver()
     @m_island = new b2Island()
@@ -256,6 +291,7 @@ class Box2D.Dynamics.b2World
     if @m_flags & b2World.e_newFixture
       @m_contactManager.FindNewContacts()
       @m_flags &= ~b2World.e_newFixture
+
     @m_flags |= b2World.e_locked
     step = b2World.s_timestep2
     step.dt = dt
@@ -316,10 +352,10 @@ class Box2D.Dynamics.b2World
           if b.IsActive() is false
             color.Set 0.5, 0.5, 0.3
             @DrawShape s, xf, color
-          else if b.GetType() is b2Body.b2_staticBody
+          else if b.GetType() is b2Body_staticBody
             color.Set 0.5, 0.9, 0.5
             @DrawShape s, xf, color
-          else if b.GetType() is b2Body.b2_kinematicBody
+          else if b.GetType() is b2Body_kinematicBody
             color.Set 0.5, 0.5, 0.9
             @DrawShape s, xf, color
           else if b.IsAwake() is false
@@ -453,7 +489,7 @@ class Box2D.Dynamics.b2World
       result[result.length] = fixture
       1
     __this = this
-    result = new Vector()
+    result = new Array()
     __this.RayCast RayCastAllWrapper, point1, point2
     result
 
@@ -480,12 +516,12 @@ class Box2D.Dynamics.b2World
     island.Initialize @m_bodyCount, @m_contactCount, @m_jointCount, null, @m_contactManager.m_contactListener, @m_contactSolver
     b = @m_bodyList
     while b
-      b.m_flags &= ~b2Body.e_islandFlag
+      b.m_flags &= ~b2Body_islandFlag
       b = b.m_next
     c = @m_contactList
 
     while c
-      c.m_flags &= ~b2Contact.e_islandFlag
+      c.m_flags &= ~b2Contact_islandFlag
       c = c.m_next
     j = @m_jointList
 
@@ -496,50 +532,79 @@ class Box2D.Dynamics.b2World
     stack = @s_stack
     seed = @m_bodyList
 
+#    `debugger;`
+
     while seed
-      continue  if seed.m_flags & b2Body.e_islandFlag
-      continue  if seed.IsAwake() is false or seed.IsActive() is false
-      continue  if seed.GetType() is b2Body.b2_staticBody
+      if seed.m_flags & b2Body_islandFlag
+        seed = seed.m_next
+        continue
+
+      if seed.IsAwake() is false or seed.IsActive() is false
+        seed = seed.m_next
+        continue
+
+      if seed.GetType() is b2Body_staticBody
+        seed = seed.m_next
+        continue
+
       island.Clear()
       stackCount = 0
       stack[stackCount++] = seed
-      seed.m_flags |= b2Body.e_islandFlag
+      seed.m_flags |= b2Body_islandFlag
       while stackCount > 0
         b = stack[--stackCount]
         island.AddBody b
         b.SetAwake true  if b.IsAwake() is false
-        continue  if b.GetType() is b2Body.b2_staticBody
+        continue  if b.GetType() is b2Body_staticBody
         other = undefined
         ce = b.m_contactList
 
         while ce
-          continue  if ce.contact.m_flags & b2Contact.e_islandFlag
-          continue  if ce.contact.IsSensor() is true or ce.contact.IsEnabled() is false or ce.contact.IsTouching() is false
+          if ce.contact.m_flags & b2Contact_islandFlag
+            ce = ce.next
+            continue
+
+          if ce.contact.IsSensor() is true or ce.contact.IsEnabled() is false or ce.contact.IsTouching() is false
+            ce = ce.next
+            continue
+
           island.AddContact ce.contact
-          ce.contact.m_flags |= b2Contact.e_islandFlag
+          ce.contact.m_flags |= b2Contact_islandFlag
           other = ce.other
-          continue  if other.m_flags & b2Body.e_islandFlag
+          if other.m_flags & b2Body_islandFlag
+            ce = ce.next
+            continue
+
           stack[stackCount++] = other
-          other.m_flags |= b2Body.e_islandFlag
+          other.m_flags |= b2Body_islandFlag
           ce = ce.next
         jn = b.m_jointList
 
         while jn
-          continue  if jn.joint.m_islandFlag is true
+          if jn.joint.m_islandFlag is true
+            jn = jn.next
+            continue
+
           other = jn.other
-          continue  if other.IsActive() is false
+          if other.IsActive() is false
+            jn = jn.next
+            continue
+
           island.AddJoint jn.joint
           jn.joint.m_islandFlag = true
-          continue  if other.m_flags & b2Body.e_islandFlag
+          if other.m_flags & b2Body_islandFlag
+            jn = jn.next
+            continue
+
           stack[stackCount++] = other
-          other.m_flags |= b2Body.e_islandFlag
+          other.m_flags |= b2Body_islandFlag
           jn = jn.next
       island.Solve step, @m_gravity, @m_allowSleep
       i = 0
 
       while i < island.m_bodyCount
         b = island.m_bodies[i]
-        b.m_flags &= ~b2Body.e_islandFlag  if b.GetType() is b2Body.b2_staticBody
+        b.m_flags &= ~b2Body_islandFlag  if b.GetType() is b2Body_staticBody
         ++i
       seed = seed.m_next
     i = 0
@@ -549,8 +614,14 @@ class Box2D.Dynamics.b2World
       ++i
     b = @m_bodyList
     while b
-      continue  if b.IsAwake() is false or b.IsActive() is false
-      continue  if b.GetType() is b2Body.b2_staticBody
+      if b.IsAwake() is false or b.IsActive() is false
+        b = b.m_next
+        continue
+
+      if b.GetType() is b2Body_staticBody
+        b = b.m_next
+        continue
+
       b.SynchronizeFixtures()
       b = b.m_next
     @m_contactManager.FindNewContacts()
@@ -569,13 +640,13 @@ class Box2D.Dynamics.b2World
     queue = b2World.s_queue
     b = @m_bodyList
     while b
-      b.m_flags &= ~b2Body.e_islandFlag
+      b.m_flags &= ~b2Body_islandFlag
       b.m_sweep.t0 = 0.0
       b = b.m_next
     c = undefined
     c = @m_contactList
     while c
-      c.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag)
+      c.m_flags &= ~(b2Contact_toiFlag | b2Contact_islandFlag)
       c = c.m_next
     j = @m_jointList
     while j
@@ -588,7 +659,7 @@ class Box2D.Dynamics.b2World
       while c
         continue  if c.IsSensor() is true or c.IsEnabled() is false or c.IsContinuous() is false
         toi = 1.0
-        if c.m_flags & b2Contact.e_toiFlag
+        if c.m_flags & b2Contact_toiFlag
           toi = c.m_toi
         else
           fA = c.m_fixtureA
@@ -609,7 +680,7 @@ class Box2D.Dynamics.b2World
             toi = (1.0 - toi) * t0 + toi
             toi = 1  if toi > 1
           c.m_toi = toi
-          c.m_flags |= b2Contact.e_toiFlag
+          c.m_flags |= b2Contact_toiFlag
         if Number.MIN_VALUE < toi and toi < minTOI
           minContact = c
           minTOI = toi
@@ -624,7 +695,7 @@ class Box2D.Dynamics.b2World
       bA.Advance minTOI
       bB.Advance minTOI
       minContact.Update @m_contactManager.m_contactListener
-      minContact.m_flags &= ~b2Contact.e_toiFlag
+      minContact.m_flags &= ~b2Contact_toiFlag
       if minContact.IsSensor() is true or minContact.IsEnabled() is false
         bA.m_sweep.Set b2World.s_backupA
         bB.m_sweep.Set b2World.s_backupB
@@ -638,7 +709,7 @@ class Box2D.Dynamics.b2World
       queueStart = 0
       queueSize = 0
       queue[queueStart + queueSize++] = seed
-      seed.m_flags |= b2Body.e_islandFlag
+      seed.m_flags |= b2Body_islandFlag
       while queueSize > 0
         b = queue[queueStart++]
         --queueSize
@@ -648,18 +719,18 @@ class Box2D.Dynamics.b2World
         cEdge = b.m_contactList
         while cEdge
           break  if island.m_contactCount is island.m_contactCapacity
-          continue  if cEdge.contact.m_flags & b2Contact.e_islandFlag
+          continue  if cEdge.contact.m_flags & b2Contact_islandFlag
           continue  if cEdge.contact.IsSensor() is true or cEdge.contact.IsEnabled() is false or cEdge.contact.IsTouching() is false
           island.AddContact cEdge.contact
-          cEdge.contact.m_flags |= b2Contact.e_islandFlag
+          cEdge.contact.m_flags |= b2Contact_islandFlag
           other = cEdge.other
-          continue  if other.m_flags & b2Body.e_islandFlag
-          unless other.GetType() is b2Body.b2_staticBody
+          continue  if other.m_flags & b2Body_islandFlag
+          unless other.GetType() is b2Body_staticBody
             other.Advance minTOI
             other.SetAwake true
           queue[queueStart + queueSize] = other
           ++queueSize
-          other.m_flags |= b2Body.e_islandFlag
+          other.m_flags |= b2Body_islandFlag
           cEdge = cEdge.next
         jEdge = b.m_jointList
 
@@ -670,13 +741,13 @@ class Box2D.Dynamics.b2World
           continue  if other.IsActive() is false
           island.AddJoint jEdge.joint
           jEdge.joint.m_islandFlag = true
-          continue  if other.m_flags & b2Body.e_islandFlag
-          unless other.GetType() is b2Body.b2_staticBody
+          continue  if other.m_flags & b2Body_islandFlag
+          unless other.GetType() is b2Body_staticBody
             other.Advance minTOI
             other.SetAwake true
           queue[queueStart + queueSize] = other
           ++queueSize
-          other.m_flags |= b2Body.e_islandFlag
+          other.m_flags |= b2Body_islandFlag
           jEdge = jEdge.next
       subStep = b2World.s_timestep
       subStep.warmStarting = false
@@ -690,19 +761,20 @@ class Box2D.Dynamics.b2World
       i = 0
       while i < island.m_bodyCount
         b = island.m_bodies[i]
-        b.m_flags &= ~b2Body.e_islandFlag
+        b.m_flags &= ~b2Body_islandFlag
         continue  if b.IsAwake() is false
         continue  unless b.GetType() is b2Body.b2_dynamicBody
         b.SynchronizeFixtures()
         cEdge = b.m_contactList
         while cEdge
-          cEdge.contact.m_flags &= ~b2Contact.e_toiFlag
+          cEdge.contact.m_flags &= ~b2Contact_toiFlag
           cEdge = cEdge.next
         ++i
       i = 0
       while i < island.m_contactCount
         c = island.m_contacts[i]
-        c.m_flags &= ~(b2Contact.e_toiFlag | b2Contact.e_islandFlag)
+#        c.m_flags &= ~(b2Contact_toiFlag | b2Contact_islandFlag)
+        c.m_flags &= ~(b2Contact_toiFlag | b2Contact_islandFlag)
         ++i
       i = 0
       while i < island.m_jointCount
@@ -753,7 +825,7 @@ class Box2D.Dynamics.b2World
         poly = ((if shape instanceof b2PolygonShape then shape else null))
         vertexCount = parseInt(poly.GetVertexCount())
         localVertices = poly.GetVertices()
-        vertices = new Vector(vertexCount)
+        vertices = new Array(vertexCount)
         i = 0
         while i < vertexCount
           vertices[i] = b2Math.MulX(xf, localVertices[i])
@@ -763,12 +835,3 @@ class Box2D.Dynamics.b2World
         edge = ((if shape instanceof b2EdgeShape then shape else null))
         @m_debugDraw.DrawSegment b2Math.MulX(xf, edge.GetVertex1()), b2Math.MulX(xf, edge.GetVertex2()), color
 
-  @s_timestep2 = new b2TimeStep()
-  @s_xf = new b2Transform()
-  @s_backupA = new b2Sweep()
-  @s_backupB = new b2Sweep()
-  @s_timestep = new b2TimeStep()
-  @s_queue = new Vector()
-  @s_jointColor = new b2Color(0.5, 0.8, 0.8)
-  @e_newFixture = 0x0001
-  @e_locked = 0x0002

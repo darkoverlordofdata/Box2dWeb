@@ -1,12 +1,14 @@
 Box2D = require('../index')
 
-b2Vec2          = Box2D.Common.Math.b2Vec2
 Vector          = Box2D.Vector
-
+b2Vec2          = Box2D.Common.Math.b2Vec2
+b2Settings      = Box2D.Common.b2Settings
+ClipVertex      = Box2D.Collision.ClipVertex
+b2Manifold      = Box2D.Collision.b2Manifold
 
 class Box2D.Collision.b2Collision
 
-  @b2_nullFeature         = 0x000000ff
+  @b2_nullFeature           = 0x000000ff
 
   @s_edgeAO               = new Vector(1)
   @s_edgeBO               = new Vector(1)
@@ -199,7 +201,7 @@ class Box2D.Collision.b2Collision
     return
 
   @MakeClipPointVector: ->
-    r = new Vector(2)
+    r = new Array(2)
     r[0] = new ClipVertex()
     r[1] = new ClipVertex()
     r

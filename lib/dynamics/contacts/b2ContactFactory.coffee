@@ -1,7 +1,13 @@
 Box2D = require('../../index')
 
-b2ContactRegister   = Box2D.Dynamics.Contacts.b2ContactRegister
-Vector              = Box2D.Vector
+#Array = Box2D.Array
+b2Shape                   = Box2D.Collision.Shapes.b2Shape
+b2ContactRegister         = Box2D.Dynamics.Contacts.b2ContactRegister
+b2CircleContact           = Box2D.Dynamics.Contacts.b2CircleContact
+b2PolyAndCircleContact    = Box2D.Dynamics.Contacts.b2PolyAndCircleContact
+b2PolygonContact          = Box2D.Dynamics.Contacts.b2PolygonContact
+b2EdgeAndCircleContact    = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact
+b2PolyAndEdgeContact      = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact
 
 class Box2D.Dynamics.Contacts.b2ContactFactory
 
@@ -26,11 +32,11 @@ class Box2D.Dynamics.Contacts.b2ContactFactory
     return
 
   InitializeRegisters: ->
-    @m_registers = new Vector(b2Shape.e_shapeTypeCount)
+    @m_registers = new Array(b2Shape.e_shapeTypeCount)
     i = 0
 
     while i < b2Shape.e_shapeTypeCount
-      @m_registers[i] = new Vector(b2Shape.e_shapeTypeCount)
+      @m_registers[i] = new Array(b2Shape.e_shapeTypeCount)
       j = 0
 
       while j < b2Shape.e_shapeTypeCount

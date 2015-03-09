@@ -1,6 +1,6 @@
 Box2D = require('../../index')
 
-b2Settings                = Box2d.Common.b2Settings
+b2Settings                = Box2D.Common.b2Settings
 b2SimplexCache            = Box2D.Collision.b2SimplexCache
 b2Distance                = Box2D.Collision.b2Distance
 b2DistanceOutput          = Box2D.Collision.b2DistanceOutput

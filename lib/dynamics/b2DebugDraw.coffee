@@ -28,7 +28,7 @@ class Box2D.Dynamics.b2DebugDraw
 
     return
 
-  b2DebugDraw::_color = (color, alpha) ->
+  _color: (color, alpha) ->
     "rgba(" + ((color & 0xFF0000) >> 16) + "," + ((color & 0xFF00) >> 8) + "," + (color & 0xFF) + "," + alpha + ")"
 
   SetFlags: (flags) ->

@@ -12,7 +12,7 @@ class Box2D.Dynamics.b2FixtureDef
   isSensor        : false
   filter          : null
 
-  b2FixtureDef::b2FixtureDef = ->
+  constructor: ->
     @filter = new b2FilterData()
     @filter.categoryBits = 0x0001
     @filter.maskBits = 0xFFFF

@@ -1,13 +1,14 @@
 Box2D = require('../index')
 
 Vector        = Box2D.Vector
+b2Math        = Box2D.Common.Math.b2Math
 b2Simplex     = Box2D.Collision.b2Simplex
-
+b2Settings    = Box2D.Common.b2Settings
 
 class Box2D.Collision.b2Distance
 
-  constructor: (output, cache, input) ->
-    ++b2Distance.b2_gjkCalls
+  @Distance: (output, cache, input) ->
+    #++b2Distance.b2_gjkCalls
     proxyA = input.proxyA
     proxyB = input.proxyB
     transformA = input.transformA
@@ -33,7 +34,9 @@ class Box2D.Collision.b2Distance
         saveB[i] = vertices[i].indexB
         i++
       switch simplex.m_count
-        when 1, 2
+        when 1
+          i = i
+        when 2
           simplex.Solve2()
         when 3
           simplex.Solve3()

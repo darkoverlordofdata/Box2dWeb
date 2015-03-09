@@ -2,6 +2,7 @@ Box2D = require('../../index')
 
 Vector        = Box2D.Vector
 b2Vec2        = Box2D.Common.Math.b2Vec2
+b2Settings    = Box2D.Common.b2Settings
 
 class Box2D.Dynamics.Contacts.b2PositionSolverManifold
 
@@ -13,7 +14,7 @@ class Box2D.Dynamics.Contacts.b2PositionSolverManifold
   constructor: ->
     @m_normal = new b2Vec2()
     @m_separations = new Vector(b2Settings.b2_maxManifoldPoints)
-    @m_points = new Vector(b2Settings.b2_maxManifoldPoints)
+    @m_points = new Array(b2Settings.b2_maxManifoldPoints)
     i = 0
 
     while i < b2Settings.b2_maxManifoldPoints

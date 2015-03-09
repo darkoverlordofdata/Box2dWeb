@@ -1,9 +1,10 @@
 Box2D = require('../../index')
 
-b2Settings            = Box2D.Common.b2Settings
-b2ContactEdge         = Box2D.Dynamics.Contacts.b2ContactConstraintPoint
-b2Vec2                = Box2D.Common.Math.b2Vec2
-b2Mat22               = Box2D.Common.Math.b2Mat22
+#Array = Box2D.Array
+b2Settings                  = Box2D.Common.b2Settings
+b2ContactConstraintPoint    = Box2D.Dynamics.Contacts.b2ContactConstraintPoint
+b2Vec2                      = Box2D.Common.Math.b2Vec2
+b2Mat22                     = Box2D.Common.Math.b2Mat22
 
 class Box2D.Dynamics.Contacts.b2ContactConstraint
 
@@ -21,7 +22,7 @@ class Box2D.Dynamics.Contacts.b2ContactConstraint
     @normal = new b2Vec2()
     @normalMass = new b2Mat22()
     @K = new b2Mat22()
-    @points = new Vector(b2Settings.b2_maxManifoldPoints)
+    @points = new Array(b2Settings.b2_maxManifoldPoints)
     i = 0
 
     while i < b2Settings.b2_maxManifoldPoints

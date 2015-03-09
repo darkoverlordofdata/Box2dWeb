@@ -1,8 +1,9 @@
 Box2D = require('../index')
 
-Vector                    = Box2D.Vector
-b2Settings                = Box2d.Common.b2Settings
+#Array = Box2D.Array
+b2Settings                = Box2D.Common.b2Settings
 b2Vec2                    = Box2D.Common.Math.b2Vec2
+b2Manifold                = Box2D.Collision.b2Manifold
 
 class Box2D.Collision.b2WorldManifold
 
@@ -11,7 +12,7 @@ class Box2D.Collision.b2WorldManifold
 
   constructor: ->
     @m_normal = new b2Vec2()
-    @m_points = new Vector(b2Settings.b2_maxManifoldPoints)
+    @m_points = new Array(b2Settings.b2_maxManifoldPoints)
     i = 0
 
     while i < b2Settings.b2_maxManifoldPoints

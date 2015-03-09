@@ -4,6 +4,7 @@ b2Math        = Box2D.Common.Math.b2Math
 b2Vec2        = Box2D.Common.Math.b2Vec2
 b2FilterData  = Box2D.Dynamics.b2FilterData
 b2AABB        = Box2D.Collision.b2AABB
+b2MassData    = Box2D.Collision.Shapes.b2MassData
 
 class Box2D.Dynamics.b2Fixture
 
@@ -21,7 +22,10 @@ class Box2D.Dynamics.b2Fixture
 
   constructor: ->
     @m_filter = new b2FilterData()
-    @m_shape.GetType()
+    @m_aabb = new b2AABB()
+
+  GetType: ->
+    return @m_shape.GetType()
 
   GetShape: ->
     return @m_shape

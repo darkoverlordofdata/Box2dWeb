@@ -1,11 +1,11 @@
 Box2D = require('../index')
 
-Vector                = Box2D.Vector
+#Array = Box2D.Array
 b2Settings            = Box2D.Common.b2Settings
-b2Math                = Box2D.Collision.Math.b2Math
+b2Math                = Box2D.Common.Math.b2Math
 b2AABB                = Box2D.Collision.b2AABB
-b2RayCastInput        = Box2d.Collision.b2RayCastInput
-b2DynamicTreeNode     = Box2d.Collision.b2DynamicTreeNode
+b2RayCastInput        = Box2D.Collision.b2RayCastInput
+b2DynamicTreeNode     = Box2D.Collision.b2DynamicTreeNode
 
 class Box2D.Collision.b2DynamicTree
 
@@ -71,7 +71,7 @@ class Box2D.Collision.b2DynamicTree
 
   Query: (callback, aabb) ->
     return  unless @m_root?
-    stack = new Vector()
+    stack = new Array()
     count = 0
     stack[count++] = @m_root
     while count > 0
@@ -103,7 +103,7 @@ class Box2D.Collision.b2DynamicTree
     segmentAABB.lowerBound.y = Math.min(p1.y, tY)
     segmentAABB.upperBound.x = Math.max(p1.x, tX)
     segmentAABB.upperBound.y = Math.max(p1.y, tY)
-    stack = new Vector()
+    stack = new Array()
     count = 0
     stack[count++] = @m_root
     while count > 0

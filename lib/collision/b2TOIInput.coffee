@@ -1,6 +1,6 @@
 Box2D = require('../index')
 
-b2Sweep                   = Box2d.Common.Math.b2Sweep
+b2Sweep                   = Box2D.Common.Math.b2Sweep
 b2DistanceProxy           = Box2D.Collision.b2DistanceProxy
 
 class Box2D.Collision.b2TOIInput

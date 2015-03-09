@@ -1,8 +1,10 @@
 Box2D = require('../index')
 
-b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-Vector        = Box2D.Vector
-b2Settings    = Box2D.Common.b2Settings
+#Array = Box2D.Array
+b2Settings        = Box2D.Common.b2Settings
+b2Shape           = Box2D.Collision.Shapes.b2Shape
+b2CircleShape     = Box2D.Collision.Shapes.b2CircleShape
+b2PolygonShape    = Box2D.Collision.Shapes.b2PolygonShape
 
 class Box2D.Collision.b2DistanceProxy
 
@@ -16,7 +18,7 @@ class Box2D.Collision.b2DistanceProxy
     switch shape.GetType()
       when b2Shape.e_circleShape
         circle = ((if shape instanceof b2CircleShape then shape else null))
-        @m_vertices = new Vector(1, true)
+        @m_vertices = new Array(1, true)
         @m_vertices[0] = circle.m_p
         @m_count = 1
         @m_radius = circle.m_radius

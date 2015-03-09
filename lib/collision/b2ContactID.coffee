@@ -1,5 +1,6 @@
 Box2D = require('../index')
 
+Features      = Box2D.Collision.Features
 
 class Box2D.Collision.b2ContactID
 

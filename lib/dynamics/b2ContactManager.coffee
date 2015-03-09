@@ -1,9 +1,11 @@
 Box2D = require('../index')
 
+b2Fixture                 = Box2D.Dynamics.b2Fixture
 b2ContactFilter           = Box2D.Dynamics.b2ContactFilter
 b2ContactListener         = Box2D.Dynamics.b2ContactListener
-b2ContactFactory          = Box2D.Dynamics.b2ContactFactory
-b2DynamicTreeBroadPhase   = Box2D.Dynamics.b2DynamicTreeBroadPhase
+b2ContactFactory          = Box2D.Dynamics.Contacts.b2ContactFactory
+b2ContactPoint            = Box2D.Collision.b2ContactPoint
+b2DynamicTreeBroadPhase   = Box2D.Collision.b2DynamicTreeBroadPhase
 
 class Box2D.Dynamics.b2ContactManager
 
@@ -96,7 +98,7 @@ class Box2D.Dynamics.b2ContactManager
       if bodyA.IsAwake() is false and bodyB.IsAwake() is false
         c = c.GetNext()
         continue
-      if c.m_flags & b2Contact.e_filterFlag
+      if c.m_flags & 0x0040 # b2Contact.e_filterFlag
         if bodyB.ShouldCollide(bodyA) is false
           cNuke = c
           c = cNuke.GetNext()
@@ -107,7 +109,7 @@ class Box2D.Dynamics.b2ContactManager
           c = cNuke.GetNext()
           @Destroy cNuke
           continue
-        c.m_flags &= ~b2Contact.e_filterFlag
+        c.m_flags &= 0x0040 # ~b2Contact.e_filterFlag
       proxyA = fixtureA.m_proxy
       proxyB = fixtureB.m_proxy
       overlap = @m_broadPhase.TestOverlap(proxyA, proxyB)
@@ -120,6 +122,6 @@ class Box2D.Dynamics.b2ContactManager
       c = c.GetNext()
     return
 
-  @b2ContactManager.s_evalCP = new b2ContactPoint()
+  @s_evalCP = new b2ContactPoint()
 
 

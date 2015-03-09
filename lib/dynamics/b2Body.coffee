@@ -1,14 +1,16 @@
 Box2D = require('../index')
 
-b2Math          = Box2D.Common.Math.b2Math
-b2Sweep         = Box2D.Common.Math.b2Sweep
-b2Transform     = Box2D.Common.Math.b2Transform
-b2Vec2          = Box2D.Common.Math.b2Vec2
-b2Fixture       = Box2D.Dynamics.b2Fixture
-b2FixtureDef    = Box2D.Dynamics.b2FixtureDef
-b2BodyDef       = Box2D.Dynamics.b2BodyDef
+b2Math            = Box2D.Common.Math.b2Math
+b2Sweep           = Box2D.Common.Math.b2Sweep
+b2Transform       = Box2D.Common.Math.b2Transform
+b2Vec2            = Box2D.Common.Math.b2Vec2
+b2Settings        = Box2D.Common.b2Settings
+b2Fixture         = Box2D.Dynamics.b2Fixture
+b2FixtureDef      = Box2D.Dynamics.b2FixtureDef
+b2BodyDef         = Box2D.Dynamics.b2BodyDef
 
 class Box2D.Dynamics.b2Body
+
 
   @s_xf1                = new b2Transform()
   @e_islandFlag         = 0x0001
@@ -131,7 +133,8 @@ class Box2D.Dynamics.b2Body
     ++@m_fixtureCount
     fixture.m_body = this
     @ResetMassData()  if fixture.m_density > 0.0
-    @m_world.m_flags |= b2World.e_newFixture
+    @m_world.m_flags |= 0x0001 #b2World.e_newFixture
+
     return fixture
 
   CreateFixture2: (shape, density) ->

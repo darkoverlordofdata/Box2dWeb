@@ -1,6 +1,6 @@
 Box2D = require('../index')
 
-Vector      = Box2D.Vector
+Vector = Box2D.Vector
 b2Settings  = Box2D.Common.b2Settings
 
 class Box2D.Dynamics.b2ContactImpulse

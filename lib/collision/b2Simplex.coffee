@@ -1,8 +1,8 @@
 Box2D = require('../index')
 
-Vector                    = Box2D.Vector
-b2Settings                = Box2d.Common.b2Settings
-b2Math                    = Box2d.Common.Math.b2Math
+#Array = Box2D.Array
+b2Settings                = Box2D.Common.b2Settings
+b2Math                    = Box2D.Common.Math.b2Math
 b2Vec2                    = Box2D.Common.Math.b2Vec2
 b2SimplexVertex           = Box2D.Collision.b2SimplexVertex
 
@@ -21,7 +21,7 @@ class Box2D.Collision.b2Simplex
     @m_v1 = new b2SimplexVertex()
     @m_v2 = new b2SimplexVertex()
     @m_v3 = new b2SimplexVertex()
-    @m_vertices = new Vector(3)
+    @m_vertices = new Array(3)
     @m_vertices[0] = @m_v1
     @m_vertices[1] = @m_v2
     @m_vertices[2] = @m_v3

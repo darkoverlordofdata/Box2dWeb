@@ -1,6 +1,6 @@
 Box2D = require('../../index')
 
-b2Color       = Box2D.Commin.b2Color
+b2Color       = Box2D.Common.b2Color
 b2Controller  = Box2D.Dynamics.Controllers.b2Controller
 b2Vec2        = Box2D.Common.Math.b2Vec2
 

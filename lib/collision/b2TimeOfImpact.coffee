@@ -1,8 +1,8 @@
 Box2D = require('../index')
 
-b2Settings                = Box2d.Common.b2Settings
-b2Math                    = Box2d.Common.Math.b2Math
-b2Transform               = Box2d.Common.Math.b2Transform
+b2Settings                = Box2D.Common.b2Settings
+b2Math                    = Box2D.Common.Math.b2Math
+b2Transform               = Box2D.Common.Math.b2Transform
 b2Distance                = Box2D.Collision.b2Distance
 b2SimplexCache            = Box2D.Collision.b2SimplexCache
 b2SeparationFunction      = Box2D.Collision.b2SeparationFunction

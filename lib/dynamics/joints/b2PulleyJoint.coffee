@@ -25,8 +25,8 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
   m_limitImpulse2           : 0.0
 
 
-  constructor (def) ->
-    super def
+  constructor: (def) ->
+    super(def)
     @m_groundAnchor1 = new b2Vec2()
     @m_groundAnchor2 = new b2Vec2()
     @m_localAnchor1 = new b2Vec2()
@@ -73,7 +73,7 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     a.Add @m_groundAnchor2
     return a
 
-  b2PulleyJoint::GetLength1 = ->
+  GetLength1: ->
     p = @m_bodyA.GetWorldPoint(@m_localAnchor1)
     sX = @m_ground.m_xf.position.x + @m_groundAnchor1.x
     sY = @m_ground.m_xf.position.y + @m_groundAnchor1.y
@@ -81,7 +81,7 @@ class Box2D.Dynamics.Joints.b2PulleyJoint extends b2Joint
     dY = p.y - sY
     return Math.sqrt dX * dX + dY * dY
 
-  b2PulleyJoint::GetLength2 = ->
+  GetLength2: ->
     p = @m_bodyB.GetWorldPoint(@m_localAnchor2)
     sX = @m_ground.m_xf.position.x + @m_groundAnchor2.x
     sY = @m_ground.m_xf.position.y + @m_groundAnchor2.y

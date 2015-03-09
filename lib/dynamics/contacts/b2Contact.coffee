@@ -3,6 +3,8 @@ Box2D = require('../../index')
 b2Settings            = Box2D.Common.b2Settings
 b2ContactEdge         = Box2D.Dynamics.Contacts.b2ContactEdge
 b2Manifold            = Box2D.Collision.b2Manifold
+b2TimeOfImpact        = Box2D.Collision.b2TimeOfImpact
+b2TOIInput            = Box2D.Collision.b2TOIInput
 
 class Box2D.Dynamics.Contacts.b2Contact
 
@@ -24,12 +26,12 @@ class Box2D.Dynamics.Contacts.b2Contact
   m_fixtureB            : null
   m_touching            : false
 
-
   constructor: ->
     @m_nodeA = new b2ContactEdge()
     @m_nodeB = new b2ContactEdge()
     @m_manifold = new b2Manifold()
     @m_oldManifold = new b2Manifold()
+
     return
 
   GetManifold: ->
@@ -93,7 +95,7 @@ class Box2D.Dynamics.Contacts.b2Contact
     @m_flags |= b2Contact.e_sensorFlag  if fixtureA.IsSensor() or fixtureB.IsSensor()
     bodyA = fixtureA.GetBody()
     bodyB = fixtureB.GetBody()
-    @m_flags |= b2Contact.e_continuousFlag  if bodyA.GetType() isnt b2Body.b2_dynamicBody or bodyA.IsBullet() or bodyB.GetType() isnt b2Body.b2_dynamicBody or bodyB.IsBullet()
+    @m_flags |= b2Contact.e_continuousFlag  if bodyA.GetType() isnt Box2D.Dynamics.b2Body.b2_dynamicBody or bodyA.IsBullet() or bodyB.GetType() isnt Box2D.Dynamics.b2Body.b2_dynamicBody or bodyB.IsBullet()
     @m_fixtureA = fixtureA
     @m_fixtureB = fixtureB
     @m_manifold.m_pointCount = 0
@@ -128,7 +130,7 @@ class Box2D.Dynamics.Contacts.b2Contact
         touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB)
       @m_manifold.m_pointCount = 0
     else
-      if bodyA.GetType() isnt b2Body.b2_dynamicBody or bodyA.IsBullet() or bodyB.GetType() isnt b2Body.b2_dynamicBody or bodyB.IsBullet()
+      if bodyA.GetType() isnt Box2D.Dynamics.b2Body.b2_dynamicBody or bodyA.IsBullet() or bodyB.GetType() isnt Box2D.Dynamics.b2Body.b2_dynamicBody or bodyB.IsBullet()
         @m_flags |= b2Contact.e_continuousFlag
       else
         @m_flags &= ~b2Contact.e_continuousFlag

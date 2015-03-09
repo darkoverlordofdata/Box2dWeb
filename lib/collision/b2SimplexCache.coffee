@@ -1,6 +1,6 @@
 Box2D = require('../index')
 
-Vector                    = Box2D.Vector
+Vector = Box2D.Vector
 
 class Box2D.Collision.b2SimplexCache
 

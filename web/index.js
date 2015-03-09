@@ -1,5 +1,5 @@
 (function init() {
-    console.log(Box2D);
+    var kount = 0;
 	var b2Vec2 = Box2D.Common.Math.b2Vec2;
 	var b2AABB = Box2D.Collision.b2AABB;
 	var b2BodyDef = Box2D.Dynamics.b2BodyDef;
@@ -63,11 +63,10 @@
 		world.SetDebugDraw(debugDraw);
 	}
 	
-	function update() { 
-		world.Step(1/60,10,10);
-	     world.DrawDebugData();
-	     world.ClearForces();
+	function update() {
+        world.Step(1/60,10,10);
+        world.DrawDebugData();
+        world.ClearForces();
 	}
 	
 })();
-

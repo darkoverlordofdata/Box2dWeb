@@ -1,8 +1,9 @@
 Box2D = require('../../index')
 
 Vector                    = Box2D.Vector
-b2Settings                = Box2d.Common.b2Settings
-b2Math                    = Box2d.Common.Math.b2Math
+b2Settings                = Box2D.Common.b2Settings
+b2Math                    = Box2D.Common.Math.b2Math
+b2Mat22                   = Box2D.Common.Math.b2Mat22
 b2Vec2                    = Box2D.Common.Math.b2Vec2
 b2Transform               = Box2D.Common.Math.b2Transform
 b2Shape                   = Box2D.Collision.Shapes.b2Shape
@@ -20,8 +21,8 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
 
   constructor: ->
     @m_centroid = new b2Vec2()
-    @m_vertices = new Vector()
-    @m_normals = new Vector()
+    @m_vertices = new Array()
+    @m_normals = new Array()
     return
 
 
@@ -47,7 +48,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
 
   SetAsArray: (vertices, vertexCount) ->
     vertexCount = 0  if vertexCount is undefined
-    v = new Vector()
+    v = new Array()
     i = 0
     tVec = undefined
     i = 0
@@ -448,7 +449,7 @@ class Box2D.Collision.Shapes.b2PolygonShape extends b2Shape
   @ComputeOBB = (obb, vs, count) ->
     count = 0  if count is undefined
     i = 0
-    p = new Vector(count + 1)
+    p = new Array(count + 1)
     i = 0
     while i < count
       p[i] = vs[i]

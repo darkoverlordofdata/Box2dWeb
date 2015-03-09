@@ -1,7 +1,10 @@
 Box2D = require('../index')
 
-Vector              = Box2D.Vector
+#Array = Box2D.Array
+b2Settings          = Box2D.Common.b2Settings
+b2Math              = Box2D.Common.Math.b2Math
 b2ContactImpulse    = Box2D.Dynamics.b2ContactImpulse
+b2Body              = Box2D.Dynamics.b2Body
 
 class Box2D.Dynamics.b2Island
 
@@ -20,9 +23,9 @@ class Box2D.Dynamics.b2Island
   
   
   constructor: ->
-    @m_bodies = new Vector()
-    @m_contacts = new Vector()
-    @m_joints = new Vector()
+    @m_bodies = new Array()
+    @m_contacts = new Array()
+    @m_joints = new Array()
     return
 
   Initialize: (bodyCapacity, contactCapacity, jointCapacity, allocator, listener, contactSolver) ->

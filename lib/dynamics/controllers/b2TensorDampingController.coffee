@@ -15,7 +15,7 @@ class Box2D.Dynamics.Controllers.b2TensorDampingController extends b2Controller
     @maxTimestep = 0
     return
 
-  b2TensorDampingController::SetAxisAligned = (xDamping, yDamping) ->
+  SetAxisAligned: (xDamping, yDamping) ->
     xDamping = 0  if xDamping is undefined
     yDamping = 0  if yDamping is undefined
     @T.col1.x = (-xDamping)
@@ -28,7 +28,7 @@ class Box2D.Dynamics.Controllers.b2TensorDampingController extends b2Controller
       @maxTimestep = 0
     return
 
-  b2TensorDampingController::Step = (step) ->
+  Step: (step) ->
     timestep = step.dt
     return  if timestep <= Number.MIN_VALUE
     timestep = @maxTimestep  if timestep > @maxTimestep and @maxTimestep > 0

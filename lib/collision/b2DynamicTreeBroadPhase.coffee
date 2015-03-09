@@ -1,8 +1,8 @@
 Box2D = require('../index')
 
-Vector                = Box2D.Vector
+#Array = Box2D.Array
 b2DynamicTree         = Box2D.Collision.b2DynamicTree
-IBroadPhase           = Box2D.Collision.IBroadPhase
+b2DynamicTreePair     = Box2D.Collision.b2DynamicTreePair
 
 class Box2D.Collision.b2DynamicTreeBroadPhase
 
@@ -14,8 +14,8 @@ class Box2D.Collision.b2DynamicTreeBroadPhase
 
   constructor: ->
     @m_tree = new b2DynamicTree()
-    @m_moveBuffer = new Vector()
-    @m_pairBuffer = new Vector()
+    @m_moveBuffer = new Array()
+    @m_pairBuffer = new Array()
     return
 
   CreateProxy: (aabb, userData) ->
@@ -50,35 +50,34 @@ class Box2D.Collision.b2DynamicTreeBroadPhase
     @m_proxyCount
   
   UpdatePairs: (callback) ->
-    __this = this
-    __this.m_pairCount = 0
+    @m_pairCount = 0
     i = 0
     queryProxy = undefined
     i = 0
-    while i < __this.m_moveBuffer.length
-      QueryCallback = (proxy) ->
+    while i < @m_moveBuffer.length
+      QueryCallback = (proxy) =>
         return true  if proxy is queryProxy
-        __this.m_pairBuffer[__this.m_pairCount] = new b2DynamicTreePair()  if __this.m_pairCount is __this.m_pairBuffer.length
-        pair = __this.m_pairBuffer[__this.m_pairCount]
+        @m_pairBuffer[@m_pairCount] = new b2DynamicTreePair()  if @m_pairCount is @m_pairBuffer.length
+        pair = @m_pairBuffer[@m_pairCount]
         pair.proxyA = (if proxy < queryProxy then proxy else queryProxy)
         pair.proxyB = (if proxy >= queryProxy then proxy else queryProxy)
-        ++__this.m_pairCount
+        ++@m_pairCount
         true
-      queryProxy = __this.m_moveBuffer[i]
-      fatAABB = __this.m_tree.GetFatAABB(queryProxy)
-      __this.m_tree.Query QueryCallback, fatAABB
+      queryProxy = @m_moveBuffer[i]
+      fatAABB = @m_tree.GetFatAABB(queryProxy)
+      @m_tree.Query QueryCallback, fatAABB
       ++i
-    __this.m_moveBuffer.length = 0
+    @m_moveBuffer.length = 0
     i = 0
   
-    while i < __this.m_pairCount
-      primaryPair = __this.m_pairBuffer[i]
-      userDataA = __this.m_tree.GetUserData(primaryPair.proxyA)
-      userDataB = __this.m_tree.GetUserData(primaryPair.proxyB)
+    while i < @m_pairCount
+      primaryPair = @m_pairBuffer[i]
+      userDataA = @m_tree.GetUserData(primaryPair.proxyA)
+      userDataB = @m_tree.GetUserData(primaryPair.proxyB)
       callback userDataA, userDataB
       ++i
-      while i < __this.m_pairCount
-        pair = __this.m_pairBuffer[i]
+      while i < @m_pairCount
+        pair = @m_pairBuffer[i]
         break  if pair.proxyA isnt primaryPair.proxyA or pair.proxyB isnt primaryPair.proxyB
         ++i
     return
@@ -109,6 +108,5 @@ class Box2D.Collision.b2DynamicTreeBroadPhase
   
   ComparePairs: (pair1, pair2) ->
     return 0
-  
-  @__implements = {}
-  @__implements[IBroadPhase.name] = true
+
+  @__implements = IBroadPhase: true

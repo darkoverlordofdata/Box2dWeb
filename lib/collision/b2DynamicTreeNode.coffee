@@ -1,5 +1,6 @@
 Box2D = require('../index')
 
+b2AABB          = Box2D.Collision.b2AABB
 
 class Box2D.Collision.b2DynamicTreeNode
 

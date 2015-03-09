@@ -1,8 +1,8 @@
 Box2D = require('../../index')
 
-Vector                    = Box2D.Vector
-b2Settings                = Box2d.Common.b2Settings
-b2Math                    = Box2d.Common.Math.b2Math
+#Array = Box2D.Array
+b2Settings                = Box2D.Common.b2Settings
+b2Math                    = Box2D.Common.Math.b2Math
 b2Vec2                    = Box2D.Common.Math.b2Vec2
 b2Shape                   = Box2D.Collision.Shapes.b2Shape
 
@@ -25,8 +25,8 @@ class Box2D.Collision.Shapes.b2CircleShape extends b2Shape
     return s
 
   Set: (other) ->
-   super other
-    if Box2D.is(other, b2CircleShape)
+    super other
+    if Box2D.equals(other, b2CircleShape)
       other2 = ((if other instanceof b2CircleShape then other else null))
       @m_p.SetV other2.m_p
     return

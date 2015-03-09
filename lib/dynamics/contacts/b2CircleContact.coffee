@@ -1,6 +1,8 @@
 Box2D = require('../../index')
 
-b2Contact  = Box2D.Dynamics.Contacts.b2Contact
+b2Contact         = Box2D.Dynamics.Contacts.b2Contact
+b2Collision       = Box2D.Collision.b2Collision
+b2CircleShape     = Box2D.Collision.Shapes.b2CircleShape
 
 class Box2D.Dynamics.Contacts.b2CircleContact extends b2Contact
 

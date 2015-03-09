@@ -1,6 +1,8 @@
 Box2D = require('../../index')
 
-Vector                    = Box2D.Vector
+#Array = Box2D.Array
+b2Math                    = Box2D.Common.Math.b2Math
+b2Settings                = Box2D.Common.b2Settings
 b2TimeStep                = Box2D.Dynamics.b2TimeStep
 b2ContactConstraint       = Box2D.Dynamics.Contacts.b2ContactConstraint
 b2WorldManifold           = Box2D.Collision.b2WorldManifold
@@ -18,7 +20,7 @@ class Box2D.Dynamics.Contacts.b2ContactSolver
   
   constructor: ->
     @m_step = new b2TimeStep()
-    @m_constraints = new Vector()
+    @m_constraints = new Array()
     return
 
   Initialize: (step, contacts, contactCount, allocator) ->
