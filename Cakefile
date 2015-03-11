@@ -29,7 +29,7 @@ task 'buildjs', 'build box2d', ->   _buildjs()
 namespace = ['Box2D']
 classes = []
 
-task 'convert', 'convert js', ->
+task 'redux', 'Redux the box2sweb library', ->
 
   namespace = ['Box2D']   # namespace root
   classes = []            # list of classes
@@ -52,12 +52,11 @@ task 'convert', 'convert js', ->
    *
    *
   ###
-#  eval(String(fs.readFileSync('./src/box2d_web.js')))
-#  loadClasses Box2D
+  #  eval(String(fs.readFileSync('./src/box2d_web.js')))
+  #  loadClasses Box2D
 
   ###
-   * Original modified to retain the postDefs object
-   * Wait - no, it turns out they weren't actually being deleted...
+   * Hold your bits - mikolalysenko has already done this!
   ###
   Box2D = require('box2dweb')
 
@@ -170,7 +169,6 @@ task 'convert', 'convert js', ->
        *  Instance Fields
        *
       ###
-
       if (fs.existsSync(pathname+klass.name+'.properties.js'))
         props = String(fs.readFileSync(pathname+klass.name+'.properties.js'))
         code.push ''
@@ -182,8 +180,6 @@ task 'convert', 'convert js', ->
        * The constructor
        *
       ###
-
-
       if (fs.existsSync(pathname+klass.name+'.ctor.js'))
         code.push String(fs.readFileSync(pathname+klass.name+'.ctor.js'))
       else
