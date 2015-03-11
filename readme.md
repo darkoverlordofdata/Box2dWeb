@@ -19,7 +19,7 @@ Phase I: automated recompilation of the code to use modern coffeescript inspired
     This cuts the function call overhead in half when allocating new framework objects.
 
 
-Phase II: add scalar properties definitions to the prototype and remove them from the constructor
+Phase II: move scalar property definitions to the prototype and remove them from the constructor
 
     In Progress.
     Allows manually written overrides for constructors to be merged in during the redux process.
