@@ -39,5 +39,7 @@
     "node": ">=0.10.x",
     "npm": ">=1.x.x"
   },
-  "dependencies": {}
+  "dependencies": {
+    "box2dweb": "~2.1.0-b"
+  }
 }

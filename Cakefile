@@ -52,12 +52,14 @@ task 'convert', 'convert js', ->
    *
    *
   ###
-  eval(String(fs.readFileSync('./src/box2d_web.js')))
-  loadClasses Box2D
+#  eval(String(fs.readFileSync('./src/box2d_web.js')))
+#  loadClasses Box2D
 
   ###
-   * Origional modified to retain the postDefs object
+   * Original modified to retain the postDefs object
+   * Wait - no, it turns out they weren't actually being deleted...
   ###
+  Box2D = require('box2dweb')
 
   postDefs = []
   statics = {}
@@ -256,6 +258,7 @@ task 'convert', 'convert js', ->
       if klass.src.prototype.__super?
         uber = klass.src.prototype.__super.constructor
         prog.push klass.name + ' = ' + klass.namespace + '.' + klass.name + ' = (function(superClass) {'
+        prog.push '\'use strict;\''
         prog.push tab+'extend(' + klass.name + ', superClass);'
         prog.push code.join('\n')
         while (val = postDefs.pop())
@@ -265,6 +268,7 @@ task 'convert', 'convert js', ->
         prog.push  '})('+uber.name+');'
       else
         prog.push  klass.namespace + '.' + klass.name + ' = ' + klass.name + ' = (function() {'
+        prog.push '\'use strict;\''
         prog.push code.join('\n')
         while (val = postDefs.pop())
           ns = val[0].split('.')
@@ -290,7 +294,7 @@ _buildjs = ->
     src.push(String(fs.readFileSync(f+'.js')))
 
   template = String(fs.readFileSync('./lib/template.js'))
-  .replace("'{% the code goes here %}'", src.join('\n'))
+  .replace("'{% Box2D %}'", src.join('\n'))
 
   fs.writeFileSync("./web/packages/box2d/Box2D.js", template)
 

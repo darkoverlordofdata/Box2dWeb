@@ -1,27 +1,19 @@
 # Box2DWeb
 
-## Box2DWeb Recompiled
+## Box2DWeb ReGenerated
 
-Box2D has a ton of great code wrapped up in some dated pre-html5 bindings.
-I've automated a recompile of the code to modern coffeescript inspired bindings.
+Box2DWeb 2.1alpha has a ton of great code wrapped up in some dated pre-html5 bindings.
+The Object.defineProperty issue was fixed by mikolalysenko, so I'm using that version (https://www.npmjs.com/package/box2dweb) as my base.
 
-This cuts the function call overhead in half when allocating new framework objects.
+Phase I: automated recompilation of the code to use modern coffeescript inspired bindings.
+
+    Completed: This cuts the function call overhead in half when allocating new framework objects.
+
+Phase II: define scalar properties on the prototype, and remove initialization from the constructor.
+
+    In Progress: This should also reduce overhead.
 
 Classes are written out in 1 class per file format in the ./lib folder to enable maintenance going forward.
 
 
-        *
-        * Using modified Box2dWeb-2.1.a.3.js:
-        *
-        *  Crashes in node.js:
-        *
-        *     22   if(!(Object.prototype.defineProperty instanceof Function)
-        *
-        *    should be
-        *
-        *     22   if(!(Object.defineProperty instanceof Function)
-        *
-        *  Comment out so we can process the postDefs:
-        *
-        *  10866   //delete Box2D.postDefs;
-        *
+Also included is a redux of CocconJS box2d bindings done in coffeescript (see coffee folder)
