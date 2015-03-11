@@ -31,15 +31,28 @@ classes = []
 
 task 'convert', 'convert js', ->
 
+  namespace = ['Box2D']   # namespace root
+  classes = []            # list of classes
+  tab = '   '             # 3 spaces per tab
   ###
-   * Load origional box2d_web.js
+   *
+   * Load modified Box2dWeb-2.1.a.3.js:
+   *
+   *  Crashes in node.js:
+   *
+   *     22   if(!(Object.prototype.defineProperty instanceof Function)
+   *
+   *    should be
+   *
+   *     22   if(!(Object.defineProperty instanceof Function)
+   *
+   *  Comment out so we can process the postDefs:
+   *
+   *  10866   //delete Box2D.postDefs;
+   *
+   *
   ###
-  s = String(fs.readFileSync('./src/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.js'))
-  eval(s)
-
-  namespace = ['Box2D']
-  classes = []
-  tab = '   '
+  eval(String(fs.readFileSync('./src/box2d_web.js')))
   loadClasses Box2D
 
   ###
