@@ -23,7 +23,9 @@ Classes are written out in 1 class per file format in the ./lib folder to enable
 
 ## Install
 
+```bash
 $ git clone https://github.com/darkoverlordofdata/Box2dWeb.git
 $ cd Box2dWeb
 $ npm install
 $ cake redux
+```
