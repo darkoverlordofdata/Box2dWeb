@@ -1,4 +1,3 @@
-./lib/header
 ./lib/Common/b2Color
 ./lib/Common/b2Settings
 ./lib/Common/Math/b2Vec2
@@ -102,4 +101,3 @@
 ./lib/Dynamics/b2Island
 ./lib/Dynamics/b2World
 ./lib/Dynamics/b2DestructionListener
-./lib/footer

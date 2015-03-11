@@ -83,7 +83,9 @@ task 'convert', 'convert js', ->
   ###
   for klass in classes
 
-    pathname = './'+((klass.namespace+'.'+klass.name).replace(/\./g,'/'))+'.js'
+    continue if klass.namespace is 'Box2D.postDefs'
+
+    pathname = './'+(klass.namespace.replace(/\./g,'/').replace('Box2D','lib'))+'/'
     src = klass.src[klass.name]
     code = [] # output
     foundSuper = false
@@ -152,6 +154,7 @@ task 'convert', 'convert js', ->
        *
       ###
       if statics[klass.name]?
+        code.push ''
         for val in statics[klass.name]
           ns = val[0].split('.')
           if val[1].indexOf(klass.name) >= 0
@@ -161,22 +164,39 @@ task 'convert', 'convert js', ->
 
 
       ###
+       *
+       *  Instance Fields
+       *
+      ###
+
+      if (fs.existsSync(pathname+klass.name+'.properties.js'))
+        props = String(fs.readFileSync(pathname+klass.name+'.properties.js'))
+        code.push ''
+        for prop in props.split('\n')
+          code.push tab+klass.name+'.prototype.'+prop
+
+
+      ###
        * The constructor
        *
       ###
-#      if ctor.length > 0
-      code.push ''
-      code.push '   /**'
-      code.push '    * Constructor'
-      code.push '    *'
-      for param in args.split(/\s*,\s*/)
-        code.push '    * @param ' + param
-      code.push '    *'
-      code.push '    */'
-      code.push tab + 'function '+klass.name+'('+args+'){'
-      code.push ctor.join('\n')
-      code.push init.join('\n')
-      code.push tab + '}'
+
+
+      if (fs.existsSync(pathname+klass.name+'.ctor.js'))
+        code.push String(fs.readFileSync(pathname+klass.name+'.ctor.js'))
+      else
+        code.push ''
+        code.push '   /**'
+        code.push '    * Constructor'
+        code.push '    *'
+        for param in args.split(/\s*,\s*/)
+          code.push '    * @param ' + param
+        code.push '    *'
+        code.push '    */'
+        code.push tab + 'function '+klass.name+'('+args+'){'
+        code.push ctor.join('\n')
+        code.push init.join('\n')
+        code.push tab + '}'
 
       ###
        * Static Members
@@ -252,10 +272,7 @@ task 'convert', 'convert js', ->
         prog.push tab+'return ' + klass.name + ';'
         prog.push '})();'
 
-
-
-
-      fs.writeFileSync(pathname.replace('./Box2D/', './lib/'), prog.join('\n'))
+      fs.writeFileSync(pathname+klass.name+'.js', prog.join('\n'))
 
   _buildjs()
 
@@ -264,13 +281,18 @@ task 'convert', 'convert js', ->
  * Traverse pojs object tree
 ###
 _buildjs = ->
+
+
   src = []
   filelist = String(fs.readFileSync('./lib/filelist'))
 
   for f in filelist.split('\n')
     src.push(String(fs.readFileSync(f+'.js')))
 
-  fs.writeFileSync("./web/packages/box2d/Box2D.js", src.join('\n'))
+  template = String(fs.readFileSync('./lib/template.js'))
+  .replace("'{% the code goes here %}'", src.join('\n'))
+
+  fs.writeFileSync("./web/packages/box2d/Box2D.js", template)
 
 
 ###
