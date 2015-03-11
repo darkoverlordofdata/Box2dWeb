@@ -2,107 +2,268 @@ fs = require('fs')
 path = require('path')
 {exec} = require('child_process')
 
-###
- * Build the coffeescript classes
-###
-task 'build', 'build box2d', ->
+###> ========================================================================
+    Build the coffeescript classes
+======================================================================== <###
+#task 'buildcoffee', 'build box2d', ->
+#
+#  src = [String(fs.readFileSync('./coffee/Box2D.coffee'))]
+#  filelist = String(fs.readFileSync('./coffee/filelist'))
+#
+#  for f in filelist.split('\n')
+#    src.push(path.basename(f) + " = " + String(fs.readFileSync(f+'.coffee')))
+#
+#  fs.writeFileSync("./tmp/Box2D.coffee", src.join('\n'))
+#  exec "coffee --output ./web -c ./tmp/Box2D.coffee"
 
-  src = [String(fs.readFileSync('./lib/Box2D.coffee'))]
-  filelist = String(fs.readFileSync('./filelist'))
-
-  for f in filelist.split('\n')
-    src.push(path.basename(f) + " = " + String(fs.readFileSync(f+'.coffee')))
-
-  fs.writeFileSync("./tmp/Box2D.coffee", src.join('\n'))
-  exec "coffee --output ./web -c ./tmp/Box2D.coffee"
+###> ========================================================================
+    Build the javascript classes
+======================================================================== <###
+task 'buildjs', 'build box2d', ->   _buildjs()
 
 
-###
- * parse the javascript library
-###
+###> ========================================================================
+    parse the javascript library
+======================================================================== <###
+
 namespace = ['Box2D']
 classes = []
 
 task 'convert', 'convert js', ->
 
   ###
-   * Load box2d
+   * Load origional box2d_web.js
   ###
-  s = String(fs.readFileSync('./web/box2d_web.js'))
+  s = String(fs.readFileSync('./src/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.js'))
   eval(s)
 
   namespace = ['Box2D']
   classes = []
-  process Box2D
+  tab = '   '
+  loadClasses Box2D
+
+  ###
+   * Origional modified to retain the postDefs object
+  ###
+
+  postDefs = []
+  statics = {}
+  for postDef in Box2D.postDefs
+    def = postDef.toString().split('\n')
+    def.pop()
+    def.shift()
+    for line, ix in def
+      def[ix] = line.replace('      Box2D.', 'Box2D.')
+
+
+    for line in def
+      val = line.split(/\s*=\s*/)
+      ns = val[0].split('.')
+      key = ns[ns.length-2]
+      statics[key] ?= []
+      statics[key].push val
+
+
+
+  ###
+   * re-write each class
+  ###
   for klass in classes
+
     pathname = './'+((klass.namespace+'.'+klass.name).replace(/\./g,'/'))+'.js'
     src = klass.src[klass.name]
+    code = [] # output
+    foundSuper = false
 
-    node = Box2D
-    list = klass.namespace.split('.')
-    next = list.shift()
-    while (next = list.shift())
-      node = node[next]
 
     if 'function' is typeof src
-      console.log "class " + klass.name
-
-      # constructor
-      #
-      # function b2ClassName.b2ClassName() {
-      #
+      ###
+       *  constructor:
+       *
+       *  Combine constructor and initializers
+       *
+       *  function b2ClassName.b2ClassName() {
+      ###
       ctor = klass.src[klass.name]
-      ctor = ctor.toString().replace('function () {','').replace(/}$/, '').split(/\n/)
-      ctor.pop()
-      ctor.shift()
-      #
-      # remove
-      # Box2D.Collision.Shapes.b2Shape.b2Shape.apply(this, arguments);
-      #
+      ctor = ctor.toString().split(/\n/)
+      ctor.pop()    # remove start block
+      ctor.shift()  # remove end block
+      ###
+      # remove this super
+      ###
+      if klass.src.prototype.__super?
+        uber = klass.src.prototype.__super.constructor
+        m1 = klass.namespace + '.' + uber.name + '.' + uber.name + '.apply(this, arguments);'
+        for line, ix in ctor
+          if line.indexOf(m1) >= 0
+            ctor[ix] = ''
 
 
-      # initialization
-      #
-      # function b2ClassName.prototype.b2ClassName($0, $1...) {
-      #
+      ###
+       * initialization
+       *
+       * transform super call
+      ###
       args = ''
       init = []
       if klass.src.prototype[klass.name]
-        t = klass.src.prototype[klass.name].toString()
-        i = t.indexOf('(')
-        j = t.indexOf(')')
-        args = t.substring(i+1,j)
-        t = t.replace(args, '')
-        t = t.replace('function () {','').replace(/}$/, '')
+        func = klass.src.prototype[klass.name].toString()
+        args = func.substring(func.indexOf('(')+1, func.indexOf(')'))
+        func = func.replace(args, '')
+        func = func.replace('function () {','').replace(/}$/, '')
 
-        init = t.split(/\n/)
-        init.pop()
-        init.shift()
-        #
-        # replace
-        # this.__super.b2Shape.call(this)
-        #
-      ctor = ctor.concat(init)
-      code = []
-      if ctor.length > 0
-        code.push 'function '+klass.name+'('+args+'){'
-        code.push ctor.join('\n')
-        code.push '}'
+        init = func.split('\n')
+        init.pop()    # remove start block
+        init.shift()  # remove end block
+        ###
+        # replace super
+        ###
+        if klass.src.prototype.__super?
+          uber = klass.src.prototype.__super.constructor
+          m2 = 'this.__super.' + uber.name + '.call(this'
+          argz = args
+          if argz.length > 0
+            argz = ', ' + argz
+          for line, ix in init
+            if line.indexOf(m2) >= 0
+              init[ix] = line.replace(m2, klass.name+'.__super__.constructor.call(this')
+              foundSuper = true
 
-      for method, v of klass.src.prototype
-        if method isnt '__super' and method isnt 'constructor'
-          code.push '//' + method
-          vs = v.toString()
-          vs = klass.name + '.prototype.' + method + ' = ' + vs + ';'
-          code.push vs
+      if klass.src.prototype.__super? and not foundSuper
+        init.unshift tab+tab+klass.name+'.__super__.constructor.apply(this, arguments);'
 
 
-      fs.writeFileSync(pathname, code.join('\n'))
+      ###
+       *
+       *  Static Fields
+       *
+      ###
+      if statics[klass.name]?
+        for val in statics[klass.name]
+          ns = val[0].split('.')
+          if val[1].indexOf(klass.name) >= 0
+            postDefs.push val
+          else
+            code.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
+
+
+      ###
+       * The constructor
+       *
+      ###
+#      if ctor.length > 0
+      code.push ''
+      code.push '   /**'
+      code.push '    * Constructor'
+      code.push '    *'
+      for param in args.split(/\s*,\s*/)
+        code.push '    * @param ' + param
+      code.push '    *'
+      code.push '    */'
+      code.push tab + 'function '+klass.name+'('+args+'){'
+      code.push ctor.join('\n')
+      code.push init.join('\n')
+      code.push tab + '}'
+
+      ###
+       * Static Members
+      ###
+      for methodName, method of klass.src
+        if methodName isnt klass.name
+          if 'function' is typeof method
+            func = method.toString()
+            args = func.substring(func.indexOf('(')+1, func.indexOf(')'))
+            func = func.split('\n')
+
+            code.push ''
+            code.push '   /**'
+            code.push '    * Static '+methodName
+            code.push '    *'
+            for param in args.split(/\s*,\s*/)
+              code.push '    * @param ' + param
+            code.push '    *'
+            code.push '    */'
+            code.push tab + klass.name + '.' + methodName + ' = ' + func.join('\n') + ';'
+
+
+      ###
+       * The remaining methods
+       * Transform super calls
+      ###
+      for methodName, method of klass.src.prototype
+        if methodName isnt '__super' and methodName isnt 'constructor'
+          func = method.toString()
+          args = func.substring(func.indexOf('(')+1, func.indexOf(')'))
+
+          func = method.toString().split('\n')
+          if klass.src.prototype.__super?
+            m3 = 'this.__super.' + methodName + '.call(this'
+
+            for line, ix in func
+              if line.indexOf(m3) >= 0
+                func[ix] = line.replace(m3, klass.name+'.__super__.'+methodName+'.call(this')
+
+          code.push ''
+          code.push '   /**'
+          code.push '    * '+methodName
+          code.push '    *'
+          for param in args.split(/\s*,\s*/)
+            code.push '    * @param ' + param
+          code.push '    *'
+          code.push '    */'
+          code.push tab + klass.name + '.prototype.' + methodName + ' = ' + func.join('\n') + ';'
+
+
+      prog = []
+      prog.push '/**'
+      prog.push ' * Class '+klass.name
+      prog.push ' *'
+      prog.push ' *'
+      prog.push ' */'
+      if klass.src.prototype.__super?
+        uber = klass.src.prototype.__super.constructor
+        prog.push klass.name + ' = ' + klass.namespace + '.' + klass.name + ' = (function(superClass) {'
+        prog.push tab+'extend(' + klass.name + ', superClass);'
+        prog.push code.join('\n')
+        while (val = postDefs.pop())
+          ns = val[0].split('.')
+          prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
+        prog.push tab+'return ' + klass.name + ';'
+        prog.push  '})('+uber.name+');'
+      else
+        prog.push  klass.namespace + '.' + klass.name + ' = ' + klass.name + ' = (function() {'
+        prog.push code.join('\n')
+        while (val = postDefs.pop())
+          ns = val[0].split('.')
+          prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
+        prog.push tab+'return ' + klass.name + ';'
+        prog.push '})();'
+
+
+
+
+      fs.writeFileSync(pathname.replace('./Box2D/', './lib/'), prog.join('\n'))
+
+  _buildjs()
+
 
 ###
  * Traverse pojs object tree
 ###
-process = (obj) ->
+_buildjs = ->
+  src = []
+  filelist = String(fs.readFileSync('./lib/filelist'))
+
+  for f in filelist.split('\n')
+    src.push(String(fs.readFileSync(f+'.js')))
+
+  fs.writeFileSync("./web/packages/box2d/Box2D.js", src.join('\n'))
+
+
+###
+ * Traverse pojs object tree
+###
+loadClasses = (obj) ->
 
   return unless obj?
   for name, member of obj
@@ -112,11 +273,15 @@ process = (obj) ->
       namespace.push(name)
       for key, val of member
         if 'object' is typeof val
+          #
+          # recursively process nodes
+          #
           namespace.push(key)
-          process(val)
+          loadClasses(val)
         else
           classes.push({namespace: namespace.join('.'), name: key, src: val})
       namespace.pop()
   namespace.pop()
+  return
 
 

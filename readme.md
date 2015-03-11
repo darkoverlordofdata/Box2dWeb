@@ -1,21 +1,10 @@
 # Box2DWeb
 
-## Work in progress
+## Box2DWeb Recompiled
 
+Box2D has a ton of great code wrapped up in some dated pre-html5 bindings.
+I've automated a recompile of the code to modern coffeescript inspired bindings.
 
-### The original Box2dWeb
+This cuts the function call overhead in half when allocating new framework objects.
 
-    Issue 41: Box2D.js overwrite original Object.defineProperty
-    https://code.google.com/p/box2dweb/issues/detail?id=41
-
-    This issue has been open for over a year, and it's just a faulty polyfill.
-    It causes other code, dependant on Object.defineProperty, to fail.
-    I need a corrected version for my projects, so here it is.
-
-
-### Cocoon
-
-    ./cocoon - cocoon_box2d.js port
-        ready to test
-    ./bod2d_web - cocoon_box2d.js API, but for the browser
-        not ready
+Classes are written out in 1 class per file format in the ./lib folder to enable maintenance going forward.

@@ -10880,5 +10880,5 @@ Box2D.postDefs = [];
 })(); //post-definitions
 var i;
 for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
-delete Box2D.postDefs;
+//delete Box2D.postDefs;
 
