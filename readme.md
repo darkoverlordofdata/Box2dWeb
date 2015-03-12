@@ -32,10 +32,10 @@ Phase II: move scalar property definitions to the prototype and remove them from
 
 Performance is a slippery slope. I've created a simple test, taken from Asteroids,
 that creates 10,000 bullets. Typical results:
-Box2D - 6752 ms
-Redux - 6017 ms
+Box2D - (5269, 5113, 5167, 5488, 5336) = 26373 ms
+Redux - (3167, 3745, 4314, 4171, 3894) = 19966 ms
 
-For the most part, I see a 8-16% gain.
+For the most part, I see up to a 25% increase.
 
 
 ## Install

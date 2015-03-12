@@ -119,7 +119,7 @@ task 'redux', 'Redux the box2sweb library', (o) ->
       ###
        * initialization
        *
-       * transform this super call
+       * transform super call
       ###
       args = ''
       init = []
@@ -140,38 +140,11 @@ task 'redux', 'Redux the box2sweb library', (o) ->
           m2 = 'this.__super.' + uber.name + '.call(this'
           for line, ix in init
             if line.indexOf(m2) >= 0
-              init[ix] = line.replace(m2, uber.name+'.call(this')
+              init[ix] = line.replace(m2, klass.name+'.__super__.constructor.call(this')
               foundSuper = true
 
       if klass.src.prototype.__super? and not foundSuper
-        uber = klass.src.prototype.__super.constructor
-        init.unshift tab+tab+uber.name+'.apply(this, arguments);'
-
-
-      ###
-       * The constructor
-       *
-      ###
-      if (options.override and fs.existsSync(pathname+klass.name+'_ctor.js'))
-        code.push String(fs.readFileSync(pathname+klass.name+'_ctor.js'))
-      else
-        code.push ''
-        code.push '   /**'
-        code.push '    *  Class '+klass.name
-        code.push '    *'
-        for param in args.split(/\s*,\s*/)
-          code.push '    * @param ' + param
-        code.push '    *'
-        code.push '    */'
-        code.push tab + klass.name + ' = ' + klass.namespace + '.' + klass.name + ' = function '+klass.name+'('+args+'){'
-        code.push _opt(ctor.join('\n'))
-        code.push _opt(init.join('\n'))
-        code.push tab + '};'
-        code.push tab + klass.name + '.constructor = '+klass.name+';'
-
-      if klass.src.prototype.__super?
-        uber = klass.src.prototype.__super.constructor
-        code.push tab + klass.name + '.prototype = Object.create('+uber.name+'.prototype );'
+        init.unshift tab+tab+klass.name+'.__super__.constructor.apply(this, arguments);'
 
 
       ###
@@ -200,6 +173,26 @@ task 'redux', 'Redux the box2sweb library', (o) ->
         for prop in props.split('\n')
           code.push tab+klass.name+'.prototype.'+prop
 
+
+      ###
+       * The constructor
+       *
+      ###
+      if (options.override and fs.existsSync(pathname+klass.name+'_ctor.js'))
+        code.push String(fs.readFileSync(pathname+klass.name+'_ctor.js'))
+      else
+        code.push ''
+        code.push '   /**'
+        code.push '    * Constructor'
+        code.push '    *'
+        for param in args.split(/\s*,\s*/)
+          code.push '    * @param ' + param
+        code.push '    *'
+        code.push '    */'
+        code.push tab + 'function '+klass.name+'('+args+'){'
+        code.push _opt(ctor.join('\n'))
+        code.push _opt(init.join('\n'))
+        code.push tab + '}'
 
       ###
        * Static Members
@@ -233,12 +226,11 @@ task 'redux', 'Redux the box2sweb library', (o) ->
 
           func = method.toString().split('\n')
           if klass.src.prototype.__super?
-            uber = klass.src.prototype.__super.constructor
             m3 = 'this.__super.' + methodName + '.call(this'
 
             for line, ix in func
               if line.indexOf(m3) >= 0
-                func[ix] = line.replace(m3, uber.name+'.prototype.'+methodName+'.call(this')
+                func[ix] = line.replace(m3, klass.name+'.__super__.'+methodName+'.call(this')
 
           code.push ''
           code.push '   /**'
@@ -252,10 +244,31 @@ task 'redux', 'Redux the box2sweb library', (o) ->
 
 
       prog = []
-      prog.push _opt(code.join('\n'))
-      while (val = postDefs.pop())
-        ns = val[0].split('.')
-        prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
+      prog.push '/**'
+      prog.push ' * Class '+klass.name
+      prog.push ' *'
+      prog.push ' *'
+      prog.push ' */'
+      if klass.src.prototype.__super?
+        uber = klass.src.prototype.__super.constructor
+        prog.push klass.name + ' = ' + klass.namespace + '.' + klass.name + ' = (function(superClass) {'
+        prog.push '\'use strict;\''
+        prog.push tab+'extend(' + klass.name + ', superClass);'
+        prog.push _opt(code.join('\n'))
+        while (val = postDefs.pop())
+          ns = val[0].split('.')
+          prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
+        prog.push tab+'return ' + klass.name + ';'
+        prog.push  '})('+uber.name+');'
+      else
+        prog.push  klass.namespace + '.' + klass.name + ' = ' + klass.name + ' = (function() {'
+        prog.push '\'use strict;\''
+        prog.push _opt(code.join('\n'))
+        while (val = postDefs.pop())
+          ns = val[0].split('.')
+          prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
+        prog.push tab+'return ' + klass.name + ';'
+        prog.push '})();'
 
       fs.writeFileSync(pathname+klass.name+'.js', prog.join('\n'))
 
