@@ -28,6 +28,14 @@ Phase II: move scalar property definitions to the prototype and remove them from
     2. Results in fewer hidden classes
 
 
+## Performace
+
+Performance is a slippery slope. I've created a simple test, taken from Asteroids,
+that creates 10,000 bullets. Typical results:
+Box2D - 6752 ms
+Redux - 6017 ms
+
+For the most part, I see a 8-16% gain.
 
 
 ## Install

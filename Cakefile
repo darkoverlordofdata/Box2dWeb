@@ -21,6 +21,89 @@ path = require('path')
 ======================================================================== <###
 task 'buildjs', 'build box2d', ->   _buildjs()
 
+###> ========================================================================
+    perf testing
+======================================================================== <###
+task 'perfc', 'performance test', ->
+  `'use strict;'`
+
+
+  obj = {x: 0};
+  y = 42
+
+  d1 = Date.now()
+  for i in [0...100000000]
+    `obj.x = y || 0;`
+
+
+  d2 = Date.now()
+  for i in [0...100000000]
+    `if (y === undefined) obj.x=y;`
+
+
+  d3 = Date.now()
+
+  console.log "if 1 #{d2 - d1}"
+  console.log "if 2 #{d3 - d2}"
+
+
+task 'perfa', 'performance test', ->
+
+  Box2D = require('box2dweb')
+  Redux = require('./web/packages/box2d/Box2D.js')
+
+  d1 = Date.now()
+  _tester Redux
+  d2 = Date.now()
+
+  console.log "Redux #{d2 - d1}"
+
+task 'perfb', 'performance test', ->
+
+  Box2D = require('box2dweb')
+
+  d1 = Date.now()
+  _tester Box2D
+  d2 = Date.now()
+
+  console.log "Box2D #{d2 - d1}"
+
+
+_tester = (Box2D) ->
+  b2World               = Box2D.Dynamics.b2World
+  b2Body                = Box2D.Dynamics.b2Body
+  b2BodyDef             = Box2D.Dynamics.b2BodyDef
+  b2CircleShape         = Box2D.Collision.Shapes.b2CircleShape
+  b2FixtureDef          = Box2D.Dynamics.b2FixtureDef
+  b2Vec2                = Box2D.Common.Math.b2Vec2
+
+  world = new b2World(new b2Vec2(0, 0), true)
+  bullets = []
+  for i in [0...10000]
+    ###
+     * Bullet simulation
+    ###
+    bodyDef = new b2BodyDef()
+    bodyDef.type = b2Body.b2_dynamicBody
+    bodyDef.fixedRotation = true
+    bodyDef.position.x = 100
+    bodyDef.position.y = 100
+    bodyDef.linearVelocity.Set(.01, .01)
+    bodyDef.angularVelocity = 0
+
+    fixDef = new b2FixtureDef()
+    fixDef.density = 1.0
+    fixDef.friction = 0.0
+    fixDef.restitution = 0.2
+    fixDef.shape = new b2CircleShape(0)
+
+    body = world.CreateBody(bodyDef)
+    body.CreateFixture(fixDef)
+    bullets.push body
+
+
+
+
 
 ###> ========================================================================
     parse the javascript library
@@ -28,8 +111,8 @@ task 'buildjs', 'build box2d', ->   _buildjs()
 
 namespace = ['Box2D']
 classes = []
-
-task 'redux', 'Redux the box2sweb library', ->
+option '-o', '--override', 'use overrides'
+task 'redux', 'Redux the box2sweb library', (options) ->
 
   namespace = ['Box2D']   # namespace root
   classes = []            # list of classes
@@ -52,13 +135,13 @@ task 'redux', 'Redux the box2sweb library', ->
    *
    *
   ###
-  #  eval(String(fs.readFileSync('./src/box2d_web.js')))
-  #  loadClasses Box2D
+  eval(String(fs.readFileSync('./src/box2d_web.js')))
+  loadClasses Box2D
 
   ###
    * Hold your bits - mikolalysenko has already done this!
   ###
-  Box2D = require('box2dweb')
+#  Box2D = require('box2dweb')
 
   postDefs = []
   statics = {}
@@ -137,9 +220,6 @@ task 'redux', 'Redux the box2sweb library', ->
         if klass.src.prototype.__super?
           uber = klass.src.prototype.__super.constructor
           m2 = 'this.__super.' + uber.name + '.call(this'
-          argz = args
-          if argz.length > 0
-            argz = ', ' + argz
           for line, ix in init
             if line.indexOf(m2) >= 0
               init[ix] = line.replace(m2, klass.name+'.__super__.constructor.call(this')
@@ -180,8 +260,8 @@ task 'redux', 'Redux the box2sweb library', ->
        * The constructor
        *
       ###
-      if (fs.existsSync(pathname+klass.name+'.ctor.js'))
-        code.push String(fs.readFileSync(pathname+klass.name+'.ctor.js'))
+      if (options.override and fs.existsSync(pathname+klass.name+'_ctor.js'))
+        code.push String(fs.readFileSync(pathname+klass.name+'_ctor.js'))
       else
         code.push ''
         code.push '   /**'
@@ -192,8 +272,8 @@ task 'redux', 'Redux the box2sweb library', ->
         code.push '    *'
         code.push '    */'
         code.push tab + 'function '+klass.name+'('+args+'){'
-        code.push ctor.join('\n')
-        code.push init.join('\n')
+        code.push _opt(ctor.join('\n'))
+        code.push _opt(init.join('\n'))
         code.push tab + '}'
 
       ###
@@ -214,7 +294,7 @@ task 'redux', 'Redux the box2sweb library', ->
               code.push '    * @param ' + param
             code.push '    *'
             code.push '    */'
-            code.push tab + klass.name + '.' + methodName + ' = ' + func.join('\n') + ';'
+            code.push tab + klass.name + '.' + methodName + ' = ' + _opt(func.join('\n')) + ';'
 
 
       ###
@@ -222,7 +302,7 @@ task 'redux', 'Redux the box2sweb library', ->
        * Transform super calls
       ###
       for methodName, method of klass.src.prototype
-        if methodName isnt '__super' and methodName isnt 'constructor'
+        if methodName isnt '__super' and methodName isnt 'constructor' and methodName isnt klass.name
           func = method.toString()
           args = func.substring(func.indexOf('(')+1, func.indexOf(')'))
 
@@ -242,7 +322,7 @@ task 'redux', 'Redux the box2sweb library', ->
             code.push '    * @param ' + param
           code.push '    *'
           code.push '    */'
-          code.push tab + klass.name + '.prototype.' + methodName + ' = ' + func.join('\n') + ';'
+          code.push tab + klass.name + '.prototype.' + methodName + ' = ' + _opt(func.join('\n')) + ';'
 
 
       prog = []
@@ -256,7 +336,7 @@ task 'redux', 'Redux the box2sweb library', ->
         prog.push klass.name + ' = ' + klass.namespace + '.' + klass.name + ' = (function(superClass) {'
         prog.push '\'use strict;\''
         prog.push tab+'extend(' + klass.name + ', superClass);'
-        prog.push code.join('\n')
+        prog.push _opt(code.join('\n'))
         while (val = postDefs.pop())
           ns = val[0].split('.')
           prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
@@ -265,7 +345,7 @@ task 'redux', 'Redux the box2sweb library', ->
       else
         prog.push  klass.namespace + '.' + klass.name + ' = ' + klass.name + ' = (function() {'
         prog.push '\'use strict;\''
-        prog.push code.join('\n')
+        prog.push _opt(code.join('\n'))
         while (val = postDefs.pop())
           ns = val[0].split('.')
           prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
@@ -319,4 +399,65 @@ loadClasses = (obj) ->
   namespace.pop()
   return
 
+
+###
+ * Optimizations
+###
+_opt = (s) ->
+
+
+  ###
+   * Rule 1
+   *
+   *  > if (x === undefined) x = 0;
+   *  < x = x || 0;
+   *
+  ###
+  op1 = /if\s*\(\s*([A-Za-z0-9._]*)\s*===\s*undefined\s*\)\s*([A-Za-z0-9._]*)\s*=\s*([A-Za-z0-9._]*)\s*;/
+
+  re1 = ($0, $1, $2, $3) ->
+    if $1 is $2
+      "#{$1} = #{$1} || #{$3};"
+    else
+      $0
+
+
+  if 'string' is typeof s
+    if s.indexOf('\n')
+      s1 = s.split('\n')
+      for s2, index in s1
+        if op1.test(s2)
+          s1[index] = s2.replace(op1, re1)
+      s = s1.join('\n')
+
+    else
+      if op1.test(s)
+        s = s.replace(op1, re1)
+  else
+    for s1, index in s
+      if op1.test(s)
+        s[index] = s1.replace(op1, re1)
+
+
+  return s
+
+###> ========================================================================
+    test the optimization regexp
+======================================================================== <###
+task 'test', 'test', ->
+
+  x = "if (x_ === undefined) x_ = 0;"
+  console.log x
+  console.log _opt(x)
+
+  x = [
+    "if (x_ === undefined) x_ = 0;"
+    "if (y_ === undefined) y_ = 0;"
+  ]
+  console.log x
+  console.log _opt(x)
+
+  x = "if (x_ === undefined) x_ = 0;\nif (y_ === undefined) y_ = 0;"
+  console.log x
+  console.log _opt(x)
 
