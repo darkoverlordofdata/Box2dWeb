@@ -10,7 +10,7 @@ class Box2D.Dynamics.b2Body
 
   @b2_staticBody          = 0
   @b2_kinematicBody       = 1
-  @b2_dynamicBody         = 1
+  @b2_dynamicBody         = 1 # ??? b2Body.b2_dynamicBody = 2;
 
   m_world       : null
   m_bodyID      : null

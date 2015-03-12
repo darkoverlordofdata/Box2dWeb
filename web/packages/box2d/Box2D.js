@@ -18,7 +18,7 @@
 
 var Box2D = (function() {
     'use strict;'
-var Box2D, ClipVertex, Features, IBroadPhase, Vector, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
+var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     b2BuoyancyController, b2CircleContact, b2CircleShape, b2Collision, b2Color, b2ConstantAccelController,
     b2ConstantForceController, b2Contact, b2ContactConstraint, b2ContactConstraintPoint, b2ContactEdge,
     b2ContactFactory, b2ContactFilter, b2ContactID, b2ContactImpulse, b2ContactListener, b2ContactManager,
@@ -34,7 +34,7 @@ var Box2D, ClipVertex, Features, IBroadPhase, Vector, b2AABB, b2Body, b2BodyDef,
     b2RayCastInput, b2RayCastOutput, b2RevoluteJoint, b2RevoluteJointDef, b2Segment, b2SeparationFunction,
     b2Settings, b2Shape, b2Simplex, b2SimplexCache, b2SimplexVertex, b2Sweep, b2TOIInput,
     b2TensorDampingController, b2TimeOfImpact, b2TimeStep, b2Transform, b2Vec2, b2Vec3, b2WeldJoint,
-    b2WeldJointDef, b2World, b2WorldManifold, b2internal, parseUInt, Vector, Vector_a2j_Number,
+    b2WeldJointDef, b2World, b2WorldManifold, parseUInt,
     extend = function(child, parent) {
         for (var key in parent) {
             if (hasProp.call(parent, key))
@@ -48,81 +48,78 @@ var Box2D, ClipVertex, Features, IBroadPhase, Vector, b2AABB, b2Body, b2BodyDef,
         child.__super__ = parent.prototype;
         return child;
     },
-    hasProp = {}.hasOwnProperty;
-
-b2internal = 'Box2D.Common.b2internal';
-IBroadPhase = 'Box2D.Collision.IBroadPhase';
-
-Box2D = (function() {
-    'use strict;'
-    function Box2D() {}
-
-    Box2D.is = function(o1, o2) {
+    hasProp = {}.hasOwnProperty,
+    b2internal = 'Box2D.Common.b2internal',
+    IBroadPhase = 'Box2D.Collision.IBroadPhase',
+    Box2D = (function() {
         'use strict;'
-        var ref;
-        if (o1 === null) {
-            return false;
-        }
-        if ((o2 instanceof Function) && (o1 instanceof o2)) {
-            return true;
-        }
-        if (((ref = o1.constructor.__implements) != null ? ref[o2.name] : void 0)) {
-            return true;
-        }
-        return false;
-    };
+        function Box2D() {}
 
-    Box2D.generateCallback = function(context, cb) {
-        return function() {
+        Box2D.is = function(o1, o2) {
             'use strict;'
-            cb.apply(context, arguments);
+            var ref;
+            if (o1 === null) {
+                return false;
+            }
+            if ((o2 instanceof Function) && (o1 instanceof o2)) {
+                return true;
+            }
+            if (((ref = o1.constructor.__implements) != null ? ref[o2.name] : void 0)) {
+                return true;
+            }
+            return false;
         };
-    };
 
-    Box2D.NVector = function(length) {
-        'use strict;'
-        var a, i;
-        if (length == null) {
-            length = 0;
-        }
-        a = new Array(length);
-        i = 0;
-        while (i < length) {
-            a[i] = 0;
-            ++i;
-        }
-        return a;
-    };
+        Box2D.generateCallback = function(context, cb) {
+            return function() {
+                'use strict;'
+                cb.apply(context, arguments);
+            };
+        };
 
-    Box2D.parseUInt = function(v) {
-        'use strict;'
-        return Math.abs(parseInt(v));
-    };
+        Box2D.NVector = function(length) {
+            'use strict;'
+            var a, i;
+            if (length == null) {
+                length = 0;
+            }
+            a = new Array(length);
+            i = 0;
+            while (i < length) {
+                a[i] = 0;
+                ++i;
+            }
+            return a;
+        };
 
-    Box2D.Common = {
-        b2internal: b2internal,
-        Math: {}
-    };
+        Box2D.parseUInt = function(v) {
+            'use strict;'
+            return Math.abs(parseInt(v));
+        };
 
-    Box2D.Collision = {
-        IBroadPhase: IBroadPhase,
-        Shapes: {}
-    };
+        Box2D.Common = {
+            b2internal: b2internal,
+            Math: {}
+        };
 
-    Box2D.Dynamics = {
-        Contacts: {},
-        Controllers: {},
-        Joints: {}
-    };
+        Box2D.Collision = {
+            IBroadPhase: IBroadPhase,
+            Shapes: {}
+        };
 
-    return Box2D;
+        Box2D.Dynamics = {
+            Contacts: {},
+            Controllers: {},
+            Joints: {}
+        };
 
-})();
+        return Box2D;
 
-Vector = Array;
-Vector_a2j_Number = Box2D.NVector;
+    })(),
+    Vector = Array,
+    Vector_a2j_Number = Box2D.NVector;
 
-/**
+    /**
  * Class b2Color
  *
  *
@@ -700,8 +697,8 @@ Box2D.Common.Math.b2Mat22 = b2Mat22 = (function() {
     */
    b2Mat22.prototype.Set = function (angle) {
       angle = angle || 0;
-      var c = Math.cos(angle);
-      var s = Math.sin(angle);
+      var c = Math.cos(angle),
+          s = Math.sin(angle);
       this.col1.x = c;
       this.col2.x = (-s);
       this.col1.y = s;
@@ -799,11 +796,11 @@ Box2D.Common.Math.b2Mat22 = b2Mat22 = (function() {
     *
     */
    b2Mat22.prototype.GetInverse = function (out) {
-      var a = this.col1.x;
-      var b = this.col2.x;
-      var c = this.col1.y;
-      var d = this.col2.y;
-      var det = a * d - b * c;
+      var a = this.col1.x,
+          b = this.col2.x,
+          c = this.col1.y,
+          d = this.col2.y,
+          det = a * d - b * c;
       if (det != 0.0) {
          det = 1.0 / det;
       }
@@ -825,11 +822,11 @@ Box2D.Common.Math.b2Mat22 = b2Mat22 = (function() {
    b2Mat22.prototype.Solve = function (out, bX, bY) {
       bX = bX || 0;
       bY = bY || 0;
-      var a11 = this.col1.x;
-      var a12 = this.col2.x;
-      var a21 = this.col1.y;
-      var a22 = this.col2.y;
-      var det = a11 * a22 - a12 * a21;
+      var a11 = this.col1.x,
+          a12 = this.col2.x,
+          a21 = this.col1.y,
+          a22 = this.col2.y,
+          det = a11 * a22 - a12 * a21;
       if (det != 0.0) {
          det = 1.0 / det;
       }
@@ -986,11 +983,11 @@ Box2D.Common.Math.b2Mat33 = b2Mat33 = (function() {
    b2Mat33.prototype.Solve22 = function (out, bX, bY) {
       bX = bX || 0;
       bY = bY || 0;
-      var a11 = this.col1.x;
-      var a12 = this.col2.x;
-      var a21 = this.col1.y;
-      var a22 = this.col2.y;
-      var det = a11 * a22 - a12 * a21;
+      var a11 = this.col1.x,
+          a12 = this.col2.x,
+          a21 = this.col1.y,
+          a22 = this.col2.y,
+          det = a11 * a22 - a12 * a21;
       if (det != 0.0) {
          det = 1.0 / det;
       }
@@ -1012,16 +1009,16 @@ Box2D.Common.Math.b2Mat33 = b2Mat33 = (function() {
       bX = bX || 0;
       bY = bY || 0;
       bZ = bZ || 0;
-      var a11 = this.col1.x;
-      var a21 = this.col1.y;
-      var a31 = this.col1.z;
-      var a12 = this.col2.x;
-      var a22 = this.col2.y;
-      var a32 = this.col2.z;
-      var a13 = this.col3.x;
-      var a23 = this.col3.y;
-      var a33 = this.col3.z;
-      var det = a11 * (a22 * a33 - a32 * a23) + a21 * (a32 * a13 - a12 * a33) + a31 * (a12 * a23 - a22 * a13);
+      var a11 = this.col1.x,
+          a21 = this.col1.y,
+          a31 = this.col1.z,
+          a12 = this.col2.x,
+          a22 = this.col2.y,
+          a32 = this.col2.z,
+          a13 = this.col3.x,
+          a23 = this.col3.y,
+          a33 = this.col3.z,
+          det = a11 * (a22 * a33 - a32 * a23) + a21 * (a32 * a13 - a12 * a33) + a31 * (a12 * a23 - a22 * a13);
       if (det != 0.0) {
          det = 1.0 / det;
       }
@@ -1319,8 +1316,8 @@ Box2D.Common.Math.b2Math = b2Math = (function() {
     *
     */
    b2Math.MulXT = function (T, v) {
-      var a = b2Math.SubtractVV(v, T.position);
-      var tX = (a.x * T.R.col1.x + a.y * T.R.col1.y);
+      var a = b2Math.SubtractVV(v, T.position),
+          tX = (a.x * T.R.col1.x + a.y * T.R.col1.y);
       a.y = (a.x * T.R.col2.x + a.y * T.R.col2.y);
       a.x = tX;
       return a;
@@ -1358,8 +1355,8 @@ Box2D.Common.Math.b2Math = b2Math = (function() {
     *
     */
    b2Math.Distance = function (a, b) {
-      var cX = a.x - b.x;
-      var cY = a.y - b.y;
+      var cX = a.x - b.x,
+          cY = a.y - b.y;
       return Math.sqrt(cX * cX + cY * cY);
    };
 
@@ -1371,8 +1368,8 @@ Box2D.Common.Math.b2Math = b2Math = (function() {
     *
     */
    b2Math.DistanceSquared = function (a, b) {
-      var cX = a.x - b.x;
-      var cY = a.y - b.y;
+      var cX = a.x - b.x,
+          cY = a.y - b.y;
       return (cX * cX + cY * cY);
    };
 
@@ -1421,9 +1418,9 @@ Box2D.Common.Math.b2Math = b2Math = (function() {
     *
     */
    b2Math.MulTMM = function (A, B) {
-      var c1 = new b2Vec2(b2Math.Dot(A.col1, B.col1), b2Math.Dot(A.col2, B.col1));
-      var c2 = new b2Vec2(b2Math.Dot(A.col1, B.col2), b2Math.Dot(A.col2, B.col2));
-      var C = b2Mat22.FromVV(c1, c2);
+      var c1 = new b2Vec2(b2Math.Dot(A.col1, B.col1), b2Math.Dot(A.col2, B.col1)),
+          c2 = new b2Vec2(b2Math.Dot(A.col1, B.col2), b2Math.Dot(A.col2, B.col2)),
+          C = b2Mat22.FromVV(c1, c2);
       return C;
    };
 
@@ -1806,9 +1803,9 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = (function(superClass) {
     *
     */
    b2CircleShape.prototype.TestPoint = function (transform, p) {
-      var tMat = transform.R;
-      var dX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
-      var dY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
+      var tMat = transform.R,
+          dX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y),
+          dY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
       dX = p.x - dX;
       dY = p.y - dY;
       return (dX * dX + dY * dY) <= this.m_radius * this.m_radius;
@@ -1823,17 +1820,17 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = (function(superClass) {
     *
     */
    b2CircleShape.prototype.RayCast = function (output, input, transform) {
-      var tMat = transform.R;
-      var positionX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
-      var positionY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
-      var sX = input.p1.x - positionX;
-      var sY = input.p1.y - positionY;
-      var b = (sX * sX + sY * sY) - this.m_radius * this.m_radius;
-      var rX = input.p2.x - input.p1.x;
-      var rY = input.p2.y - input.p1.y;
-      var c = (sX * rX + sY * rY);
-      var rr = (rX * rX + rY * rY);
-      var sigma = c * c - rr * b;
+      var tMat = transform.R,
+          positionX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y),
+          positionY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y),
+          sX = input.p1.x - positionX,
+          sY = input.p1.y - positionY,
+          b = (sX * sX + sY * sY) - this.m_radius * this.m_radius,
+          rX = input.p2.x - input.p1.x,
+          rY = input.p2.y - input.p1.y,
+          c = (sX * rX + sY * rY),
+          rr = (rX * rX + rY * rY),
+          sigma = c * c - rr * b;
       if (sigma < 0.0 || rr < Number.MIN_VALUE) {
          return false;
       }
@@ -1857,9 +1854,9 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = (function(superClass) {
     *
     */
    b2CircleShape.prototype.ComputeAABB = function (aabb, transform) {
-      var tMat = transform.R;
-      var pX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y);
-      var pY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
+      var tMat = transform.R,
+          pX = transform.position.x + (tMat.col1.x * this.m_p.x + tMat.col2.x * this.m_p.y),
+          pY = transform.position.y + (tMat.col1.y * this.m_p.x + tMat.col2.y * this.m_p.y);
       aabb.lowerBound.Set(pX - this.m_radius, pY - this.m_radius);
       aabb.upperBound.Set(pX + this.m_radius, pY + this.m_radius);
    };
@@ -1889,8 +1886,8 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = (function(superClass) {
     */
    b2CircleShape.prototype.ComputeSubmergedArea = function (normal, offset, xf, c) {
       offset = offset || 0;
-      var p = b2Math.MulX(xf, this.m_p);
-      var l = (-(b2Math.Dot(normal, p) - offset));
+      var p = b2Math.MulX(xf, this.m_p),
+          l = (-(b2Math.Dot(normal, p) - offset));
       if (l < (-this.m_radius) + Number.MIN_VALUE) {
          return 0;
       }
@@ -1898,10 +1895,10 @@ b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = (function(superClass) {
          c.SetV(p);
          return Math.PI * this.m_radius * this.m_radius;
       }
-      var r2 = this.m_radius * this.m_radius;
-      var l2 = l * l;
-      var area = r2 * (Math.asin(l / this.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2);
-      var com = (-2 / 3 * Math.pow(r2 - l2, 1.5) / area);
+      var r2 = this.m_radius * this.m_radius,
+          l2 = l * l,
+          area = r2 * (Math.asin(l / this.m_radius) + Math.PI / 2) + l * Math.sqrt(r2 - l2),
+          com = (-2 / 3 * Math.pow(r2 - l2, 1.5) / area);
       c.x = p.x + normal.x * com;
       c.y = p.y + normal.y * com;
       return area;
@@ -2080,20 +2077,20 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     */
    b2PolygonShape.ComputeCentroid = function (vs, count) {
       count = count || 0;
-      var c = new b2Vec2();
-      var area = 0.0;
-      var p1X = 0.0;
-      var p1Y = 0.0;
-      var inv3 = 1.0 / 3.0;
+      var c = new b2Vec2(),
+          area = 0.0,
+          p1X = 0.0,
+          p1Y = 0.0,
+          inv3 = 1.0 / 3.0;
       for (var i = 0; i < count; ++i) {
-         var p2 = vs[i];
-         var p3 = i + 1 < count ? vs[parseInt(i + 1)] : vs[0];
-         var e1X = p2.x - p1X;
-         var e1Y = p2.y - p1Y;
-         var e2X = p3.x - p1X;
-         var e2Y = p3.y - p1Y;
-         var D = (e1X * e2Y - e1Y * e2X);
-         var triangleArea = 0.5 * D;area += triangleArea;
+         var p2 = vs[i],
+          p3 = i + 1 < count ? vs[parseInt(i + 1)] : vs[0],
+          e1X = p2.x - p1X,
+          e1Y = p2.y - p1Y,
+          e2X = p3.x - p1X,
+          e2Y = p3.y - p1Y,
+          D = (e1X * e2Y - e1Y * e2X),
+          triangleArea = 0.5 * D;area += triangleArea;
          c.x += triangleArea * inv3 * (p1X + p2.x + p3.x);
          c.y += triangleArea * inv3 * (p1Y + p2.y + p3.y);
       }
@@ -2112,8 +2109,8 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     */
    b2PolygonShape.ComputeOBB = function (obb, vs, count) {
       count = count || 0;
-      var i = 0;
-      var p = new Vector(count + 1);
+      var i = 0,
+          p = new Vector(count + 1);
       for (i = 0;
       i < count; ++i) {
          p[i] = vs[i];
@@ -2122,23 +2119,23 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
       var minArea = Number.MAX_VALUE;
       for (i = 1;
       i <= count; ++i) {
-         var root = p[parseInt(i - 1)];
-         var uxX = p[i].x - root.x;
-         var uxY = p[i].y - root.y;
-         var length = Math.sqrt(uxX * uxX + uxY * uxY);
+         var root = p[parseInt(i - 1)],
+          uxX = p[i].x - root.x,
+          uxY = p[i].y - root.y,
+          length = Math.sqrt(uxX * uxX + uxY * uxY);
          uxX /= length;
          uxY /= length;
-         var uyX = (-uxY);
-         var uyY = uxX;
-         var lowerX = Number.MAX_VALUE;
-         var lowerY = Number.MAX_VALUE;
-         var upperX = (-Number.MAX_VALUE);
-         var upperY = (-Number.MAX_VALUE);
+         var uyX = (-uxY),
+          uyY = uxX,
+          lowerX = Number.MAX_VALUE,
+          lowerY = Number.MAX_VALUE,
+          upperX = (-Number.MAX_VALUE),
+          upperY = (-Number.MAX_VALUE);
          for (var j = 0; j < count; ++j) {
-            var dX = p[j].x - root.x;
-            var dY = p[j].y - root.y;
-            var rX = (uxX * dX + uxY * dY);
-            var rY = (uyX * dX + uyY * dY);
+            var dX = p[j].x - root.x,
+          dY = p[j].y - root.y,
+          rX = (uxX * dX + uxY * dY),
+          rY = (uyX * dX + uyY * dY);
             if (rX < lowerX) lowerX = rX;
             if (rY < lowerY) lowerY = rY;
             if (rX > upperX) upperX = rX;
@@ -2151,9 +2148,9 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
             obb.R.col1.y = uxY;
             obb.R.col2.x = uyX;
             obb.R.col2.y = uyY;
-            var centerX = 0.5 * (lowerX + upperX);
-            var centerY = 0.5 * (lowerY + upperY);
-            var tMat = obb.R;
+            var centerX = 0.5 * (lowerX + upperX),
+          centerY = 0.5 * (lowerY + upperY),
+          tMat = obb.R;
             obb.center.x = root.x + (tMat.col1.x * centerX + tMat.col2.x * centerY);
             obb.center.y = root.y + (tMat.col1.y * centerX + tMat.col2.y * centerY);
             obb.extents.x = 0.5 * (upperX - lowerX);
@@ -2234,9 +2231,9 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
       }
       for (i = 0;
       i < this.m_vertexCount; ++i) {
-         var i1 = parseInt(i);
-         var i2 = parseInt(i + 1 < this.m_vertexCount ? i + 1 : 0);
-         var edge = b2Math.SubtractVV(this.m_vertices[i2], this.m_vertices[i1]);
+         var i1 = parseInt(i),
+          i2 = parseInt(i + 1 < this.m_vertexCount ? i + 1 : 0),
+          edge = b2Math.SubtractVV(this.m_vertices[i2], this.m_vertices[i1]);
          b2Settings.b2Assert(edge.LengthSquared() > Number.MIN_VALUE);
          this.m_normals[i].SetV(b2Math.CrossVF(edge, 1.0));
          this.m_normals[i].Normalize();
@@ -2329,12 +2326,12 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     *
     */
    b2PolygonShape.prototype.TestPoint = function (xf, p) {
-      var tVec;
-      var tMat = xf.R;
-      var tX = p.x - xf.position.x;
-      var tY = p.y - xf.position.y;
-      var pLocalX = (tX * tMat.col1.x + tY * tMat.col1.y);
-      var pLocalY = (tX * tMat.col2.x + tY * tMat.col2.y);
+      var tVec,
+          tMat = xf.R,
+          tX = p.x - xf.position.x,
+          tY = p.y - xf.position.y,
+          pLocalX = (tX * tMat.col1.x + tY * tMat.col1.y),
+          pLocalY = (tX * tMat.col2.x + tY * tMat.col2.y);
       for (var i = 0; i < this.m_vertexCount; ++i) {
          tVec = this.m_vertices[i];
          tX = pLocalX - tVec.x;
@@ -2357,32 +2354,32 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     *
     */
    b2PolygonShape.prototype.RayCast = function (output, input, transform) {
-      var lower = 0.0;
-      var upper = input.maxFraction;
-      var tX = 0;
-      var tY = 0;
-      var tMat;
-      var tVec;
+      var lower = 0.0,
+          upper = input.maxFraction,
+          tX = 0,
+          tY = 0,
+          tMat,
+          tVec;
       tX = input.p1.x - transform.position.x;
       tY = input.p1.y - transform.position.y;
       tMat = transform.R;
-      var p1X = (tX * tMat.col1.x + tY * tMat.col1.y);
-      var p1Y = (tX * tMat.col2.x + tY * tMat.col2.y);
+      var p1X = (tX * tMat.col1.x + tY * tMat.col1.y),
+          p1Y = (tX * tMat.col2.x + tY * tMat.col2.y);
       tX = input.p2.x - transform.position.x;
       tY = input.p2.y - transform.position.y;
       tMat = transform.R;
-      var p2X = (tX * tMat.col1.x + tY * tMat.col1.y);
-      var p2Y = (tX * tMat.col2.x + tY * tMat.col2.y);
-      var dX = p2X - p1X;
-      var dY = p2Y - p1Y;
-      var index = parseInt((-1));
+      var p2X = (tX * tMat.col1.x + tY * tMat.col1.y),
+          p2Y = (tX * tMat.col2.x + tY * tMat.col2.y),
+          dX = p2X - p1X,
+          dY = p2Y - p1Y,
+          index = parseInt((-1));
       for (var i = 0; i < this.m_vertexCount; ++i) {
          tVec = this.m_vertices[i];
          tX = tVec.x - p1X;
          tY = tVec.y - p1Y;
          tVec = this.m_normals[i];
-         var numerator = (tVec.x * tX + tVec.y * tY);
-         var denominator = (tVec.x * dX + tVec.y * dY);
+         var numerator = (tVec.x * tX + tVec.y * tY),
+          denominator = (tVec.x * dX + tVec.y * dY);
          if (denominator == 0.0) {
             if (numerator < 0.0) {
                return false;
@@ -2420,16 +2417,16 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     *
     */
    b2PolygonShape.prototype.ComputeAABB = function (aabb, xf) {
-      var tMat = xf.R;
-      var tVec = this.m_vertices[0];
-      var lowerX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var lowerY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-      var upperX = lowerX;
-      var upperY = lowerY;
+      var tMat = xf.R,
+          tVec = this.m_vertices[0],
+          lowerX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          lowerY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y),
+          upperX = lowerX,
+          upperY = lowerY;
       for (var i = 1; i < this.m_vertexCount; ++i) {
          tVec = this.m_vertices[i];
-         var vX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-         var vY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+         var vX = xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          vY = xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
          lowerX = lowerX < vX ? lowerX : vX;
          lowerY = lowerY < vY ? lowerY : vY;
          upperX = upperX > vX ? upperX : vX;
@@ -2457,32 +2454,32 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
          massData.I = 0.0;
          return;
       }
-      var centerX = 0.0;
-      var centerY = 0.0;
-      var area = 0.0;
-      var I = 0.0;
-      var p1X = 0.0;
-      var p1Y = 0.0;
-      var k_inv3 = 1.0 / 3.0;
+      var centerX = 0.0,
+          centerY = 0.0,
+          area = 0.0,
+          I = 0.0,
+          p1X = 0.0,
+          p1Y = 0.0,
+          k_inv3 = 1.0 / 3.0;
       for (var i = 0; i < this.m_vertexCount; ++i) {
-         var p2 = this.m_vertices[i];
-         var p3 = i + 1 < this.m_vertexCount ? this.m_vertices[parseInt(i + 1)] : this.m_vertices[0];
-         var e1X = p2.x - p1X;
-         var e1Y = p2.y - p1Y;
-         var e2X = p3.x - p1X;
-         var e2Y = p3.y - p1Y;
-         var D = e1X * e2Y - e1Y * e2X;
-         var triangleArea = 0.5 * D;area += triangleArea;
+         var p2 = this.m_vertices[i],
+          p3 = i + 1 < this.m_vertexCount ? this.m_vertices[parseInt(i + 1)] : this.m_vertices[0],
+          e1X = p2.x - p1X,
+          e1Y = p2.y - p1Y,
+          e2X = p3.x - p1X,
+          e2Y = p3.y - p1Y,
+          D = e1X * e2Y - e1Y * e2X,
+          triangleArea = 0.5 * D;area += triangleArea;
          centerX += triangleArea * k_inv3 * (p1X + p2.x + p3.x);
          centerY += triangleArea * k_inv3 * (p1Y + p2.y + p3.y);
-         var px = p1X;
-         var py = p1Y;
-         var ex1 = e1X;
-         var ey1 = e1Y;
-         var ex2 = e2X;
-         var ey2 = e2Y;
-         var intx2 = k_inv3 * (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) + (px * ex1 + px * ex2)) + 0.5 * px * px;
-         var inty2 = k_inv3 * (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) + (py * ey1 + py * ey2)) + 0.5 * py * py;I += D * (intx2 + inty2);
+         var px = p1X,
+          py = p1Y,
+          ex1 = e1X,
+          ey1 = e1Y,
+          ex2 = e2X,
+          ey2 = e2Y,
+          intx2 = k_inv3 * (0.25 * (ex1 * ex1 + ex2 * ex1 + ex2 * ex2) + (px * ex1 + px * ex2)) + 0.5 * px * px,
+          inty2 = k_inv3 * (0.25 * (ey1 * ey1 + ey2 * ey1 + ey2 * ey2) + (py * ey1 + py * ey2)) + 0.5 * py * py;I += D * (intx2 + inty2);
       }
       massData.mass = density * area;
       centerX *= 1.0 / area;
@@ -2502,14 +2499,14 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     */
    b2PolygonShape.prototype.ComputeSubmergedArea = function (normal, offset, xf, c) {
       offset = offset || 0;
-      var normalL = b2Math.MulTMV(xf.R, normal);
-      var offsetL = offset - b2Math.Dot(normal, xf.position);
-      var depths = new Vector_a2j_Number();
-      var diveCount = 0;
-      var intoIndex = parseInt((-1));
-      var outoIndex = parseInt((-1));
-      var lastSubmerged = false;
-      var i = 0;
+      var normalL = b2Math.MulTMV(xf.R, normal),
+          offsetL = offset - b2Math.Dot(normal, xf.position),
+          depths = new Vector_a2j_Number(),
+          diveCount = 0,
+          intoIndex = parseInt((-1)),
+          outoIndex = parseInt((-1)),
+          lastSubmerged = false,
+          i = 0;
       for (i = 0;
       i < this.m_vertexCount; ++i) {
          depths[i] = b2Math.Dot(normalL, this.m_vertices[i]) - offsetL;
@@ -2551,16 +2548,16 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
          }
          break;
       }
-      var intoIndex2 = parseInt((intoIndex + 1) % this.m_vertexCount);
-      var outoIndex2 = parseInt((outoIndex + 1) % this.m_vertexCount);
-      var intoLamdda = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]);
-      var outoLamdda = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
-      var intoVec = new b2Vec2(this.m_vertices[intoIndex].x * (1 - intoLamdda) + this.m_vertices[intoIndex2].x * intoLamdda, this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda);
-      var outoVec = new b2Vec2(this.m_vertices[outoIndex].x * (1 - outoLamdda) + this.m_vertices[outoIndex2].x * outoLamdda, this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda);
-      var area = 0;
-      var center = new b2Vec2();
-      var p2 = this.m_vertices[intoIndex2];
-      var p3;
+      var intoIndex2 = parseInt((intoIndex + 1) % this.m_vertexCount),
+          outoIndex2 = parseInt((outoIndex + 1) % this.m_vertexCount),
+          intoLamdda = (0 - depths[intoIndex]) / (depths[intoIndex2] - depths[intoIndex]),
+          outoLamdda = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]),
+          intoVec = new b2Vec2(this.m_vertices[intoIndex].x * (1 - intoLamdda) + this.m_vertices[intoIndex2].x * intoLamdda, this.m_vertices[intoIndex].y * (1 - intoLamdda) + this.m_vertices[intoIndex2].y * intoLamdda),
+          outoVec = new b2Vec2(this.m_vertices[outoIndex].x * (1 - outoLamdda) + this.m_vertices[outoIndex2].x * outoLamdda, this.m_vertices[outoIndex].y * (1 - outoLamdda) + this.m_vertices[outoIndex2].y * outoLamdda),
+          area = 0,
+          center = new b2Vec2(),
+          p2 = this.m_vertices[intoIndex2],
+          p3;
       i = intoIndex2;
       while (i != outoIndex2) {
          i = (i + 1) % this.m_vertexCount;
@@ -2614,8 +2611,8 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     *
     */
    b2PolygonShape.prototype.GetSupport = function (d) {
-      var bestIndex = 0;
-      var bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
+      var bestIndex = 0,
+          bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
       for (var i = 1; i < this.m_vertexCount; ++i) {
          var value = this.m_vertices[i].x * d.x + this.m_vertices[i].y * d.y;
          if (value > bestValue) {
@@ -2633,8 +2630,8 @@ b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = (function(superClass) {
     *
     */
    b2PolygonShape.prototype.GetSupportVertex = function (d) {
-      var bestIndex = 0;
-      var bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
+      var bestIndex = 0,
+          bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
       for (var i = 1; i < this.m_vertexCount; ++i) {
          var value = this.m_vertices[i].x * d.x + this.m_vertices[i].y * d.y;
          if (value > bestValue) {
@@ -2775,20 +2772,20 @@ b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape = (function(superClass) {
     *
     */
    b2EdgeShape.prototype.RayCast = function (output, input, transform) {
-      var tMat;
-      var rX = input.p2.x - input.p1.x;
-      var rY = input.p2.y - input.p1.y;
+      var tMat,
+          rX = input.p2.x - input.p1.x,
+          rY = input.p2.y - input.p1.y;
       tMat = transform.R;
-      var v1X = transform.position.x + (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y);
-      var v1Y = transform.position.y + (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y);
-      var nX = transform.position.y + (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y) - v1Y;
-      var nY = (-(transform.position.x + (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y) - v1X));
-      var k_slop = 100.0 * Number.MIN_VALUE;
-      var denom = (-(rX * nX + rY * nY));
+      var v1X = transform.position.x + (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y),
+          v1Y = transform.position.y + (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y),
+          nX = transform.position.y + (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y) - v1Y,
+          nY = (-(transform.position.x + (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y) - v1X)),
+          k_slop = 100.0 * Number.MIN_VALUE,
+          denom = (-(rX * nX + rY * nY));
       if (denom > k_slop) {
-         var bX = input.p1.x - v1X;
-         var bY = input.p1.y - v1Y;
-         var a = (bX * nX + bY * nY);
+         var bX = input.p1.x - v1X,
+          bY = input.p1.y - v1Y,
+          a = (bX * nX + bY * nY);
          if (0.0 <= a && a <= input.maxFraction * denom) {
             var mu2 = (-rX * bY) + rY * bX;
             if ((-k_slop * denom) <= mu2 && mu2 <= denom * (1.0 + k_slop)) {
@@ -2812,11 +2809,11 @@ b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape = (function(superClass) {
     *
     */
    b2EdgeShape.prototype.ComputeAABB = function (aabb, transform) {
-      var tMat = transform.R;
-      var v1X = transform.position.x + (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y);
-      var v1Y = transform.position.y + (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y);
-      var v2X = transform.position.x + (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y);
-      var v2Y = transform.position.y + (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y);
+      var tMat = transform.R,
+          v1X = transform.position.x + (tMat.col1.x * this.m_v1.x + tMat.col2.x * this.m_v1.y),
+          v1Y = transform.position.y + (tMat.col1.y * this.m_v1.x + tMat.col2.y * this.m_v1.y),
+          v2X = transform.position.x + (tMat.col1.x * this.m_v2.x + tMat.col2.x * this.m_v2.y),
+          v2Y = transform.position.y + (tMat.col1.y * this.m_v2.x + tMat.col2.y * this.m_v2.y);
       if (v1X < v2X) {
          aabb.lowerBound.x = v1X;
          aabb.upperBound.x = v2X;
@@ -2860,11 +2857,11 @@ b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape = (function(superClass) {
     */
    b2EdgeShape.prototype.ComputeSubmergedArea = function (normal, offset, xf, c) {
       offset = offset || 0;
-      var v0 = new b2Vec2(normal.x * offset, normal.y * offset);
-      var v1 = b2Math.MulX(xf, this.m_v1);
-      var v2 = b2Math.MulX(xf, this.m_v2);
-      var d1 = b2Math.Dot(normal, v1) - offset;
-      var d2 = b2Math.Dot(normal, v2) - offset;
+      var v0 = new b2Vec2(normal.x * offset, normal.y * offset),
+          v1 = b2Math.MulX(xf, this.m_v1),
+          v2 = b2Math.MulX(xf, this.m_v2),
+          d1 = b2Math.Dot(normal, v1) - offset,
+          d2 = b2Math.Dot(normal, v2) - offset;
       if (d1 > 0) {
          if (d2 > 0) {
             return 0;
@@ -3038,11 +3035,11 @@ b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape = (function(superClass) {
    b2EdgeShape.prototype.Support = function (xf, dX, dY) {
       dX = dX || 0;
       dY = dY || 0;
-      var tMat = xf.R;
-      var v1X = xf.position.x + (tMat.col1.x * this.m_coreV1.x + tMat.col2.x * this.m_coreV1.y);
-      var v1Y = xf.position.y + (tMat.col1.y * this.m_coreV1.x + tMat.col2.y * this.m_coreV1.y);
-      var v2X = xf.position.x + (tMat.col1.x * this.m_coreV2.x + tMat.col2.x * this.m_coreV2.y);
-      var v2Y = xf.position.y + (tMat.col1.y * this.m_coreV2.x + tMat.col2.y * this.m_coreV2.y);
+      var tMat = xf.R,
+          v1X = xf.position.x + (tMat.col1.x * this.m_coreV1.x + tMat.col2.x * this.m_coreV1.y),
+          v1Y = xf.position.y + (tMat.col1.y * this.m_coreV1.x + tMat.col2.y * this.m_coreV1.y),
+          v2X = xf.position.x + (tMat.col1.x * this.m_coreV2.x + tMat.col2.x * this.m_coreV2.y),
+          v2Y = xf.position.y + (tMat.col1.y * this.m_coreV2.x + tMat.col2.y * this.m_coreV2.y);
       if ((v1X * dX + v1Y * dY) > (v2X * dX + v2Y * dY)) {
          this.s_supportVec.x = v1X;
          this.s_supportVec.y = v1Y;
@@ -3284,9 +3281,9 @@ Box2D.Collision.b2AABB = b2AABB = (function() {
     *
     */
    b2AABB.prototype.IsValid = function () {
-      var dX = this.upperBound.x - this.lowerBound.x;
-      var dY = this.upperBound.y - this.lowerBound.y;
-      var valid = dX >= 0.0 && dY >= 0.0;
+      var dX = this.upperBound.x - this.lowerBound.x,
+          dY = this.upperBound.y - this.lowerBound.y,
+          valid = dX >= 0.0 && dY >= 0.0;
       valid = valid && this.lowerBound.IsValid() && this.upperBound.IsValid();
       return valid;
    };
@@ -3334,19 +3331,19 @@ Box2D.Collision.b2AABB = b2AABB = (function() {
     *
     */
    b2AABB.prototype.RayCast = function (output, input) {
-      var tmin = (-Number.MAX_VALUE);
-      var tmax = Number.MAX_VALUE;
-      var pX = input.p1.x;
-      var pY = input.p1.y;
-      var dX = input.p2.x - input.p1.x;
-      var dY = input.p2.y - input.p1.y;
-      var absDX = Math.abs(dX);
-      var absDY = Math.abs(dY);
-      var normal = output.normal;
-      var inv_d = 0;
-      var t1 = 0;
-      var t2 = 0;
-      var t3 = 0;
+      var tmin = (-Number.MAX_VALUE),
+          tmax = Number.MAX_VALUE,
+          pX = input.p1.x,
+          pY = input.p1.y,
+          dX = input.p2.x - input.p1.x,
+          dY = input.p2.y - input.p1.y,
+          absDX = Math.abs(dX),
+          absDY = Math.abs(dY),
+          normal = output.normal,
+          inv_d = 0,
+          t1 = 0,
+          t2 = 0,
+          t3 = 0;
       var s = 0; {
          if (absDX < Number.MIN_VALUE) {
             if (pX < this.lowerBound.x || this.upperBound.x < pX) return false;
@@ -3405,10 +3402,10 @@ Box2D.Collision.b2AABB = b2AABB = (function() {
     *
     */
    b2AABB.prototype.TestOverlap = function (other) {
-      var d1X = other.lowerBound.x - this.upperBound.x;
-      var d1Y = other.lowerBound.y - this.upperBound.y;
-      var d2X = this.lowerBound.x - other.upperBound.x;
-      var d2Y = this.lowerBound.y - other.upperBound.y;
+      var d1X = other.lowerBound.x - this.upperBound.x,
+          d1Y = other.lowerBound.y - this.upperBound.y,
+          d2X = this.lowerBound.x - other.upperBound.x,
+          d2Y = this.lowerBound.y - other.upperBound.y;
       if (d1X > 0.0 || d1Y > 0.0) return false;
       if (d2X > 0.0 || d2Y > 0.0) return false;
       return true;
@@ -3496,9 +3493,9 @@ Box2D.Collision.b2Bound = b2Bound = (function() {
     *
     */
    b2Bound.prototype.Swap = function (b) {
-      var tempValue = this.value;
-      var tempProxy = this.proxy;
-      var tempStabbingCount = this.stabbingCount;
+      var tempValue = this.value,
+          tempProxy = this.proxy,
+          tempStabbingCount = this.stabbingCount;
       this.value = b.value;
       this.proxy = b.proxy;
       this.stabbingCount = b.stabbingCount;
@@ -3696,14 +3693,14 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     */
    b2Collision.ClipSegmentToLine = function (vOut, vIn, normal, offset) {
       offset = offset || 0;
-      var cv;
-      var numOut = 0;
+      var cv,
+          numOut = 0;
       cv = vIn[0];
       var vIn0 = cv.v;
       cv = vIn[1];
-      var vIn1 = cv.v;
-      var distance0 = normal.x * vIn0.x + normal.y * vIn0.y - offset;
-      var distance1 = normal.x * vIn1.x + normal.y * vIn1.y - offset;
+      var vIn1 = cv.v,
+          distance0 = normal.x * vIn0.x + normal.y * vIn0.y - offset,
+          distance1 = normal.x * vIn1.x + normal.y * vIn1.y - offset;
       if (distance0 <= 0.0) vOut[numOut++].Set(vIn[0]);
       if (distance1 <= 0.0) vOut[numOut++].Set(vIn[1]);
       if (distance0 * distance1 < 0.0) {
@@ -3738,22 +3735,22 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     */
    b2Collision.EdgeSeparation = function (poly1, xf1, edge1, poly2, xf2) {
       edge1 = edge1 || 0;
-      var count1 = parseInt(poly1.m_vertexCount);
-      var vertices1 = poly1.m_vertices;
-      var normals1 = poly1.m_normals;
-      var count2 = parseInt(poly2.m_vertexCount);
-      var vertices2 = poly2.m_vertices;
-      var tMat;
-      var tVec;
+      var count1 = parseInt(poly1.m_vertexCount),
+          vertices1 = poly1.m_vertices,
+          normals1 = poly1.m_normals,
+          count2 = parseInt(poly2.m_vertexCount),
+          vertices2 = poly2.m_vertices,
+          tMat,
+          tVec;
       tMat = xf1.R;
       tVec = normals1[edge1];
-      var normal1WorldX = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var normal1WorldY = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var normal1WorldX = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          normal1WorldY = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf2.R;
-      var normal1X = (tMat.col1.x * normal1WorldX + tMat.col1.y * normal1WorldY);
-      var normal1Y = (tMat.col2.x * normal1WorldX + tMat.col2.y * normal1WorldY);
-      var index = 0;
-      var minDot = Number.MAX_VALUE;
+      var normal1X = (tMat.col1.x * normal1WorldX + tMat.col1.y * normal1WorldY),
+          normal1Y = (tMat.col2.x * normal1WorldX + tMat.col2.y * normal1WorldY),
+          index = 0,
+          minDot = Number.MAX_VALUE;
       for (var i = 0; i < count2; ++i) {
          tVec = vertices2[i];
          var dot = tVec.x * normal1X + tVec.y * normal1Y;
@@ -3764,12 +3761,12 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
       }
       tVec = vertices1[edge1];
       tMat = xf1.R;
-      var v1X = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var v1Y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var v1X = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          v1Y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tVec = vertices2[index];
       tMat = xf2.R;
-      var v2X = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var v2Y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var v2X = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          v2Y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       v2X -= v1X;
       v2Y -= v1Y;
       var separation = v2X * normal1WorldX + v2Y * normal1WorldY;
@@ -3787,22 +3784,22 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     *
     */
    b2Collision.FindMaxSeparation = function (edgeIndex, poly1, xf1, poly2, xf2) {
-      var count1 = parseInt(poly1.m_vertexCount);
-      var normals1 = poly1.m_normals;
-      var tVec;
-      var tMat;
+      var count1 = parseInt(poly1.m_vertexCount),
+          normals1 = poly1.m_normals,
+          tVec,
+          tMat;
       tMat = xf2.R;
       tVec = poly2.m_centroid;
-      var dX = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var dY = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var dX = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          dY = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf1.R;
       tVec = poly1.m_centroid;
       dX -= xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
       dY -= xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-      var dLocal1X = (dX * xf1.R.col1.x + dY * xf1.R.col1.y);
-      var dLocal1Y = (dX * xf1.R.col2.x + dY * xf1.R.col2.y);
-      var edge = 0;
-      var maxDot = (-Number.MAX_VALUE);
+      var dLocal1X = (dX * xf1.R.col1.x + dY * xf1.R.col1.y),
+          dLocal1Y = (dX * xf1.R.col2.x + dY * xf1.R.col2.y),
+          edge = 0,
+          maxDot = (-Number.MAX_VALUE);
       for (var i = 0; i < count1; ++i) {
          tVec = normals1[i];
          var dot = (tVec.x * dLocal1X + tVec.y * dLocal1Y);
@@ -3811,14 +3808,14 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
             edge = i;
          }
       }
-      var s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2);
-      var prevEdge = parseInt(edge - 1 >= 0 ? edge - 1 : count1 - 1);
-      var sPrev = b2Collision.EdgeSeparation(poly1, xf1, prevEdge, poly2, xf2);
-      var nextEdge = parseInt(edge + 1 < count1 ? edge + 1 : 0);
-      var sNext = b2Collision.EdgeSeparation(poly1, xf1, nextEdge, poly2, xf2);
-      var bestEdge = 0;
-      var bestSeparation = 0;
-      var increment = 0;
+      var s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2),
+          prevEdge = parseInt(edge - 1 >= 0 ? edge - 1 : count1 - 1),
+          sPrev = b2Collision.EdgeSeparation(poly1, xf1, prevEdge, poly2, xf2),
+          nextEdge = parseInt(edge + 1 < count1 ? edge + 1 : 0),
+          sNext = b2Collision.EdgeSeparation(poly1, xf1, nextEdge, poly2, xf2),
+          bestEdge = 0,
+          bestSeparation = 0,
+          increment = 0;
       if (sPrev > s && sPrev > sNext) {
          increment = (-1);
          bestEdge = prevEdge;
@@ -3861,23 +3858,23 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     */
    b2Collision.FindIncidentEdge = function (c, poly1, xf1, edge1, poly2, xf2) {
       edge1 = edge1 || 0;
-      var count1 = parseInt(poly1.m_vertexCount);
-      var normals1 = poly1.m_normals;
-      var count2 = parseInt(poly2.m_vertexCount);
-      var vertices2 = poly2.m_vertices;
-      var normals2 = poly2.m_normals;
-      var tMat;
-      var tVec;
+      var count1 = parseInt(poly1.m_vertexCount),
+          normals1 = poly1.m_normals,
+          count2 = parseInt(poly2.m_vertexCount),
+          vertices2 = poly2.m_vertices,
+          normals2 = poly2.m_normals,
+          tMat,
+          tVec;
       tMat = xf1.R;
       tVec = normals1[edge1];
-      var normal1X = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var normal1Y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var normal1X = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          normal1Y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf2.R;
       var tX = (tMat.col1.x * normal1X + tMat.col1.y * normal1Y);
       normal1Y = (tMat.col2.x * normal1X + tMat.col2.y * normal1Y);
       normal1X = tX;
-      var index = 0;
-      var minDot = Number.MAX_VALUE;
+      var index = 0,
+          minDot = Number.MAX_VALUE;
       for (var i = 0; i < count2; ++i) {
          tVec = normals2[i];
          var dot = (normal1X * tVec.x + normal1Y * tVec.y);
@@ -3886,9 +3883,9 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
             index = i;
          }
       }
-      var tClip;
-      var i1 = parseInt(index);
-      var i2 = parseInt(i1 + 1 < count2 ? i1 + 1 : 0);
+      var tClip,
+          i1 = parseInt(index),
+          i2 = parseInt(i1 + 1 < count2 ? i1 + 1 : 0);
       tClip = c[0];
       tVec = vertices2[i1];
       tMat = xf2.R;
@@ -3933,8 +3930,8 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
    b2Collision.CollidePolygons = function (manifold, polyA, xfA, polyB, xfB) {
       var cv;
       manifold.m_pointCount = 0;
-      var totalRadius = polyA.m_radius + polyB.m_radius;
-      var edgeA = 0;
+      var totalRadius = polyA.m_radius + polyB.m_radius,
+          edgeA = 0;
       b2Collision.s_edgeAO[0] = edgeA;
       var separationA = b2Collision.FindMaxSeparation(b2Collision.s_edgeAO, polyA, xfA, polyB, xfB);
       edgeA = b2Collision.s_edgeAO[0];
@@ -3944,15 +3941,15 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
       var separationB = b2Collision.FindMaxSeparation(b2Collision.s_edgeBO, polyB, xfB, polyA, xfA);
       edgeB = b2Collision.s_edgeBO[0];
       if (separationB > totalRadius) return;
-      var poly1;
-      var poly2;
-      var xf1;
-      var xf2;
-      var edge1 = 0;
-      var flip = 0;
-      var k_relativeTol = 0.98;
-      var k_absoluteTol = 0.001;
-      var tMat;
+      var poly1,
+          poly2,
+          xf1,
+          xf2,
+          edge1 = 0,
+          flip = 0,
+          k_relativeTol = 0.98,
+          k_absoluteTol = 0.001,
+          tMat;
       if (separationB > k_relativeTol * separationA + k_absoluteTol) {
          poly1 = polyB;
          poly2 = polyA;
@@ -3973,10 +3970,10 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
       }
       var incidentEdge = b2Collision.s_incidentEdge;
       b2Collision.FindIncidentEdge(incidentEdge, poly1, xf1, edge1, poly2, xf2);
-      var count1 = parseInt(poly1.m_vertexCount);
-      var vertices1 = poly1.m_vertices;
-      var local_v11 = vertices1[edge1];
-      var local_v12;
+      var count1 = parseInt(poly1.m_vertexCount),
+          vertices1 = poly1.m_vertices,
+          local_v11 = vertices1[edge1],
+          local_v12;
       if (edge1 + 1 < count1) {
          local_v12 = vertices1[parseInt(edge1 + 1)];
       }
@@ -4001,18 +3998,18 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
       var normal = b2Collision.s_normal;
       normal.x = tangent.y;
       normal.y = (-tangent.x);
-      var v11 = b2Collision.s_v11;
-      var v12 = b2Collision.s_v12;
+      var v11 = b2Collision.s_v11,
+          v12 = b2Collision.s_v12;
       v11.x = xf1.position.x + (tMat.col1.x * local_v11.x + tMat.col2.x * local_v11.y);
       v11.y = xf1.position.y + (tMat.col1.y * local_v11.x + tMat.col2.y * local_v11.y);
       v12.x = xf1.position.x + (tMat.col1.x * local_v12.x + tMat.col2.x * local_v12.y);
       v12.y = xf1.position.y + (tMat.col1.y * local_v12.x + tMat.col2.y * local_v12.y);
-      var frontOffset = normal.x * v11.x + normal.y * v11.y;
-      var sideOffset1 = (-tangent.x * v11.x) - tangent.y * v11.y + totalRadius;
-      var sideOffset2 = tangent.x * v12.x + tangent.y * v12.y + totalRadius;
-      var clipPoints1 = b2Collision.s_clipPoints1;
-      var clipPoints2 = b2Collision.s_clipPoints2;
-      var np = 0;
+      var frontOffset = normal.x * v11.x + normal.y * v11.y,
+          sideOffset1 = (-tangent.x * v11.x) - tangent.y * v11.y + totalRadius,
+          sideOffset2 = tangent.x * v12.x + tangent.y * v12.y + totalRadius,
+          clipPoints1 = b2Collision.s_clipPoints1,
+          clipPoints2 = b2Collision.s_clipPoints2,
+          np = 0;
       np = b2Collision.ClipSegmentToLine(clipPoints1, incidentEdge, tangent2, sideOffset1);
       if (np < 2) return;
       np = b2Collision.ClipSegmentToLine(clipPoints2, clipPoints1, tangent, sideOffset2);
@@ -4026,8 +4023,8 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
          if (separation <= totalRadius) {
             var cp = manifold.m_points[pointCount];
             tMat = xf2.R;
-            var tX = cv.v.x - xf2.position.x;
-            var tY = cv.v.y - xf2.position.y;
+            var tX = cv.v.x - xf2.position.x,
+          tY = cv.v.y - xf2.position.y;
             cp.m_localPoint.x = (tX * tMat.col1.x + tY * tMat.col1.y);
             cp.m_localPoint.y = (tX * tMat.col2.x + tY * tMat.col2.y);
             cp.m_id.Set(cv.id);
@@ -4050,20 +4047,20 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     */
    b2Collision.CollideCircles = function (manifold, circle1, xf1, circle2, xf2) {
       manifold.m_pointCount = 0;
-      var tMat;
-      var tVec;
+      var tMat,
+          tVec;
       tMat = xf1.R;
       tVec = circle1.m_p;
-      var p1X = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var p1Y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var p1X = xf1.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          p1Y = xf1.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       tMat = xf2.R;
       tVec = circle2.m_p;
-      var p2X = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var p2Y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-      var dX = p2X - p1X;
-      var dY = p2Y - p1Y;
-      var distSqr = dX * dX + dY * dY;
-      var radius = circle1.m_radius + circle2.m_radius;
+      var p2X = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          p2Y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y),
+          dX = p2X - p1X,
+          dY = p2Y - p1Y,
+          distSqr = dX * dX + dY * dY,
+          radius = circle1.m_radius + circle2.m_radius;
       if (distSqr > radius * radius) {
          return;
       }
@@ -4087,29 +4084,29 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     */
    b2Collision.CollidePolygonAndCircle = function (manifold, polygon, xf1, circle, xf2) {
       manifold.m_pointCount = 0;
-      var tPoint;
-      var dX = 0;
-      var dY = 0;
-      var positionX = 0;
-      var positionY = 0;
-      var tVec;
-      var tMat;
+      var tPoint,
+          dX = 0,
+          dY = 0,
+          positionX = 0,
+          positionY = 0,
+          tVec,
+          tMat;
       tMat = xf2.R;
       tVec = circle.m_p;
-      var cX = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-      var cY = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+      var cX = xf2.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          cY = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       dX = cX - xf1.position.x;
       dY = cY - xf1.position.y;
       tMat = xf1.R;
-      var cLocalX = (dX * tMat.col1.x + dY * tMat.col1.y);
-      var cLocalY = (dX * tMat.col2.x + dY * tMat.col2.y);
-      var dist = 0;
-      var normalIndex = 0;
-      var separation = (-Number.MAX_VALUE);
-      var radius = polygon.m_radius + circle.m_radius;
-      var vertexCount = parseInt(polygon.m_vertexCount);
-      var vertices = polygon.m_vertices;
-      var normals = polygon.m_normals;
+      var cLocalX = (dX * tMat.col1.x + dY * tMat.col1.y),
+          cLocalY = (dX * tMat.col2.x + dY * tMat.col2.y),
+          dist = 0,
+          normalIndex = 0,
+          separation = (-Number.MAX_VALUE),
+          radius = polygon.m_radius + circle.m_radius,
+          vertexCount = parseInt(polygon.m_vertexCount),
+          vertices = polygon.m_vertices,
+          normals = polygon.m_normals;
       for (var i = 0; i < vertexCount; ++i) {
          tVec = vertices[i];
          dX = cLocalX - tVec.x;
@@ -4124,10 +4121,10 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
             normalIndex = i;
          }
       }
-      var vertIndex1 = parseInt(normalIndex);
-      var vertIndex2 = parseInt(vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0);
-      var v1 = vertices[vertIndex1];
-      var v2 = vertices[vertIndex2];
+      var vertIndex1 = parseInt(normalIndex),
+          vertIndex2 = parseInt(vertIndex1 + 1 < vertexCount ? vertIndex1 + 1 : 0),
+          v1 = vertices[vertIndex1],
+          v2 = vertices[vertIndex2];
       if (separation < Number.MIN_VALUE) {
          manifold.m_pointCount = 1;
          manifold.m_type = b2Manifold.e_faceA;
@@ -4138,8 +4135,8 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
          manifold.m_points[0].m_id.key = 0;
          return;
       }
-      var u1 = (cLocalX - v1.x) * (v2.x - v1.x) + (cLocalY - v1.y) * (v2.y - v1.y);
-      var u2 = (cLocalX - v2.x) * (v1.x - v2.x) + (cLocalY - v2.y) * (v1.y - v2.y);
+      var u1 = (cLocalX - v1.x) * (v2.x - v1.x) + (cLocalY - v1.y) * (v2.y - v1.y),
+          u2 = (cLocalX - v2.x) * (v1.x - v2.x) + (cLocalY - v2.y) * (v1.y - v2.y);
       if (u1 <= 0.0) {
          if ((cLocalX - v1.x) * (cLocalX - v1.x) + (cLocalY - v1.y) * (cLocalY - v1.y) > radius * radius) return;
          manifold.m_pointCount = 1;
@@ -4163,8 +4160,8 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
          manifold.m_points[0].m_id.key = 0;
       }
       else {
-         var faceCenterX = 0.5 * (v1.x + v2.x);
-         var faceCenterY = 0.5 * (v1.y + v2.y);
+         var faceCenterX = 0.5 * (v1.x + v2.x),
+          faceCenterY = 0.5 * (v1.y + v2.y);
          separation = (cLocalX - faceCenterX) * normals[vertIndex1].x + (cLocalY - faceCenterY) * normals[vertIndex1].y;
          if (separation > radius) return;
          manifold.m_pointCount = 1;
@@ -4186,14 +4183,14 @@ Box2D.Collision.b2Collision = b2Collision = (function() {
     *
     */
    b2Collision.TestOverlap = function (a, b) {
-      var t1 = b.lowerBound;
-      var t2 = a.upperBound;
-      var d1X = t1.x - t2.x;
-      var d1Y = t1.y - t2.y;
+      var t1 = b.lowerBound,
+          t2 = a.upperBound,
+          d1X = t1.x - t2.x,
+          d1Y = t1.y - t2.y;
       t1 = a.lowerBound;
       t2 = b.upperBound;
-      var d2X = t1.x - t2.x;
-      var d2Y = t1.y - t2.y;
+      var d2X = t1.x - t2.x,
+          d2Y = t1.y - t2.y;
       if (d1X > 0.0 || d1Y > 0.0) return false;
       if (d2X > 0.0 || d2Y > 0.0) return false;
       return true;
@@ -4297,8 +4294,8 @@ Box2D.Collision.b2Simplex = b2Simplex = (function() {
     */
    b2Simplex.prototype.ReadCache = function (cache, proxyA, transformA, proxyB, transformB) {
       b2Settings.b2Assert(0 <= cache.count && cache.count <= 3);
-      var wALocal;
-      var wBLocal;
+      var wALocal,
+          wBLocal;
       this.m_count = cache.count;
       var vertices = this.m_vertices;
       for (var i = 0; i < this.m_count; i++) {
@@ -4313,8 +4310,8 @@ Box2D.Collision.b2Simplex = b2Simplex = (function() {
          v.a = 0;
       }
       if (this.m_count > 1) {
-         var metric1 = cache.metric;
-         var metric2 = this.GetMetric();
+         var metric1 = cache.metric,
+          metric2 = this.GetMetric();
          if (metric2 < .5 * metric1 || 2.0 * metric1 < metric2 || metric2 < Number.MIN_VALUE) {
             this.m_count = 0;
          }
@@ -4360,8 +4357,8 @@ Box2D.Collision.b2Simplex = b2Simplex = (function() {
          return this.m_v1.w.GetNegative();
       case 2:
          {
-            var e12 = b2Math.SubtractVV(this.m_v2.w, this.m_v1.w);
-            var sgn = b2Math.CrossVV(e12, this.m_v1.w.GetNegative());
+            var e12 = b2Math.SubtractVV(this.m_v2.w, this.m_v1.w),
+          sgn = b2Math.CrossVV(e12, this.m_v1.w.GetNegative());
             if (sgn > 0.0) {
                return b2Math.CrossFV(1.0, e12);
             }
@@ -4458,10 +4455,10 @@ Box2D.Collision.b2Simplex = b2Simplex = (function() {
     *
     */
    b2Simplex.prototype.Solve2 = function () {
-      var w1 = this.m_v1.w;
-      var w2 = this.m_v2.w;
-      var e12 = b2Math.SubtractVV(w2, w1);
-      var d12_2 = (-(w1.x * e12.x + w1.y * e12.y));
+      var w1 = this.m_v1.w,
+          w2 = this.m_v2.w,
+          e12 = b2Math.SubtractVV(w2, w1),
+          d12_2 = (-(w1.x * e12.x + w1.y * e12.y));
       if (d12_2 <= 0.0) {
          this.m_v1.a = 1.0;
          this.m_count = 1;
@@ -4487,28 +4484,28 @@ Box2D.Collision.b2Simplex = b2Simplex = (function() {
     *
     */
    b2Simplex.prototype.Solve3 = function () {
-      var w1 = this.m_v1.w;
-      var w2 = this.m_v2.w;
-      var w3 = this.m_v3.w;
-      var e12 = b2Math.SubtractVV(w2, w1);
-      var w1e12 = b2Math.Dot(w1, e12);
-      var w2e12 = b2Math.Dot(w2, e12);
-      var d12_1 = w2e12;
-      var d12_2 = (-w1e12);
-      var e13 = b2Math.SubtractVV(w3, w1);
-      var w1e13 = b2Math.Dot(w1, e13);
-      var w3e13 = b2Math.Dot(w3, e13);
-      var d13_1 = w3e13;
-      var d13_2 = (-w1e13);
-      var e23 = b2Math.SubtractVV(w3, w2);
-      var w2e23 = b2Math.Dot(w2, e23);
-      var w3e23 = b2Math.Dot(w3, e23);
-      var d23_1 = w3e23;
-      var d23_2 = (-w2e23);
-      var n123 = b2Math.CrossVV(e12, e13);
-      var d123_1 = n123 * b2Math.CrossVV(w2, w3);
-      var d123_2 = n123 * b2Math.CrossVV(w3, w1);
-      var d123_3 = n123 * b2Math.CrossVV(w1, w2);
+      var w1 = this.m_v1.w,
+          w2 = this.m_v2.w,
+          w3 = this.m_v3.w,
+          e12 = b2Math.SubtractVV(w2, w1),
+          w1e12 = b2Math.Dot(w1, e12),
+          w2e12 = b2Math.Dot(w2, e12),
+          d12_1 = w2e12,
+          d12_2 = (-w1e12),
+          e13 = b2Math.SubtractVV(w3, w1),
+          w1e13 = b2Math.Dot(w1, e13),
+          w3e13 = b2Math.Dot(w3, e13),
+          d13_1 = w3e13,
+          d13_2 = (-w1e13),
+          e23 = b2Math.SubtractVV(w3, w2),
+          w2e23 = b2Math.Dot(w2, e23),
+          w3e23 = b2Math.Dot(w3, e23),
+          d23_1 = w3e23,
+          d23_2 = (-w2e23),
+          n123 = b2Math.CrossVV(e12, e13),
+          d123_1 = n123 * b2Math.CrossVV(w2, w3),
+          d123_2 = n123 * b2Math.CrossVV(w3, w1),
+          d123_3 = n123 * b2Math.CrossVV(w1, w2);
       if (d12_2 <= 0.0 && d13_2 <= 0.0) {
          this.m_v1.a = 1.0;
          this.m_count = 1;
@@ -4590,23 +4587,23 @@ Box2D.Collision.b2Distance = b2Distance = (function() {
     */
    b2Distance.Distance = function (output, cache, input) {
       ++b2Distance.b2_gjkCalls;
-      var proxyA = input.proxyA;
-      var proxyB = input.proxyB;
-      var transformA = input.transformA;
-      var transformB = input.transformB;
-      var simplex = b2Distance.s_simplex;
+      var proxyA = input.proxyA,
+          proxyB = input.proxyB,
+          transformA = input.transformA,
+          transformB = input.transformB,
+          simplex = b2Distance.s_simplex;
       simplex.ReadCache(cache, proxyA, transformA, proxyB, transformB);
-      var vertices = simplex.m_vertices;
-      var k_maxIters = 20;
-      var saveA = b2Distance.s_saveA;
-      var saveB = b2Distance.s_saveB;
-      var saveCount = 0;
-      var closestPoint = simplex.GetClosestPoint();
-      var distanceSqr1 = closestPoint.LengthSquared();
-      var distanceSqr2 = distanceSqr1;
-      var i = 0;
-      var p;
-      var iter = 0;
+      var vertices = simplex.m_vertices,
+          k_maxIters = 20,
+          saveA = b2Distance.s_saveA,
+          saveB = b2Distance.s_saveB,
+          saveCount = 0,
+          closestPoint = simplex.GetClosestPoint(),
+          distanceSqr1 = closestPoint.LengthSquared(),
+          distanceSqr2 = distanceSqr1,
+          i = 0,
+          p,
+          iter = 0;
       while (iter < k_maxIters) {
          saveCount = simplex.m_count;
          for (i = 0;
@@ -4663,8 +4660,8 @@ Box2D.Collision.b2Distance = b2Distance = (function() {
       output.iterations = iter;
       simplex.WriteCache(cache);
       if (input.useRadii) {
-         var rA = proxyA.m_radius;
-         var rB = proxyB.m_radius;
+         var rA = proxyA.m_radius,
+          rB = proxyB.m_radius;
          if (output.distance > rA + rB && output.distance > Number.MIN_VALUE) {
             output.distance -= rA + rB;
             var normal = b2Math.SubtractVV(output.pointB, output.pointA);
@@ -4783,8 +4780,8 @@ Box2D.Collision.b2DistanceProxy = b2DistanceProxy = (function() {
     *
     */
    b2DistanceProxy.prototype.GetSupport = function (d) {
-      var bestIndex = 0;
-      var bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
+      var bestIndex = 0,
+          bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
       for (var i = 1; i < this.m_count; ++i) {
          var value = this.m_vertices[i].x * d.x + this.m_vertices[i].y * d.y;
          if (value > bestValue) {
@@ -4802,8 +4799,8 @@ Box2D.Collision.b2DistanceProxy = b2DistanceProxy = (function() {
     *
     */
    b2DistanceProxy.prototype.GetSupportVertex = function (d) {
-      var bestIndex = 0;
-      var bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
+      var bestIndex = 0,
+          bestValue = this.m_vertices[0].x * d.x + this.m_vertices[0].y * d.y;
       for (var i = 1; i < this.m_count; ++i) {
          var value = this.m_vertices[i].x * d.x + this.m_vertices[i].y * d.y;
          if (value > bestValue) {
@@ -4897,9 +4894,9 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
     *
     */
    b2DynamicTree.prototype.CreateProxy = function (aabb, userData) {
-      var node = this.AllocateNode();
-      var extendX = b2Settings.b2_aabbExtension;
-      var extendY = b2Settings.b2_aabbExtension;
+      var node = this.AllocateNode(),
+          extendX = b2Settings.b2_aabbExtension,
+          extendY = b2Settings.b2_aabbExtension;
       node.aabb.lowerBound.x = aabb.lowerBound.x - extendX;
       node.aabb.lowerBound.y = aabb.lowerBound.y - extendY;
       node.aabb.upperBound.x = aabb.upperBound.x + extendX;
@@ -4934,8 +4931,8 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
          return false;
       }
       this.RemoveLeaf(proxy);
-      var extendX = b2Settings.b2_aabbExtension + b2Settings.b2_aabbMultiplier * (displacement.x > 0 ? displacement.x : (-displacement.x));
-      var extendY = b2Settings.b2_aabbExtension + b2Settings.b2_aabbMultiplier * (displacement.y > 0 ? displacement.y : (-displacement.y));
+      var extendX = b2Settings.b2_aabbExtension + b2Settings.b2_aabbMultiplier * (displacement.x > 0 ? displacement.x : (-displacement.x)),
+          extendY = b2Settings.b2_aabbExtension + b2Settings.b2_aabbMultiplier * (displacement.y > 0 ? displacement.y : (-displacement.y));
       proxy.aabb.lowerBound.x = aabb.lowerBound.x - extendX;
       proxy.aabb.lowerBound.y = aabb.lowerBound.y - extendY;
       proxy.aabb.upperBound.x = aabb.upperBound.x + extendX;
@@ -4954,8 +4951,8 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
       iterations = iterations || 0;
       if (this.m_root == null) return;
       for (var i = 0; i < iterations; i++) {
-         var node = this.m_root;
-         var bit = 0;
+         var node = this.m_root,
+          bit = 0;
          while (node.IsLeaf() == false) {
             node = (this.m_path >> bit) & 1 ? node.child2 : node.child1;
             bit = (bit + 1) & 31;
@@ -4994,8 +4991,8 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
     */
    b2DynamicTree.prototype.Query = function (callback, aabb) {
       if (this.m_root == null) return;
-      var stack = new Vector();
-      var count = 0;
+      var stack = new Vector(),
+          count = 0;
       stack[count++] = this.m_root;
       while (count > 0) {
          var node = stack[--count];
@@ -5021,15 +5018,15 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
     */
    b2DynamicTree.prototype.RayCast = function (callback, input) {
       if (this.m_root == null) return;
-      var p1 = input.p1;
-      var p2 = input.p2;
-      var r = b2Math.SubtractVV(p1, p2);
+      var p1 = input.p1,
+          p2 = input.p2,
+          r = b2Math.SubtractVV(p1, p2);
       r.Normalize();
-      var v = b2Math.CrossFV(1.0, r);
-      var abs_v = b2Math.AbsV(v);
-      var maxFraction = input.maxFraction;
-      var segmentAABB = new b2AABB();
-      var tX = 0;
+      var v = b2Math.CrossFV(1.0, r),
+          abs_v = b2Math.AbsV(v),
+          maxFraction = input.maxFraction,
+          segmentAABB = new b2AABB(),
+          tX = 0;
       var tY = 0; {
          tX = p1.x + maxFraction * (p2.x - p1.x);
          tY = p1.y + maxFraction * (p2.y - p1.y);
@@ -5038,17 +5035,17 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
          segmentAABB.upperBound.x = Math.max(p1.x, tX);
          segmentAABB.upperBound.y = Math.max(p1.y, tY);
       }
-      var stack = new Vector();
-      var count = 0;
+      var stack = new Vector(),
+          count = 0;
       stack[count++] = this.m_root;
       while (count > 0) {
          var node = stack[--count];
          if (node.aabb.TestOverlap(segmentAABB) == false) {
             continue;
          }
-         var c = node.aabb.GetCenter();
-         var h = node.aabb.GetExtents();
-         var separation = Math.abs(v.x * (p1.x - c.x) + v.y * (p1.y - c.y)) - abs_v.x * h.x - abs_v.y * h.y;
+         var c = node.aabb.GetCenter(),
+          h = node.aabb.GetExtents(),
+          separation = Math.abs(v.x * (p1.x - c.x) + v.y * (p1.y - c.y)) - abs_v.x * h.x - abs_v.y * h.y;
          if (separation > 0.0) continue;
          if (node.IsLeaf()) {
             var subInput = new b2RayCastInput();
@@ -5115,14 +5112,14 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
          this.m_root.parent = null;
          return;
       }
-      var center = leaf.aabb.GetCenter();
-      var sibling = this.m_root;
+      var center = leaf.aabb.GetCenter(),
+          sibling = this.m_root;
       if (sibling.IsLeaf() == false) {
          do {
-            var child1 = sibling.child1;
-            var child2 = sibling.child2;
-            var norm1 = Math.abs((child1.aabb.lowerBound.x + child1.aabb.upperBound.x) / 2 - center.x) + Math.abs((child1.aabb.lowerBound.y + child1.aabb.upperBound.y) / 2 - center.y);
-            var norm2 = Math.abs((child2.aabb.lowerBound.x + child2.aabb.upperBound.x) / 2 - center.x) + Math.abs((child2.aabb.lowerBound.y + child2.aabb.upperBound.y) / 2 - center.y);
+            var child1 = sibling.child1,
+          child2 = sibling.child2,
+          norm1 = Math.abs((child1.aabb.lowerBound.x + child1.aabb.upperBound.x) / 2 - center.x) + Math.abs((child1.aabb.lowerBound.y + child1.aabb.upperBound.y) / 2 - center.y),
+          norm2 = Math.abs((child2.aabb.lowerBound.x + child2.aabb.upperBound.x) / 2 - center.x) + Math.abs((child2.aabb.lowerBound.y + child2.aabb.upperBound.y) / 2 - center.y);
             if (norm1 < norm2) {
                sibling = child1;
             }
@@ -5132,8 +5129,8 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
          }
          while (sibling.IsLeaf() == false)
       }
-      var node1 = sibling.parent;
-      var node2 = this.AllocateNode();
+      var node1 = sibling.parent,
+          node2 = this.AllocateNode();
       node2.parent = node1;
       node2.userData = null;
       node2.aabb.Combine(leaf.aabb, sibling.aabb);
@@ -5176,9 +5173,9 @@ Box2D.Collision.b2DynamicTree = b2DynamicTree = (function() {
          this.m_root = null;
          return;
       }
-      var node2 = leaf.parent;
-      var node1 = node2.parent;
-      var sibling;
+      var node2 = leaf.parent,
+          node1 = node2.parent,
+          sibling;
       if (node2.child1 == leaf) {
          sibling = node2.child2;
       }
@@ -5300,8 +5297,8 @@ Box2D.Collision.b2DynamicTreeBroadPhase = b2DynamicTreeBroadPhase = (function() 
     *
     */
    b2DynamicTreeBroadPhase.prototype.TestOverlap = function (proxyA, proxyB) {
-      var aabbA = this.m_tree.GetFatAABB(proxyA);
-      var aabbB = this.m_tree.GetFatAABB(proxyB);
+      var aabbA = this.m_tree.GetFatAABB(proxyA),
+          aabbB = this.m_tree.GetFatAABB(proxyB);
       return aabbA.TestOverlap(aabbB);
    };
 
@@ -5365,9 +5362,9 @@ Box2D.Collision.b2DynamicTreeBroadPhase = b2DynamicTreeBroadPhase = (function() 
       }
       __this.m_moveBuffer.length = 0;
       for (var i = 0; i < __this.m_pairCount;) {
-         var primaryPair = __this.m_pairBuffer[i];
-         var userDataA = __this.m_tree.GetUserData(primaryPair.proxyA);
-         var userDataB = __this.m_tree.GetUserData(primaryPair.proxyB);
+         var primaryPair = __this.m_pairBuffer[i],
+          userDataA = __this.m_tree.GetUserData(primaryPair.proxyA),
+          userDataB = __this.m_tree.GetUserData(primaryPair.proxyB);
          callback(userDataA, userDataB);
          ++i;
          while (i < __this.m_pairCount) {
@@ -5576,19 +5573,19 @@ Box2D.Collision.b2Segment = b2Segment = (function() {
     */
    b2Segment.prototype.TestSegment = function (lambda, normal, segment, maxLambda) {
       maxLambda = maxLambda || 0;
-      var s = segment.p1;
-      var rX = segment.p2.x - s.x;
-      var rY = segment.p2.y - s.y;
-      var dX = this.p2.x - this.p1.x;
-      var dY = this.p2.y - this.p1.y;
-      var nX = dY;
-      var nY = (-dX);
-      var k_slop = 100.0 * Number.MIN_VALUE;
-      var denom = (-(rX * nX + rY * nY));
+      var s = segment.p1,
+          rX = segment.p2.x - s.x,
+          rY = segment.p2.y - s.y,
+          dX = this.p2.x - this.p1.x,
+          dY = this.p2.y - this.p1.y,
+          nX = dY,
+          nY = (-dX),
+          k_slop = 100.0 * Number.MIN_VALUE,
+          denom = (-(rX * nX + rY * nY));
       if (denom > k_slop) {
-         var bX = s.x - this.p1.x;
-         var bY = s.y - this.p1.y;
-         var a = (bX * nX + bY * nY);
+         var bX = s.x - this.p1.x,
+          bY = s.y - this.p1.y,
+          a = (bX * nX + bY * nY);
          if (0.0 <= a && a <= maxLambda * denom) {
             var mu2 = (-rX * bY) + rY * bX;
             if ((-k_slop * denom) <= mu2 && mu2 <= denom * (1.0 + k_slop)) {
@@ -5623,8 +5620,8 @@ Box2D.Collision.b2Segment = b2Segment = (function() {
     *
     */
    b2Segment.prototype.ExtendForward = function (aabb) {
-      var dX = this.p2.x - this.p1.x;
-      var dY = this.p2.y - this.p1.y;
+      var dX = this.p2.x - this.p1.x,
+          dY = this.p2.y - this.p1.y;
       var lambda = Math.min(dX > 0 ? (aabb.upperBound.x - this.p1.x) / dX : dX < 0 ? (aabb.lowerBound.x - this.p1.x) / dX : Number.POSITIVE_INFINITY,
       dY > 0 ? (aabb.upperBound.y - this.p1.y) / dY : dY < 0 ? (aabb.lowerBound.y - this.p1.y) / dY : Number.POSITIVE_INFINITY);
       this.p2.x = this.p1.x + dX * lambda;
@@ -5638,8 +5635,8 @@ Box2D.Collision.b2Segment = b2Segment = (function() {
     *
     */
    b2Segment.prototype.ExtendBackward = function (aabb) {
-      var dX = (-this.p2.x) + this.p1.x;
-      var dY = (-this.p2.y) + this.p1.y;
+      var dX = (-this.p2.x) + this.p1.x,
+          dY = (-this.p2.y) + this.p1.y;
       var lambda = Math.min(dX > 0 ? (aabb.upperBound.x - this.p2.x) / dX : dX < 0 ? (aabb.lowerBound.x - this.p2.x) / dX : Number.POSITIVE_INFINITY,
       dY > 0 ? (aabb.upperBound.y - this.p2.y) / dY : dY < 0 ? (aabb.lowerBound.y - this.p2.y) / dY : Number.POSITIVE_INFINITY);
       this.p1.x = this.p2.x + dX * lambda;
@@ -5686,22 +5683,22 @@ Box2D.Collision.b2SeparationFunction = b2SeparationFunction = (function() {
       this.m_proxyB = proxyB;
       var count = parseInt(cache.count);
       b2Settings.b2Assert(0 < count && count < 3);
-      var localPointA;
-      var localPointA1;
-      var localPointA2;
-      var localPointB;
-      var localPointB1;
-      var localPointB2;
-      var pointAX = 0;
-      var pointAY = 0;
-      var pointBX = 0;
-      var pointBY = 0;
-      var normalX = 0;
-      var normalY = 0;
-      var tMat;
-      var tVec;
-      var s = 0;
-      var sgn = 0;
+      var localPointA,
+          localPointA1,
+          localPointA2,
+          localPointB,
+          localPointB1,
+          localPointB2,
+          pointAX = 0,
+          pointAY = 0,
+          pointBX = 0,
+          pointBY = 0,
+          normalX = 0,
+          normalY = 0,
+          tMat,
+          tVec,
+          s = 0,
+          sgn = 0;
       if (count == 1) {
          this.m_type = b2SeparationFunction.e_points;
          localPointA = this.m_proxyA.GetVertex(cache.indexA[0]);
@@ -5775,17 +5772,17 @@ Box2D.Collision.b2SeparationFunction = b2SeparationFunction = (function() {
          localPointA2 = this.m_proxyA.GetVertex(cache.indexA[1]);
          localPointB1 = this.m_proxyB.GetVertex(cache.indexB[0]);
          localPointB2 = this.m_proxyB.GetVertex(cache.indexB[1]);
-         var pA = b2Math.MulX(transformA, localPointA);
-         var dA = b2Math.MulMV(transformA.R, b2Math.SubtractVV(localPointA2, localPointA1));
-         var pB = b2Math.MulX(transformB, localPointB);
-         var dB = b2Math.MulMV(transformB.R, b2Math.SubtractVV(localPointB2, localPointB1));
-         var a = dA.x * dA.x + dA.y * dA.y;
-         var e = dB.x * dB.x + dB.y * dB.y;
-         var r = b2Math.SubtractVV(dB, dA);
-         var c = dA.x * r.x + dA.y * r.y;
-         var f = dB.x * r.x + dB.y * r.y;
-         var b = dA.x * dB.x + dA.y * dB.y;
-         var denom = a * e - b * b;
+         var pA = b2Math.MulX(transformA, localPointA),
+          dA = b2Math.MulMV(transformA.R, b2Math.SubtractVV(localPointA2, localPointA1)),
+          pB = b2Math.MulX(transformB, localPointB),
+          dB = b2Math.MulMV(transformB.R, b2Math.SubtractVV(localPointB2, localPointB1)),
+          a = dA.x * dA.x + dA.y * dA.y,
+          e = dB.x * dB.x + dB.y * dB.y,
+          r = b2Math.SubtractVV(dB, dA),
+          c = dA.x * r.x + dA.y * r.y,
+          f = dB.x * r.x + dB.y * r.y,
+          b = dA.x * dB.x + dA.y * dB.y,
+          denom = a * e - b * b;
          s = 0.0;
          if (denom != 0.0) {
             s = b2Math.Clamp((b * f - c * e) / denom, 0.0, 1.0);
@@ -5855,14 +5852,14 @@ Box2D.Collision.b2SeparationFunction = b2SeparationFunction = (function() {
     *
     */
    b2SeparationFunction.prototype.Evaluate = function (transformA, transformB) {
-      var axisA;
-      var axisB;
-      var localPointA;
-      var localPointB;
-      var pointA;
-      var pointB;
-      var seperation = 0;
-      var normal;
+      var axisA,
+          axisB,
+          localPointA,
+          localPointB,
+          pointA,
+          pointB,
+          seperation = 0,
+          normal;
       switch (this.m_type) {
       case b2SeparationFunction.e_points:
          {
@@ -5941,18 +5938,18 @@ Box2D.Collision.b2TimeOfImpact = b2TimeOfImpact = (function() {
     */
    b2TimeOfImpact.TimeOfImpact = function (input) {
       ++b2TimeOfImpact.b2_toiCalls;
-      var proxyA = input.proxyA;
-      var proxyB = input.proxyB;
-      var sweepA = input.sweepA;
-      var sweepB = input.sweepB;
+      var proxyA = input.proxyA,
+          proxyB = input.proxyB,
+          sweepA = input.sweepA,
+          sweepB = input.sweepB;
       b2Settings.b2Assert(sweepA.t0 == sweepB.t0);
       b2Settings.b2Assert(1.0 - sweepA.t0 > Number.MIN_VALUE);
-      var radius = proxyA.m_radius + proxyB.m_radius;
-      var tolerance = input.tolerance;
-      var alpha = 0.0;
-      var k_maxIterations = 1000;
-      var iter = 0;
-      var target = 0.0;
+      var radius = proxyA.m_radius + proxyB.m_radius,
+          tolerance = input.tolerance,
+          alpha = 0.0,
+          k_maxIterations = 1000,
+          iter = 0,
+          target = 0.0;
       b2TimeOfImpact.s_cache.count = 0;
       b2TimeOfImpact.s_distanceInput.useRadii = false;
       for (;;) {
@@ -5989,9 +5986,9 @@ Box2D.Collision.b2TimeOfImpact = b2TimeOfImpact = (function() {
             break;
          }
          var newAlpha = alpha; {
-            var x1 = alpha;
-            var x2 = 1.0;
-            var f1 = separation;
+            var x1 = alpha,
+          x2 = 1.0,
+          f1 = separation;
             sweepA.GetTransform(b2TimeOfImpact.s_xfA, x2);
             sweepB.GetTransform(b2TimeOfImpact.s_xfB, x2);
             var f2 = b2TimeOfImpact.s_fcn.Evaluate(b2TimeOfImpact.s_xfA, b2TimeOfImpact.s_xfB);
@@ -6106,29 +6103,29 @@ Box2D.Collision.b2WorldManifold = b2WorldManifold = (function() {
       if (manifold.m_pointCount == 0) {
          return;
       }
-      var i = 0;
-      var tVec;
-      var tMat;
-      var normalX = 0;
-      var normalY = 0;
-      var planePointX = 0;
-      var planePointY = 0;
-      var clipPointX = 0;
-      var clipPointY = 0;
+      var i = 0,
+          tVec,
+          tMat,
+          normalX = 0,
+          normalY = 0,
+          planePointX = 0,
+          planePointY = 0,
+          clipPointX = 0,
+          clipPointY = 0;
       switch (manifold.m_type) {
       case b2Manifold.e_circles:
          {
             tMat = xfA.R;
             tVec = manifold.m_localPoint;
-            var pointAX = xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-            var pointAY = xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
+            var pointAX = xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y,
+          pointAY = xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
             tMat = xfB.R;
             tVec = manifold.m_points[0].m_localPoint;
-            var pointBX = xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
-            var pointBY = xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
-            var dX = pointBX - pointAX;
-            var dY = pointBY - pointAY;
-            var d2 = dX * dX + dY * dY;
+            var pointBX = xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y,
+          pointBY = xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y,
+          dX = pointBX - pointAX,
+          dY = pointBY - pointAY,
+          d2 = dX * dX + dY * dY;
             if (d2 > Number.MIN_VALUE * Number.MIN_VALUE) {
                var d = Math.sqrt(d2);
                this.m_normal.x = dX / d;
@@ -6138,10 +6135,10 @@ Box2D.Collision.b2WorldManifold = b2WorldManifold = (function() {
                this.m_normal.x = 1;
                this.m_normal.y = 0;
             }
-            var cAX = pointAX + radiusA * this.m_normal.x;
-            var cAY = pointAY + radiusA * this.m_normal.y;
-            var cBX = pointBX - radiusB * this.m_normal.x;
-            var cBY = pointBY - radiusB * this.m_normal.y;
+            var cAX = pointAX + radiusA * this.m_normal.x,
+          cAY = pointAY + radiusA * this.m_normal.y,
+          cBX = pointBX - radiusB * this.m_normal.x,
+          cBY = pointBY - radiusB * this.m_normal.y;
             this.m_points[0].x = 0.5 * (cAX + cBX);
             this.m_points[0].y = 0.5 * (cAY + cBY);
          }
@@ -6425,10 +6422,10 @@ Box2D.Dynamics.Contacts.b2Contact = b2Contact = (function() {
     *
     */
    b2Contact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -6561,8 +6558,8 @@ Box2D.Dynamics.Contacts.b2Contact = b2Contact = (function() {
       if (fixtureA.IsSensor() || fixtureB.IsSensor()) {
          this.m_flags |= b2Contact.e_sensorFlag;
       }
-      var bodyA = fixtureA.GetBody();
-      var bodyB = fixtureB.GetBody();
+      var bodyA = fixtureA.GetBody(),
+          bodyB = fixtureB.GetBody();
       if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
          this.m_flags |= b2Contact.e_continuousFlag;
       }
@@ -6592,17 +6589,17 @@ Box2D.Dynamics.Contacts.b2Contact = b2Contact = (function() {
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -6739,8 +6736,8 @@ b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact = (function(superClass
     *
     */
    b2CircleContact.prototype.Evaluate = function () {
-      var bA = this.m_fixtureA.GetBody();
-      var bB = this.m_fixtureB.GetBody();
+      var bA = this.m_fixtureA.GetBody(),
+          bB = this.m_fixtureB.GetBody();
       b2Collision.CollideCircles(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2CircleShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2CircleShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
    };
 
@@ -6761,10 +6758,10 @@ b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact = (function(superClass
     *
     */
    b2CircleContact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -6897,17 +6894,17 @@ b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact = (function(superClass
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -7014,27 +7011,27 @@ Box2D.Dynamics.Contacts.b2PositionSolverManifold = b2PositionSolverManifold = (f
     */
    b2PositionSolverManifold.prototype.Initialize = function (cc) {
       b2Settings.b2Assert(cc.pointCount > 0);
-      var i = 0;
-      var clipPointX = 0;
-      var clipPointY = 0;
-      var tMat;
-      var tVec;
-      var planePointX = 0;
-      var planePointY = 0;
+      var i = 0,
+          clipPointX = 0,
+          clipPointY = 0,
+          tMat,
+          tVec,
+          planePointX = 0,
+          planePointY = 0;
       switch (cc.type) {
       case b2Manifold.e_circles:
          {
             tMat = cc.bodyA.m_xf.R;
             tVec = cc.localPoint;
-            var pointAX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-            var pointAY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
+            var pointAX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          pointAY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             tMat = cc.bodyB.m_xf.R;
             tVec = cc.points[0].localPoint;
-            var pointBX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
-            var pointBY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-            var dX = pointBX - pointAX;
-            var dY = pointBY - pointAY;
-            var d2 = dX * dX + dY * dY;
+            var pointBX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y),
+          pointBY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y),
+          dX = pointBX - pointAX,
+          dY = pointBY - pointAY,
+          d2 = dX * dX + dY * dY;
             if (d2 > Number.MIN_VALUE * Number.MIN_VALUE) {
                var d = Math.sqrt(d2);
                this.m_normal.x = dX / d;
@@ -7135,9 +7132,9 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
       var contact;
       this.m_step.Set(step);
       this.m_allocator = allocator;
-      var i = 0;
-      var tVec;
-      var tMat;
+      var i = 0,
+          tVec,
+          tMat;
       this.m_constraintCount = contactCount;
       while (this.m_constraints.length < this.m_constraintCount) {
          this.m_constraints[this.m_constraints.length] = new b2ContactConstraint();
@@ -7145,28 +7142,28 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
       for (i = 0;
       i < contactCount; ++i) {
          contact = contacts[i];
-         var fixtureA = contact.m_fixtureA;
-         var fixtureB = contact.m_fixtureB;
-         var shapeA = fixtureA.m_shape;
-         var shapeB = fixtureB.m_shape;
-         var radiusA = shapeA.m_radius;
-         var radiusB = shapeB.m_radius;
-         var bodyA = fixtureA.m_body;
-         var bodyB = fixtureB.m_body;
-         var manifold = contact.GetManifold();
-         var friction = b2Settings.b2MixFriction(fixtureA.GetFriction(), fixtureB.GetFriction());
-         var restitution = b2Settings.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution());
-         var vAX = bodyA.m_linearVelocity.x;
-         var vAY = bodyA.m_linearVelocity.y;
-         var vBX = bodyB.m_linearVelocity.x;
-         var vBY = bodyB.m_linearVelocity.y;
-         var wA = bodyA.m_angularVelocity;
-         var wB = bodyB.m_angularVelocity;
+         var fixtureA = contact.m_fixtureA,
+          fixtureB = contact.m_fixtureB,
+          shapeA = fixtureA.m_shape,
+          shapeB = fixtureB.m_shape,
+          radiusA = shapeA.m_radius,
+          radiusB = shapeB.m_radius,
+          bodyA = fixtureA.m_body,
+          bodyB = fixtureB.m_body,
+          manifold = contact.GetManifold(),
+          friction = b2Settings.b2MixFriction(fixtureA.GetFriction(), fixtureB.GetFriction()),
+          restitution = b2Settings.b2MixRestitution(fixtureA.GetRestitution(), fixtureB.GetRestitution()),
+          vAX = bodyA.m_linearVelocity.x,
+          vAY = bodyA.m_linearVelocity.y,
+          vBX = bodyB.m_linearVelocity.x,
+          vBY = bodyB.m_linearVelocity.y,
+          wA = bodyA.m_angularVelocity,
+          wB = bodyB.m_angularVelocity;
          b2Settings.b2Assert(manifold.m_pointCount > 0);
          b2ContactSolver.s_worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
-         var normalX = b2ContactSolver.s_worldManifold.m_normal.x;
-         var normalY = b2ContactSolver.s_worldManifold.m_normal.y;
-         var cc = this.m_constraints[i];
+         var normalX = b2ContactSolver.s_worldManifold.m_normal.x,
+          normalY = b2ContactSolver.s_worldManifold.m_normal.y,
+          cc = this.m_constraints[i];
          cc.bodyA = bodyA;
          cc.bodyB = bodyB;
          cc.manifold = manifold;
@@ -7182,17 +7179,17 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
          cc.radius = radiusA + radiusB;
          cc.type = manifold.m_type;
          for (var k = 0; k < cc.pointCount; ++k) {
-            var cp = manifold.m_points[k];
-            var ccp = cc.points[k];
+            var cp = manifold.m_points[k],
+          ccp = cc.points[k];
             ccp.normalImpulse = cp.m_normalImpulse;
             ccp.tangentImpulse = cp.m_tangentImpulse;
             ccp.localPoint.SetV(cp.m_localPoint);
-            var rAX = ccp.rA.x = b2ContactSolver.s_worldManifold.m_points[k].x - bodyA.m_sweep.c.x;
-            var rAY = ccp.rA.y = b2ContactSolver.s_worldManifold.m_points[k].y - bodyA.m_sweep.c.y;
-            var rBX = ccp.rB.x = b2ContactSolver.s_worldManifold.m_points[k].x - bodyB.m_sweep.c.x;
-            var rBY = ccp.rB.y = b2ContactSolver.s_worldManifold.m_points[k].y - bodyB.m_sweep.c.y;
-            var rnA = rAX * normalY - rAY * normalX;
-            var rnB = rBX * normalY - rBY * normalX;
+            var rAX = ccp.rA.x = b2ContactSolver.s_worldManifold.m_points[k].x - bodyA.m_sweep.c.x,
+          rAY = ccp.rA.y = b2ContactSolver.s_worldManifold.m_points[k].y - bodyA.m_sweep.c.y,
+          rBX = ccp.rB.x = b2ContactSolver.s_worldManifold.m_points[k].x - bodyB.m_sweep.c.x,
+          rBY = ccp.rB.y = b2ContactSolver.s_worldManifold.m_points[k].y - bodyB.m_sweep.c.y,
+          rnA = rAX * normalY - rAY * normalX,
+          rnB = rBX * normalY - rBY * normalX;
             rnA *= rnA;
             rnB *= rnB;
             var kNormal = bodyA.m_invMass + bodyB.m_invMass + bodyA.m_invI * rnA + bodyB.m_invI * rnB;
@@ -7200,37 +7197,37 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
             var kEqualized = bodyA.m_mass * bodyA.m_invMass + bodyB.m_mass * bodyB.m_invMass;
             kEqualized += bodyA.m_mass * bodyA.m_invI * rnA + bodyB.m_mass * bodyB.m_invI * rnB;
             ccp.equalizedMass = 1.0 / kEqualized;
-            var tangentX = normalY;
-            var tangentY = (-normalX);
-            var rtA = rAX * tangentY - rAY * tangentX;
-            var rtB = rBX * tangentY - rBY * tangentX;
+            var tangentX = normalY,
+          tangentY = (-normalX),
+          rtA = rAX * tangentY - rAY * tangentX,
+          rtB = rBX * tangentY - rBY * tangentX;
             rtA *= rtA;
             rtB *= rtB;
             var kTangent = bodyA.m_invMass + bodyB.m_invMass + bodyA.m_invI * rtA + bodyB.m_invI * rtB;
             ccp.tangentMass = 1.0 / kTangent;
             ccp.velocityBias = 0.0;
-            var tX = vBX + ((-wB * rBY)) - vAX - ((-wA * rAY));
-            var tY = vBY + (wB * rBX) - vAY - (wA * rAX);
-            var vRel = cc.normal.x * tX + cc.normal.y * tY;
+            var tX = vBX + ((-wB * rBY)) - vAX - ((-wA * rAY)),
+          tY = vBY + (wB * rBX) - vAY - (wA * rAX),
+          vRel = cc.normal.x * tX + cc.normal.y * tY;
             if (vRel < (-b2Settings.b2_velocityThreshold)) {
                ccp.velocityBias += (-cc.restitution * vRel);
             }
          }
          if (cc.pointCount == 2) {
-            var ccp1 = cc.points[0];
-            var ccp2 = cc.points[1];
-            var invMassA = bodyA.m_invMass;
-            var invIA = bodyA.m_invI;
-            var invMassB = bodyB.m_invMass;
-            var invIB = bodyB.m_invI;
-            var rn1A = ccp1.rA.x * normalY - ccp1.rA.y * normalX;
-            var rn1B = ccp1.rB.x * normalY - ccp1.rB.y * normalX;
-            var rn2A = ccp2.rA.x * normalY - ccp2.rA.y * normalX;
-            var rn2B = ccp2.rB.x * normalY - ccp2.rB.y * normalX;
-            var k11 = invMassA + invMassB + invIA * rn1A * rn1A + invIB * rn1B * rn1B;
-            var k22 = invMassA + invMassB + invIA * rn2A * rn2A + invIB * rn2B * rn2B;
-            var k12 = invMassA + invMassB + invIA * rn1A * rn2A + invIB * rn1B * rn2B;
-            var k_maxConditionNumber = 100.0;
+            var ccp1 = cc.points[0],
+          ccp2 = cc.points[1],
+          invMassA = bodyA.m_invMass,
+          invIA = bodyA.m_invI,
+          invMassB = bodyB.m_invMass,
+          invIB = bodyB.m_invI,
+          rn1A = ccp1.rA.x * normalY - ccp1.rA.y * normalX,
+          rn1B = ccp1.rB.x * normalY - ccp1.rB.y * normalX,
+          rn2A = ccp2.rA.x * normalY - ccp2.rA.y * normalX,
+          rn2B = ccp2.rB.x * normalY - ccp2.rB.y * normalX,
+          k11 = invMassA + invMassB + invIA * rn1A * rn1A + invIB * rn1B * rn1B,
+          k22 = invMassA + invMassB + invIA * rn2A * rn2A + invIB * rn2B * rn2B,
+          k12 = invMassA + invMassB + invIA * rn1A * rn2A + invIB * rn1B * rn2B,
+          k_maxConditionNumber = 100.0;
             if (k11 * k11 < k_maxConditionNumber * (k11 * k22 - k12 * k12)) {
                cc.K.col1.Set(k11, k12);
                cc.K.col2.Set(k12, k22);
@@ -7250,24 +7247,24 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
     *
     */
    b2ContactSolver.prototype.InitVelocityConstraints = function (step) {
-      var tVec;
-      var tVec2;
-      var tMat;
+      var tVec,
+          tVec2,
+          tMat;
       for (var i = 0; i < this.m_constraintCount; ++i) {
-         var c = this.m_constraints[i];
-         var bodyA = c.bodyA;
-         var bodyB = c.bodyB;
-         var invMassA = bodyA.m_invMass;
-         var invIA = bodyA.m_invI;
-         var invMassB = bodyB.m_invMass;
-         var invIB = bodyB.m_invI;
-         var normalX = c.normal.x;
-         var normalY = c.normal.y;
-         var tangentX = normalY;
-         var tangentY = (-normalX);
-         var tX = 0;
-         var j = 0;
-         var tCount = 0;
+         var c = this.m_constraints[i],
+          bodyA = c.bodyA,
+          bodyB = c.bodyB,
+          invMassA = bodyA.m_invMass,
+          invIA = bodyA.m_invI,
+          invMassB = bodyB.m_invMass,
+          invIB = bodyB.m_invI,
+          normalX = c.normal.x,
+          normalY = c.normal.y,
+          tangentX = normalY,
+          tangentY = (-normalX),
+          tX = 0,
+          j = 0,
+          tCount = 0;
          if (step.warmStarting) {
             tCount = c.pointCount;
             for (j = 0;
@@ -7275,8 +7272,8 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
                var ccp = c.points[j];
                ccp.normalImpulse *= step.dtRatio;
                ccp.tangentImpulse *= step.dtRatio;
-               var PX = ccp.normalImpulse * normalX + ccp.tangentImpulse * tangentX;
-               var PY = ccp.normalImpulse * normalY + ccp.tangentImpulse * tangentY;
+               var PX = ccp.normalImpulse * normalX + ccp.tangentImpulse * tangentX,
+          PY = ccp.normalImpulse * normalY + ccp.tangentImpulse * tangentY;
                bodyA.m_angularVelocity -= invIA * (ccp.rA.x * PY - ccp.rA.y * PX);
                bodyA.m_linearVelocity.x -= invMassA * PX;
                bodyA.m_linearVelocity.y -= invMassA * PY;
@@ -7304,47 +7301,47 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
     *
     */
    b2ContactSolver.prototype.SolveVelocityConstraints = function () {
-      var j = 0;
-      var ccp;
-      var rAX = 0;
-      var rAY = 0;
-      var rBX = 0;
-      var rBY = 0;
-      var dvX = 0;
-      var dvY = 0;
-      var vn = 0;
-      var vt = 0;
-      var lambda = 0;
-      var maxFriction = 0;
-      var newImpulse = 0;
-      var PX = 0;
-      var PY = 0;
-      var dX = 0;
-      var dY = 0;
-      var P1X = 0;
-      var P1Y = 0;
-      var P2X = 0;
-      var P2Y = 0;
-      var tMat;
-      var tVec;
+      var j = 0,
+          ccp,
+          rAX = 0,
+          rAY = 0,
+          rBX = 0,
+          rBY = 0,
+          dvX = 0,
+          dvY = 0,
+          vn = 0,
+          vt = 0,
+          lambda = 0,
+          maxFriction = 0,
+          newImpulse = 0,
+          PX = 0,
+          PY = 0,
+          dX = 0,
+          dY = 0,
+          P1X = 0,
+          P1Y = 0,
+          P2X = 0,
+          P2Y = 0,
+          tMat,
+          tVec;
       for (var i = 0; i < this.m_constraintCount; ++i) {
-         var c = this.m_constraints[i];
-         var bodyA = c.bodyA;
-         var bodyB = c.bodyB;
-         var wA = bodyA.m_angularVelocity;
-         var wB = bodyB.m_angularVelocity;
-         var vA = bodyA.m_linearVelocity;
-         var vB = bodyB.m_linearVelocity;
-         var invMassA = bodyA.m_invMass;
-         var invIA = bodyA.m_invI;
-         var invMassB = bodyB.m_invMass;
-         var invIB = bodyB.m_invI;
-         var normalX = c.normal.x;
-         var normalY = c.normal.y;
-         var tangentX = normalY;
-         var tangentY = (-normalX);
-         var friction = c.friction;
-         var tX = 0;
+         var c = this.m_constraints[i],
+          bodyA = c.bodyA,
+          bodyB = c.bodyB,
+          wA = bodyA.m_angularVelocity,
+          wB = bodyB.m_angularVelocity,
+          vA = bodyA.m_linearVelocity,
+          vB = bodyB.m_linearVelocity,
+          invMassA = bodyA.m_invMass,
+          invIA = bodyA.m_invI,
+          invMassB = bodyB.m_invMass,
+          invIB = bodyB.m_invI,
+          normalX = c.normal.x,
+          normalY = c.normal.y,
+          tangentX = normalY,
+          tangentY = (-normalX),
+          friction = c.friction,
+          tX = 0;
          for (j = 0;
          j < c.pointCount; j++) {
             ccp = c.points[j];
@@ -7386,26 +7383,26 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
             ccp.normalImpulse = newImpulse;
          }
          else {
-            var cp1 = c.points[0];
-            var cp2 = c.points[1];
-            var aX = cp1.normalImpulse;
-            var aY = cp2.normalImpulse;
-            var dv1X = vB.x - wB * cp1.rB.y - vA.x + wA * cp1.rA.y;
-            var dv1Y = vB.y + wB * cp1.rB.x - vA.y - wA * cp1.rA.x;
-            var dv2X = vB.x - wB * cp2.rB.y - vA.x + wA * cp2.rA.y;
-            var dv2Y = vB.y + wB * cp2.rB.x - vA.y - wA * cp2.rA.x;
-            var vn1 = dv1X * normalX + dv1Y * normalY;
-            var vn2 = dv2X * normalX + dv2Y * normalY;
-            var bX = vn1 - cp1.velocityBias;
-            var bY = vn2 - cp2.velocityBias;
+            var cp1 = c.points[0],
+          cp2 = c.points[1],
+          aX = cp1.normalImpulse,
+          aY = cp2.normalImpulse,
+          dv1X = vB.x - wB * cp1.rB.y - vA.x + wA * cp1.rA.y,
+          dv1Y = vB.y + wB * cp1.rB.x - vA.y - wA * cp1.rA.x,
+          dv2X = vB.x - wB * cp2.rB.y - vA.x + wA * cp2.rA.y,
+          dv2Y = vB.y + wB * cp2.rB.x - vA.y - wA * cp2.rA.x,
+          vn1 = dv1X * normalX + dv1Y * normalY,
+          vn2 = dv2X * normalX + dv2Y * normalY,
+          bX = vn1 - cp1.velocityBias,
+          bY = vn2 - cp2.velocityBias;
             tMat = c.K;
             bX -= tMat.col1.x * aX + tMat.col2.x * aY;
             bY -= tMat.col1.y * aX + tMat.col2.y * aY;
             var k_errorTol = 0.001;
             for (;;) {
                tMat = c.normalMass;
-               var xX = (-(tMat.col1.x * bX + tMat.col2.x * bY));
-               var xY = (-(tMat.col1.y * bX + tMat.col2.y * bY));
+               var xX = (-(tMat.col1.x * bX + tMat.col2.x * bY)),
+          xY = (-(tMat.col1.y * bX + tMat.col2.y * bY));
                if (xX >= 0.0 && xY >= 0.0) {
                   dX = xX - aX;
                   dY = xY - aY;
@@ -7502,11 +7499,11 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
     */
    b2ContactSolver.prototype.FinalizeVelocityConstraints = function () {
       for (var i = 0; i < this.m_constraintCount; ++i) {
-         var c = this.m_constraints[i];
-         var m = c.manifold;
+         var c = this.m_constraints[i],
+          m = c.manifold;
          for (var j = 0; j < c.pointCount; ++j) {
-            var point1 = m.m_points[j];
-            var point2 = c.points[j];
+            var point1 = m.m_points[j],
+          point2 = c.points[j];
             point1.m_normalImpulse = point2.normalImpulse;
             point1.m_tangentImpulse = point2.tangentImpulse;
          }
@@ -7523,28 +7520,28 @@ Box2D.Dynamics.Contacts.b2ContactSolver = b2ContactSolver = (function() {
       baumgarte = baumgarte || 0;
       var minSeparation = 0.0;
       for (var i = 0; i < this.m_constraintCount; i++) {
-         var c = this.m_constraints[i];
-         var bodyA = c.bodyA;
-         var bodyB = c.bodyB;
-         var invMassA = bodyA.m_mass * bodyA.m_invMass;
-         var invIA = bodyA.m_mass * bodyA.m_invI;
-         var invMassB = bodyB.m_mass * bodyB.m_invMass;
-         var invIB = bodyB.m_mass * bodyB.m_invI;
+         var c = this.m_constraints[i],
+          bodyA = c.bodyA,
+          bodyB = c.bodyB,
+          invMassA = bodyA.m_mass * bodyA.m_invMass,
+          invIA = bodyA.m_mass * bodyA.m_invI,
+          invMassB = bodyB.m_mass * bodyB.m_invMass,
+          invIB = bodyB.m_mass * bodyB.m_invI;
          b2ContactSolver.s_psm.Initialize(c);
          var normal = b2ContactSolver.s_psm.m_normal;
          for (var j = 0; j < c.pointCount; j++) {
-            var ccp = c.points[j];
-            var point = b2ContactSolver.s_psm.m_points[j];
-            var separation = b2ContactSolver.s_psm.m_separations[j];
-            var rAX = point.x - bodyA.m_sweep.c.x;
-            var rAY = point.y - bodyA.m_sweep.c.y;
-            var rBX = point.x - bodyB.m_sweep.c.x;
-            var rBY = point.y - bodyB.m_sweep.c.y;
+            var ccp = c.points[j],
+          point = b2ContactSolver.s_psm.m_points[j],
+          separation = b2ContactSolver.s_psm.m_separations[j],
+          rAX = point.x - bodyA.m_sweep.c.x,
+          rAY = point.y - bodyA.m_sweep.c.y,
+          rBX = point.x - bodyB.m_sweep.c.x,
+          rBY = point.y - bodyB.m_sweep.c.y;
             minSeparation = minSeparation < separation ? minSeparation : separation;
-            var C = b2Math.Clamp(baumgarte * (separation + b2Settings.b2_linearSlop), (-b2Settings.b2_maxLinearCorrection), 0.0);
-            var impulse = (-ccp.equalizedMass * C);
-            var PX = impulse * normal.x;
-            var PY = impulse * normal.y;bodyA.m_sweep.c.x -= invMassA * PX;
+            var C = b2Math.Clamp(baumgarte * (separation + b2Settings.b2_linearSlop), (-b2Settings.b2_maxLinearCorrection), 0.0),
+          impulse = (-ccp.equalizedMass * C),
+          PX = impulse * normal.x,
+          PY = impulse * normal.y;bodyA.m_sweep.c.x -= invMassA * PX;
             bodyA.m_sweep.c.y -= invMassA * PY;
             bodyA.m_sweep.a -= invIA * (rAX * PY - rAY * PX);
             bodyA.SynchronizeTransform();
@@ -7615,8 +7612,8 @@ b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact = (funct
     *
     */
    b2EdgeAndCircleContact.prototype.Evaluate = function () {
-      var bA = this.m_fixtureA.GetBody();
-      var bB = this.m_fixtureB.GetBody();
+      var bA = this.m_fixtureA.GetBody(),
+          bB = this.m_fixtureB.GetBody();
       this.b2CollideEdgeAndCircle(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2EdgeShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2CircleShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
    };
 
@@ -7649,10 +7646,10 @@ b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact = (funct
     *
     */
    b2EdgeAndCircleContact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -7785,17 +7782,17 @@ b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact = (funct
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -7912,10 +7909,10 @@ b2NullContact = Box2D.Dynamics.Contacts.b2NullContact = (function(superClass) {
     *
     */
    b2NullContact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -8056,8 +8053,8 @@ b2NullContact = Box2D.Dynamics.Contacts.b2NullContact = (function(superClass) {
       if (fixtureA.IsSensor() || fixtureB.IsSensor()) {
          this.m_flags |= b2Contact.e_sensorFlag;
       }
-      var bodyA = fixtureA.GetBody();
-      var bodyB = fixtureB.GetBody();
+      var bodyA = fixtureA.GetBody(),
+          bodyB = fixtureB.GetBody();
       if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
          this.m_flags |= b2Contact.e_continuousFlag;
       }
@@ -8087,17 +8084,17 @@ b2NullContact = Box2D.Dynamics.Contacts.b2NullContact = (function(superClass) {
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -8228,8 +8225,8 @@ b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact = (funct
     *
     */
    b2PolyAndCircleContact.prototype.Evaluate = function () {
-      var bA = this.m_fixtureA.m_body;
-      var bB = this.m_fixtureB.m_body;
+      var bA = this.m_fixtureA.m_body,
+          bB = this.m_fixtureB.m_body;
       b2Collision.CollidePolygonAndCircle(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2PolygonShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2CircleShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
    };
 
@@ -8250,10 +8247,10 @@ b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact = (funct
     *
     */
    b2PolyAndCircleContact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -8386,17 +8383,17 @@ b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact = (funct
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -8527,8 +8524,8 @@ b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact = (function(
     *
     */
    b2PolyAndEdgeContact.prototype.Evaluate = function () {
-      var bA = this.m_fixtureA.GetBody();
-      var bB = this.m_fixtureB.GetBody();
+      var bA = this.m_fixtureA.GetBody(),
+          bB = this.m_fixtureB.GetBody();
       this.b2CollidePolyAndEdge(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2PolygonShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2EdgeShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
    };
 
@@ -8561,10 +8558,10 @@ b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact = (function(
     *
     */
    b2PolyAndEdgeContact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -8697,17 +8694,17 @@ b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact = (function(
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -8836,8 +8833,8 @@ b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact = (function(superCla
     *
     */
    b2PolygonContact.prototype.Evaluate = function () {
-      var bA = this.m_fixtureA.GetBody();
-      var bB = this.m_fixtureB.GetBody();
+      var bA = this.m_fixtureA.GetBody(),
+          bB = this.m_fixtureB.GetBody();
       b2Collision.CollidePolygons(this.m_manifold, (this.m_fixtureA.GetShape() instanceof b2PolygonShape ? this.m_fixtureA.GetShape() : null), bA.m_xf, (this.m_fixtureB.GetShape() instanceof b2PolygonShape ? this.m_fixtureB.GetShape() : null), bB.m_xf);
    };
 
@@ -8858,10 +8855,10 @@ b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact = (function(superCla
     *
     */
    b2PolygonContact.prototype.GetWorldManifold = function (worldManifold) {
-      var bodyA = this.m_fixtureA.GetBody();
-      var bodyB = this.m_fixtureB.GetBody();
-      var shapeA = this.m_fixtureA.GetShape();
-      var shapeB = this.m_fixtureB.GetShape();
+      var bodyA = this.m_fixtureA.GetBody(),
+          bodyB = this.m_fixtureB.GetBody(),
+          shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape();
       worldManifold.Initialize(this.m_manifold, bodyA.GetTransform(), shapeA.m_radius, bodyB.GetTransform(), shapeB.m_radius);
    };
 
@@ -8994,17 +8991,17 @@ b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact = (function(superCla
       this.m_oldManifold = this.m_manifold;
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
-      var touching = false;
-      var wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
-      var bodyA = this.m_fixtureA.m_body;
-      var bodyB = this.m_fixtureB.m_body;
-      var aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
+      var touching = false,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          bodyA = this.m_fixtureA.m_body,
+          bodyB = this.m_fixtureB.m_body,
+          aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
       if (this.m_flags & b2Contact.e_sensorFlag) {
          if (aabbOverlap) {
-            var shapeA = this.m_fixtureA.GetShape();
-            var shapeB = this.m_fixtureB.GetShape();
-            var xfA = bodyA.GetTransform();
-            var xfB = bodyB.GetTransform();
+            var shapeA = this.m_fixtureA.GetShape(),
+          shapeB = this.m_fixtureB.GetShape(),
+          xfA = bodyA.GetTransform(),
+          xfB = bodyB.GetTransform();
             touching = b2Shape.TestOverlap(shapeA, xfA, shapeB, xfB);
          }
          this.m_manifold.m_pointCount = 0;
@@ -9147,10 +9144,10 @@ Box2D.Dynamics.Contacts.b2ContactFactory = b2ContactFactory = (function() {
     *
     */
    b2ContactFactory.prototype.Create = function (fixtureA, fixtureB) {
-      var type1 = parseInt(fixtureA.GetType());
-      var type2 = parseInt(fixtureB.GetType());
-      var reg = this.m_registers[type1][type2];
-      var c;
+      var type1 = parseInt(fixtureA.GetType()),
+          type2 = parseInt(fixtureB.GetType()),
+          reg = this.m_registers[type1][type2],
+          c;
       if (reg.pool) {
          c = reg.pool;
          reg.pool = c.m_next;
@@ -9187,9 +9184,9 @@ Box2D.Dynamics.Contacts.b2ContactFactory = b2ContactFactory = (function() {
          contact.m_fixtureA.m_body.SetAwake(true);
          contact.m_fixtureB.m_body.SetAwake(true);
       }
-      var type1 = parseInt(contact.m_fixtureA.GetType());
-      var type2 = parseInt(contact.m_fixtureB.GetType());
-      var reg = this.m_registers[type1][type2];
+      var type1 = parseInt(contact.m_fixtureA.GetType()),
+          type2 = parseInt(contact.m_fixtureB.GetType()),
+          reg = this.m_registers[type1][type2];
       if (true) {
          reg.poolCount++;
          contact.m_next = reg.pool;
@@ -9384,13 +9381,13 @@ b2BuoyancyController = Box2D.Dynamics.Controllers.b2BuoyancyController = (functi
          if (body.IsAwake() == false) {
             continue;
          }
-         var areac = new b2Vec2();
-         var massc = new b2Vec2();
-         var area = 0.0;
-         var mass = 0.0;
+         var areac = new b2Vec2(),
+          massc = new b2Vec2(),
+          area = 0.0,
+          mass = 0.0;
          for (var fixture = body.GetFixtureList(); fixture; fixture = fixture.GetNext()) {
-            var sc = new b2Vec2();
-            var sarea = fixture.GetShape().ComputeSubmergedArea(this.normal, this.offset, body.GetTransform(), sc);
+            var sc = new b2Vec2(),
+          sarea = fixture.GetShape().ComputeSubmergedArea(this.normal, this.offset, body.GetTransform(), sc);
             area += sarea;
             areac.x += sarea * sc.x;
             areac.y += sarea * sc.y;
@@ -9428,9 +9425,9 @@ b2BuoyancyController = Box2D.Dynamics.Controllers.b2BuoyancyController = (functi
     *
     */
    b2BuoyancyController.prototype.Draw = function (debugDraw) {
-      var r = 1000;
-      var p1 = new b2Vec2();
-      var p2 = new b2Vec2();
+      var r = 1000,
+          p1 = new b2Vec2(),
+          p2 = new b2Vec2();
       p1.x = this.normal.x * this.offset + this.normal.y * r;
       p1.y = this.normal.y * this.offset - this.normal.x * r;
       p2.x = this.normal.x * this.offset - this.normal.y * r;
@@ -9807,17 +9804,17 @@ b2GravityController = Box2D.Dynamics.Controllers.b2GravityController = (function
     *
     */
    b2GravityController.prototype.Step = function (step) {
-      var i = null;
-      var body1 = null;
-      var p1 = null;
-      var mass1 = 0;
-      var j = null;
-      var body2 = null;
-      var p2 = null;
-      var dx = 0;
-      var dy = 0;
-      var r2 = 0;
-      var f = null;
+      var i = null,
+          body1 = null,
+          p1 = null,
+          mass1 = 0,
+          j = null,
+          body2 = null,
+          p2 = null,
+          dx = 0,
+          dy = 0,
+          r2 = 0,
+          f = null;
       if (this.invSqr) {
          for (i = this.m_bodyList;
          i; i = i.nextBody) {
@@ -10507,9 +10504,9 @@ b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = (function(superClass) 
       this.m_localAnchor2 = new b2Vec2();
       this.m_u = new b2Vec2();
       b2DistanceJoint.__super__.constructor.call(this, def);
-      var tMat;
-      var tX = 0;
-      var tY = 0;
+      var tMat,
+          tX = 0,
+          tY = 0;
       this.m_localAnchor1.SetV(def.localAnchorA);
       this.m_localAnchor2.SetV(def.localAnchorB);
       this.m_length = def.length;
@@ -10632,19 +10629,19 @@ b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = (function(superClass) 
     *
     */
    b2DistanceJoint.prototype.InitVelocityConstraints = function (step) {
-      var tMat;
-      var tX = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
+      var tMat,
+          tX = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
@@ -10657,15 +10654,15 @@ b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = (function(superClass) 
       else {
          this.m_u.SetZero();
       }
-      var cr1u = (r1X * this.m_u.y - r1Y * this.m_u.x);
-      var cr2u = (r2X * this.m_u.y - r2Y * this.m_u.x);
-      var invMass = bA.m_invMass + bA.m_invI * cr1u * cr1u + bB.m_invMass + bB.m_invI * cr2u * cr2u;
+      var cr1u = (r1X * this.m_u.y - r1Y * this.m_u.x),
+          cr2u = (r2X * this.m_u.y - r2Y * this.m_u.x),
+          invMass = bA.m_invMass + bA.m_invI * cr1u * cr1u + bB.m_invMass + bB.m_invI * cr2u * cr2u;
       this.m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
       if (this.m_frequencyHz > 0.0) {
-         var C = length - this.m_length;
-         var omega = 2.0 * Math.PI * this.m_frequencyHz;
-         var d = 2.0 * this.m_mass * this.m_dampingRatio * omega;
-         var k = this.m_mass * omega * omega;
+         var C = length - this.m_length,
+          omega = 2.0 * Math.PI * this.m_frequencyHz,
+          d = 2.0 * this.m_mass * this.m_dampingRatio * omega,
+          k = this.m_mass * omega * omega;
          this.m_gamma = step.dt * (d + step.dt * k);
          this.m_gamma = this.m_gamma != 0.0 ? 1 / this.m_gamma : 0.0;
          this.m_bias = C * step.dt * k * this.m_gamma;
@@ -10674,8 +10671,8 @@ b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = (function(superClass) 
       }
       if (step.warmStarting) {
          this.m_impulse *= step.dtRatio;
-         var PX = this.m_impulse * this.m_u.x;
-         var PY = this.m_impulse * this.m_u.y;
+         var PX = this.m_impulse * this.m_u.x,
+          PY = this.m_impulse * this.m_u.y;
          bA.m_linearVelocity.x -= bA.m_invMass * PX;
          bA.m_linearVelocity.y -= bA.m_invMass * PY;
          bA.m_angularVelocity -= bA.m_invI * (r1X * PY - r1Y * PX);
@@ -10695,30 +10692,30 @@ b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = (function(superClass) 
     *
     */
    b2DistanceJoint.prototype.SolveVelocityConstraints = function (step) {
-      var tMat;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
+      var tMat,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
-      var v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
-      var v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y));
-      var v2Y = bB.m_linearVelocity.y + (bB.m_angularVelocity * r2X);
-      var Cdot = (this.m_u.x * (v2X - v1X) + this.m_u.y * (v2Y - v1Y));
-      var impulse = (-this.m_mass * (Cdot + this.m_bias + this.m_gamma * this.m_impulse));
+      var v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y)),
+          v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X),
+          v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y)),
+          v2Y = bB.m_linearVelocity.y + (bB.m_angularVelocity * r2X),
+          Cdot = (this.m_u.x * (v2X - v1X) + this.m_u.y * (v2Y - v1Y)),
+          impulse = (-this.m_mass * (Cdot + this.m_bias + this.m_gamma * this.m_impulse));
       this.m_impulse += impulse;
-      var PX = impulse * this.m_u.x;
-      var PY = impulse * this.m_u.y;
+      var PX = impulse * this.m_u.x,
+          PY = impulse * this.m_u.y;
       bA.m_linearVelocity.x -= bA.m_invMass * PX;
       bA.m_linearVelocity.y -= bA.m_invMass * PY;
       bA.m_angularVelocity -= bA.m_invI * (r1X * PY - r1Y * PX);
@@ -10739,31 +10736,31 @@ b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = (function(superClass) 
       if (this.m_frequencyHz > 0.0) {
          return true;
       }
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
-      var dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
-      var length = Math.sqrt(dX * dX + dY * dY);
+      var dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X,
+          dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y,
+          length = Math.sqrt(dX * dX + dY * dY);
       dX /= length;
       dY /= length;
       var C = length - this.m_length;
       C = b2Math.Clamp(C, (-b2Settings.b2_maxLinearCorrection), b2Settings.b2_maxLinearCorrection);
       var impulse = (-this.m_mass * C);
       this.m_u.Set(dX, dY);
-      var PX = impulse * this.m_u.x;
-      var PY = impulse * this.m_u.y;
+      var PX = impulse * this.m_u.x,
+          PY = impulse * this.m_u.y;
       bA.m_sweep.c.x -= bA.m_invMass * PX;
       bA.m_sweep.c.y -= bA.m_invMass * PY;
       bA.m_sweep.a -= bA.m_invI * (r1X * PY - r1Y * PX);
@@ -10912,8 +10909,8 @@ b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef = (function(superC
       this.bodyB = bB;
       this.localAnchorA.SetV(this.bodyA.GetLocalPoint(anchorA));
       this.localAnchorB.SetV(this.bodyB.GetLocalPoint(anchorB));
-      var dX = anchorB.x - anchorA.x;
-      var dY = anchorB.y - anchorA.y;
+      var dX = anchorB.x - anchorA.x,
+          dY = anchorB.y - anchorA.y;
       this.length = Math.sqrt(dX * dX + dY * dY);
       this.frequencyHz = 0.0;
       this.dampingRatio = 0.0;
@@ -11057,27 +11054,27 @@ b2FrictionJoint = Box2D.Dynamics.Joints.b2FrictionJoint = (function(superClass) 
     *
     */
    b2FrictionJoint.prototype.InitVelocityConstraints = function (step) {
-      var tMat;
-      var tX = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
+      var tMat,
+          tX = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB;
       tMat = bA.m_xf.R;
-      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
-      var rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
+      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x,
+          rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
       rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
       rAX = tX;
       tMat = bB.m_xf.R;
-      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
-      var rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
+      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x,
+          rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
       rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
       rBX = tX;
-      var mA = bA.m_invMass;
-      var mB = bB.m_invMass;
-      var iA = bA.m_invI;
-      var iB = bB.m_invI;
-      var K = new b2Mat22();
+      var mA = bA.m_invMass,
+          mB = bB.m_invMass,
+          iA = bA.m_invI,
+          iB = bB.m_invI,
+          K = new b2Mat22();
       K.col1.x = mA + mB;
       K.col2.x = 0.0;
       K.col1.y = 0.0;
@@ -11120,44 +11117,44 @@ b2FrictionJoint = Box2D.Dynamics.Joints.b2FrictionJoint = (function(superClass) 
     *
     */
    b2FrictionJoint.prototype.SolveVelocityConstraints = function (step) {
-      var tMat;
-      var tX = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var vA = bA.m_linearVelocity;
-      var wA = bA.m_angularVelocity;
-      var vB = bB.m_linearVelocity;
-      var wB = bB.m_angularVelocity;
-      var mA = bA.m_invMass;
-      var mB = bB.m_invMass;
-      var iA = bA.m_invI;
-      var iB = bB.m_invI;
+      var tMat,
+          tX = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          vA = bA.m_linearVelocity,
+          wA = bA.m_angularVelocity,
+          vB = bB.m_linearVelocity,
+          wB = bB.m_angularVelocity,
+          mA = bA.m_invMass,
+          mB = bB.m_invMass,
+          iA = bA.m_invI,
+          iB = bB.m_invI;
       tMat = bA.m_xf.R;
-      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
-      var rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
+      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x,
+          rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
       rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
       rAX = tX;
       tMat = bB.m_xf.R;
-      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
-      var rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
+      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x,
+          rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
       rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
       rBX = tX;
       var maxImpulse = 0; {
-         var Cdot = wB - wA;
-         var impulse = (-this.m_angularMass * Cdot);
-         var oldImpulse = this.m_angularImpulse;
+         var Cdot = wB - wA,
+          impulse = (-this.m_angularMass * Cdot),
+          oldImpulse = this.m_angularImpulse;
          maxImpulse = step.dt * this.m_maxTorque;
          this.m_angularImpulse = b2Math.Clamp(this.m_angularImpulse + impulse, (-maxImpulse), maxImpulse);
          impulse = this.m_angularImpulse - oldImpulse;
          wA -= iA * impulse;
          wB += iB * impulse;
       } {
-         var CdotX = vB.x - wB * rBY - vA.x + wA * rAY;
-         var CdotY = vB.y + wB * rBX - vA.y - wA * rAX;
-         var impulseV = b2Math.MulMV(this.m_linearMass, new b2Vec2((-CdotX), (-CdotY)));
-         var oldImpulseV = this.m_linearImpulse.Copy();
+         var CdotX = vB.x - wB * rBY - vA.x + wA * rAY,
+          CdotY = vB.y + wB * rBX - vA.y - wA * rAX,
+          impulseV = b2Math.MulMV(this.m_linearMass, new b2Vec2((-CdotX), (-CdotY))),
+          oldImpulseV = this.m_linearImpulse.Copy();
          this.m_linearImpulse.Add(impulseV);
          maxImpulse = step.dt * this.m_maxForce;
          if (this.m_linearImpulse.LengthSquared() > maxImpulse * maxImpulse) {
@@ -11362,14 +11359,14 @@ b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = (function(superClass) {
       this.m_localAnchor2 = new b2Vec2();
       this.m_J = new b2Jacobian();
       b2GearJoint.__super__.constructor.call(this, def);
-      var type1 = parseInt(def.joint1.m_type);
-      var type2 = parseInt(def.joint2.m_type);
+      var type1 = parseInt(def.joint1.m_type),
+          type2 = parseInt(def.joint2.m_type);
       this.m_revolute1 = null;
       this.m_prismatic1 = null;
       this.m_revolute2 = null;
       this.m_prismatic2 = null;
-      var coordinate1 = 0;
-      var coordinate2 = 0;
+      var coordinate1 = 0,
+          coordinate2 = 0;
       this.m_ground1 = def.joint1.GetBodyA();
       this.m_bodyA = def.joint1.GetBodyB();
       if (type1 == b2Joint.e_revoluteJoint) {
@@ -11442,14 +11439,14 @@ b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = (function(superClass) {
     */
    b2GearJoint.prototype.GetReactionTorque = function (inv_dt) {
       inv_dt = inv_dt || 0;
-      var tMat = this.m_bodyB.m_xf.R;
-      var rX = this.m_localAnchor1.x - this.m_bodyB.m_sweep.localCenter.x;
-      var rY = this.m_localAnchor1.y - this.m_bodyB.m_sweep.localCenter.y;
-      var tX = tMat.col1.x * rX + tMat.col2.x * rY;
+      var tMat = this.m_bodyB.m_xf.R,
+          rX = this.m_localAnchor1.x - this.m_bodyB.m_sweep.localCenter.x,
+          rY = this.m_localAnchor1.y - this.m_bodyB.m_sweep.localCenter.y,
+          tX = tMat.col1.x * rX + tMat.col2.x * rY;
       rY = tMat.col1.y * rX + tMat.col2.y * rY;
       rX = tX;
-      var PX = this.m_impulse * this.m_J.linearB.x;
-      var PY = this.m_impulse * this.m_J.linearB.y;
+      var PX = this.m_impulse * this.m_J.linearB.x,
+          PY = this.m_impulse * this.m_J.linearB.y;
       return inv_dt * (this.m_impulse * this.m_J.angularB - rX * PY + rY * PX);
    };
 
@@ -11481,19 +11478,19 @@ b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = (function(superClass) {
     *
     */
    b2GearJoint.prototype.InitVelocityConstraints = function (step) {
-      var g1 = this.m_ground1;
-      var g2 = this.m_ground2;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var ugX = 0;
-      var ugY = 0;
-      var rX = 0;
-      var rY = 0;
-      var tMat;
-      var tVec;
-      var crug = 0;
-      var tX = 0;
-      var K = 0.0;
+      var g1 = this.m_ground1,
+          g2 = this.m_ground2,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          ugX = 0,
+          ugY = 0,
+          rX = 0,
+          rY = 0,
+          tMat,
+          tVec,
+          crug = 0,
+          tX = 0,
+          K = 0.0;
       this.m_J.SetZero();
       if (this.m_revolute1) {
          this.m_J.angularA = (-1.0);
@@ -11556,10 +11553,10 @@ b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = (function(superClass) {
     *
     */
    b2GearJoint.prototype.SolveVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var Cdot = this.m_J.Compute(bA.m_linearVelocity, bA.m_angularVelocity, bB.m_linearVelocity, bB.m_angularVelocity);
-      var impulse = (-this.m_mass * Cdot);
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          Cdot = this.m_J.Compute(bA.m_linearVelocity, bA.m_angularVelocity, bB.m_linearVelocity, bB.m_angularVelocity),
+          impulse = (-this.m_mass * Cdot);
       this.m_impulse += impulse;
       bA.m_linearVelocity.x += bA.m_invMass * impulse * this.m_J.linearA.x;
       bA.m_linearVelocity.y += bA.m_invMass * impulse * this.m_J.linearA.y;
@@ -11577,11 +11574,11 @@ b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = (function(superClass) {
     */
    b2GearJoint.prototype.SolvePositionConstraints = function (baumgarte) {
       baumgarte = baumgarte || 0;
-      var linearError = 0.0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var coordinate1 = 0;
-      var coordinate2 = 0;
+      var linearError = 0.0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          coordinate1 = 0,
+          coordinate2 = 0;
       if (this.m_revolute1) {
          coordinate1 = this.m_revolute1.GetJointAngle();
       }
@@ -11594,8 +11591,8 @@ b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = (function(superClass) {
       else {
          coordinate2 = this.m_prismatic2.GetJointTranslation();
       }
-      var C = this.m_constant - (coordinate1 + this.m_ratio * coordinate2);
-      var impulse = (-this.m_mass * C);
+      var C = this.m_constant - (coordinate1 + this.m_ratio * coordinate2),
+          impulse = (-this.m_mass * C);
       bA.m_sweep.c.x += bA.m_invMass * impulse * this.m_J.linearA.x;
       bA.m_sweep.c.y += bA.m_invMass * impulse * this.m_J.linearA.y;
       bA.m_sweep.a += bA.m_invI * impulse * this.m_J.angularA;
@@ -11769,9 +11766,9 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
       this.m_K = new b2Mat22();
       this.m_impulse = new b2Vec2();
       b2LineJoint.__super__.constructor.call(this, def);
-      var tMat;
-      var tX = 0;
-      var tY = 0;
+      var tMat,
+          tX = 0,
+          tY = 0;
       this.m_localAnchor1.SetV(def.localAnchorA);
       this.m_localAnchor2.SetV(def.localAnchorB);
       this.m_localXAxis1.SetV(def.localAxisA);
@@ -11840,15 +11837,15 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
     *
     */
    b2LineJoint.prototype.GetJointTranslation = function () {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var p1 = bA.GetWorldPoint(this.m_localAnchor1);
-      var p2 = bB.GetWorldPoint(this.m_localAnchor2);
-      var dX = p2.x - p1.x;
-      var dY = p2.y - p1.y;
-      var axis = bA.GetWorldVector(this.m_localXAxis1);
-      var translation = axis.x * dX + axis.y * dY;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          p1 = bA.GetWorldPoint(this.m_localAnchor1),
+          p2 = bB.GetWorldPoint(this.m_localAnchor2),
+          dX = p2.x - p1.x,
+          dY = p2.y - p1.y,
+          axis = bA.GetWorldVector(this.m_localXAxis1),
+          translation = axis.x * dX + axis.y * dY;
       return translation;
    };
 
@@ -11859,33 +11856,33 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
     *
     */
    b2LineJoint.prototype.GetJointSpeed = function () {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var p1X = bA.m_sweep.c.x + r1X;
-      var p1Y = bA.m_sweep.c.y + r1Y;
-      var p2X = bB.m_sweep.c.x + r2X;
-      var p2Y = bB.m_sweep.c.y + r2Y;
-      var dX = p2X - p1X;
-      var dY = p2Y - p1Y;
-      var axis = bA.GetWorldVector(this.m_localXAxis1);
-      var v1 = bA.m_linearVelocity;
-      var v2 = bB.m_linearVelocity;
-      var w1 = bA.m_angularVelocity;
-      var w2 = bB.m_angularVelocity;
-      var speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
+      var p1X = bA.m_sweep.c.x + r1X,
+          p1Y = bA.m_sweep.c.y + r1Y,
+          p2X = bB.m_sweep.c.x + r2X,
+          p2Y = bB.m_sweep.c.y + r2Y,
+          dX = p2X - p1X,
+          dY = p2Y - p1Y,
+          axis = bA.GetWorldVector(this.m_localXAxis1),
+          v1 = bA.m_linearVelocity,
+          v2 = bB.m_linearVelocity,
+          w1 = bA.m_angularVelocity,
+          w2 = bB.m_angularVelocity,
+          speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
       return speed;
    };
 
@@ -12032,28 +12029,28 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
     *
     */
    b2LineJoint.prototype.InitVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var tX = 0;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          tX = 0;
       this.m_localCenterA.SetV(bA.GetLocalCenter());
       this.m_localCenterB.SetV(bB.GetLocalCenter());
-      var xf1 = bA.GetTransform();
-      var xf2 = bB.GetTransform();
+      var xf1 = bA.GetTransform(),
+          xf2 = bB.GetTransform();
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
-      var r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
+      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x,
+          r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
       tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
-      var r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
+      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x,
+          r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
-      var dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
+      var dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X,
+          dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
       this.m_invMassA = bA.m_invMass;
       this.m_invMassB = bB.m_invMass;
       this.m_invIA = bA.m_invI;
@@ -12067,10 +12064,10 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
          this.m_perp.SetV(b2Math.MulMV(xf1.R, this.m_localYAxis1));
          this.m_s1 = (dX + r1X) * this.m_perp.y - (dY + r1Y) * this.m_perp.x;
          this.m_s2 = r2X * this.m_perp.y - r2Y * this.m_perp.x;
-         var m1 = this.m_invMassA;
-         var m2 = this.m_invMassB;
-         var i1 = this.m_invIA;
-         var i2 = this.m_invIB;
+         var m1 = this.m_invMassA,
+          m2 = this.m_invMassB,
+          i1 = this.m_invIA,
+          i2 = this.m_invIB;
          this.m_K.col1.x = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
          this.m_K.col1.y = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
          this.m_K.col2.x = this.m_K.col1.y;
@@ -12108,10 +12105,10 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
          this.m_impulse.x *= step.dtRatio;
          this.m_impulse.y *= step.dtRatio;
          this.m_motorImpulse *= step.dtRatio;
-         var PX = this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.x;
-         var PY = this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.y;
-         var L1 = this.m_impulse.x * this.m_s1 + (this.m_motorImpulse + this.m_impulse.y) * this.m_a1;
-         var L2 = this.m_impulse.x * this.m_s2 + (this.m_motorImpulse + this.m_impulse.y) * this.m_a2;
+         var PX = this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.x,
+          PY = this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.y) * this.m_axis.y,
+          L1 = this.m_impulse.x * this.m_s1 + (this.m_motorImpulse + this.m_impulse.y) * this.m_a1,
+          L2 = this.m_impulse.x * this.m_s2 + (this.m_motorImpulse + this.m_impulse.y) * this.m_a2;
          bA.m_linearVelocity.x -= this.m_invMassA * PX;
          bA.m_linearVelocity.y -= this.m_invMassA * PY;
          bA.m_angularVelocity -= this.m_invIA * L1;
@@ -12132,21 +12129,21 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
     *
     */
    b2LineJoint.prototype.SolveVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var v1 = bA.m_linearVelocity;
-      var w1 = bA.m_angularVelocity;
-      var v2 = bB.m_linearVelocity;
-      var w2 = bB.m_angularVelocity;
-      var PX = 0;
-      var PY = 0;
-      var L1 = 0;
-      var L2 = 0;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          v1 = bA.m_linearVelocity,
+          w1 = bA.m_angularVelocity,
+          v2 = bB.m_linearVelocity,
+          w2 = bB.m_angularVelocity,
+          PX = 0,
+          PY = 0,
+          L1 = 0,
+          L2 = 0;
       if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
-         var Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
-         var impulse = this.m_motorMass * (this.m_motorSpeed - Cdot);
-         var oldImpulse = this.m_motorImpulse;
-         var maxImpulse = step.dt * this.m_maxMotorForce;
+         var Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
+          impulse = this.m_motorMass * (this.m_motorSpeed - Cdot),
+          oldImpulse = this.m_motorImpulse,
+          maxImpulse = step.dt * this.m_maxMotorForce;
          this.m_motorImpulse = b2Math.Clamp(this.m_motorImpulse + impulse, (-maxImpulse), maxImpulse);
          impulse = this.m_motorImpulse - oldImpulse;
          PX = impulse * this.m_axis.x;
@@ -12162,9 +12159,9 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
       }
       var Cdot1 = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1;
       if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
-         var Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
-         var f1 = this.m_impulse.Copy();
-         var df = this.m_K.Solve(new b2Vec2(), (-Cdot1), (-Cdot2));
+         var Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
+          f1 = this.m_impulse.Copy(),
+          df = this.m_K.Solve(new b2Vec2(), (-Cdot1), (-Cdot2));
          this.m_impulse.Add(df);
          if (this.m_limitState == b2Joint.e_atLowerLimit) {
             this.m_impulse.y = b2Math.Max(this.m_impulse.y, 0.0);
@@ -12172,8 +12169,8 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
          else if (this.m_limitState == b2Joint.e_atUpperLimit) {
             this.m_impulse.y = b2Math.Min(this.m_impulse.y, 0.0);
          }
-         var b = (-Cdot1) - (this.m_impulse.y - f1.y) * this.m_K.col2.x;
-         var f2r = 0;
+         var b = (-Cdot1) - (this.m_impulse.y - f1.y) * this.m_K.col2.x,
+          f2r = 0;
          if (this.m_K.col1.x != 0.0) {
             f2r = b / this.m_K.col1.x + f1.x;
          }
@@ -12228,40 +12225,40 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
     */
    b2LineJoint.prototype.SolvePositionConstraints = function (baumgarte) {
       baumgarte = baumgarte || 0;
-      var limitC = 0;
-      var oldLimitImpulse = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var c1 = bA.m_sweep.c;
-      var a1 = bA.m_sweep.a;
-      var c2 = bB.m_sweep.c;
-      var a2 = bB.m_sweep.a;
-      var tMat;
-      var tX = 0;
-      var m1 = 0;
-      var m2 = 0;
-      var i1 = 0;
-      var i2 = 0;
-      var linearError = 0.0;
-      var angularError = 0.0;
-      var active = false;
-      var C2 = 0.0;
-      var R1 = b2Mat22.FromAngle(a1);
-      var R2 = b2Mat22.FromAngle(a2);
+      var limitC = 0,
+          oldLimitImpulse = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          c1 = bA.m_sweep.c,
+          a1 = bA.m_sweep.a,
+          c2 = bB.m_sweep.c,
+          a2 = bB.m_sweep.a,
+          tMat,
+          tX = 0,
+          m1 = 0,
+          m2 = 0,
+          i1 = 0,
+          i2 = 0,
+          linearError = 0.0,
+          angularError = 0.0,
+          active = false,
+          C2 = 0.0,
+          R1 = b2Mat22.FromAngle(a1),
+          R2 = b2Mat22.FromAngle(a2);
       tMat = R1;
-      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
-      var r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
+      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x,
+          r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
       tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = R2;
-      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
-      var r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
+      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x,
+          r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var dX = c2.x + r2X - c1.x - r1X;
-      var dY = c2.y + r2Y - c1.y - r1Y;
+      var dX = c2.x + r2X - c1.x - r1X,
+          dY = c2.y + r2Y - c1.y - r1Y;
       if (this.m_enableLimit) {
          this.m_axis = b2Math.MulMV(R1, this.m_localXAxis1);
          this.m_a1 = (dX + r1X) * this.m_axis.y - (dY + r1Y) * this.m_axis.x;
@@ -12286,8 +12283,8 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
       this.m_perp = b2Math.MulMV(R1, this.m_localYAxis1);
       this.m_s1 = (dX + r1X) * this.m_perp.y - (dY + r1Y) * this.m_perp.x;
       this.m_s2 = r2X * this.m_perp.y - r2Y * this.m_perp.x;
-      var impulse = new b2Vec2();
-      var C1 = this.m_perp.x * dX + this.m_perp.y * dY;
+      var impulse = new b2Vec2(),
+          C1 = this.m_perp.x * dX + this.m_perp.y * dY;
       linearError = b2Math.Max(linearError, b2Math.Abs(C1));
       angularError = 0.0;
       if (active) {
@@ -12306,8 +12303,8 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
          m2 = this.m_invMassB;
          i1 = this.m_invIA;
          i2 = this.m_invIB;
-         var k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
-         var impulse1 = 0;
+         var k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2,
+          impulse1 = 0;
          if (k11 != 0.0) {
             impulse1 = ((-C1)) / k11;
          }
@@ -12317,10 +12314,10 @@ b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = (function(superClass) {
          impulse.x = impulse1;
          impulse.y = 0.0;
       }
-      var PX = impulse.x * this.m_perp.x + impulse.y * this.m_axis.x;
-      var PY = impulse.x * this.m_perp.y + impulse.y * this.m_axis.y;
-      var L1 = impulse.x * this.m_s1 + impulse.y * this.m_a1;
-      var L2 = impulse.x * this.m_s2 + impulse.y * this.m_a2;
+      var PX = impulse.x * this.m_perp.x + impulse.y * this.m_axis.x,
+          PY = impulse.x * this.m_perp.y + impulse.y * this.m_axis.y,
+          L1 = impulse.x * this.m_s1 + impulse.y * this.m_a1,
+          L2 = impulse.x * this.m_s2 + impulse.y * this.m_a2;
       c1.x -= this.m_invMassA * PX;
       c1.y -= this.m_invMassA * PY;
       a1 -= this.m_invIA * L1;
@@ -12521,9 +12518,9 @@ b2MouseJoint = Box2D.Dynamics.Joints.b2MouseJoint = (function(superClass) {
       this.m_C = new b2Vec2();
       b2MouseJoint.__super__.constructor.call(this, def);
       this.m_target.SetV(def.target);
-      var tX = this.m_target.x - this.m_bodyB.m_xf.position.x;
-      var tY = this.m_target.y - this.m_bodyB.m_xf.position.y;
-      var tMat = this.m_bodyB.m_xf.R;
+      var tX = this.m_target.x - this.m_bodyB.m_xf.position.x,
+          tY = this.m_target.y - this.m_bodyB.m_xf.position.y,
+          tMat = this.m_bodyB.m_xf.R;
       this.m_localAnchor.x = (tX * tMat.col1.x + tY * tMat.col1.y);
       this.m_localAnchor.y = (tX * tMat.col2.x + tY * tMat.col2.y);
       this.m_maxForce = def.maxForce;
@@ -12669,21 +12666,21 @@ b2MouseJoint = Box2D.Dynamics.Joints.b2MouseJoint = (function(superClass) {
     *
     */
    b2MouseJoint.prototype.InitVelocityConstraints = function (step) {
-      var b = this.m_bodyB;
-      var mass = b.GetMass();
-      var omega = 2.0 * Math.PI * this.m_frequencyHz;
-      var d = 2.0 * mass * this.m_dampingRatio * omega;
-      var k = mass * omega * omega;
+      var b = this.m_bodyB,
+          mass = b.GetMass(),
+          omega = 2.0 * Math.PI * this.m_frequencyHz,
+          d = 2.0 * mass * this.m_dampingRatio * omega,
+          k = mass * omega * omega;
       this.m_gamma = step.dt * (d + step.dt * k);
       this.m_gamma = this.m_gamma != 0 ? 1 / this.m_gamma : 0.0;
       this.m_beta = step.dt * k * this.m_gamma;
-      var tMat;tMat = b.m_xf.R;
-      var rX = this.m_localAnchor.x - b.m_sweep.localCenter.x;
-      var rY = this.m_localAnchor.y - b.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * rX + tMat.col2.x * rY);rY = (tMat.col1.y * rX + tMat.col2.y * rY);
+      var tMat;tMat = b.m_xf.R,
+          rX = this.m_localAnchor.x - b.m_sweep.localCenter.x,
+          rY = this.m_localAnchor.y - b.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * rX + tMat.col2.x * rY);rY = (tMat.col1.y * rX + tMat.col2.y * rY);
       rX = tX;
-      var invMass = b.m_invMass;
-      var invI = b.m_invI;this.K1.col1.x = invMass;
+      var invMass = b.m_invMass,
+          invI = b.m_invI;this.K1.col1.x = invMass;
       this.K1.col2.x = 0.0;
       this.K1.col1.y = 0.0;
       this.K1.col2.y = invMass;
@@ -12713,25 +12710,25 @@ b2MouseJoint = Box2D.Dynamics.Joints.b2MouseJoint = (function(superClass) {
     *
     */
    b2MouseJoint.prototype.SolveVelocityConstraints = function (step) {
-      var b = this.m_bodyB;
-      var tMat;
-      var tX = 0;
-      var tY = 0;
+      var b = this.m_bodyB,
+          tMat,
+          tX = 0,
+          tY = 0;
       tMat = b.m_xf.R;
-      var rX = this.m_localAnchor.x - b.m_sweep.localCenter.x;
-      var rY = this.m_localAnchor.y - b.m_sweep.localCenter.y;
+      var rX = this.m_localAnchor.x - b.m_sweep.localCenter.x,
+          rY = this.m_localAnchor.y - b.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rX + tMat.col2.x * rY);
       rY = (tMat.col1.y * rX + tMat.col2.y * rY);
       rX = tX;
-      var CdotX = b.m_linearVelocity.x + ((-b.m_angularVelocity * rY));
-      var CdotY = b.m_linearVelocity.y + (b.m_angularVelocity * rX);
+      var CdotX = b.m_linearVelocity.x + ((-b.m_angularVelocity * rY)),
+          CdotY = b.m_linearVelocity.y + (b.m_angularVelocity * rX);
       tMat = this.m_mass;
       tX = CdotX + this.m_beta * this.m_C.x + this.m_gamma * this.m_impulse.x;
       tY = CdotY + this.m_beta * this.m_C.y + this.m_gamma * this.m_impulse.y;
-      var impulseX = (-(tMat.col1.x * tX + tMat.col2.x * tY));
-      var impulseY = (-(tMat.col1.y * tX + tMat.col2.y * tY));
-      var oldImpulseX = this.m_impulse.x;
-      var oldImpulseY = this.m_impulse.y;
+      var impulseX = (-(tMat.col1.x * tX + tMat.col2.x * tY)),
+          impulseY = (-(tMat.col1.y * tX + tMat.col2.y * tY)),
+          oldImpulseX = this.m_impulse.x,
+          oldImpulseY = this.m_impulse.y;
       this.m_impulse.x += impulseX;
       this.m_impulse.y += impulseY;
       var maxImpulse = step.dt * this.m_maxForce;
@@ -12919,9 +12916,9 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
       this.m_K = new b2Mat33();
       this.m_impulse = new b2Vec3();
       b2PrismaticJoint.__super__.constructor.call(this, def);
-      var tMat;
-      var tX = 0;
-      var tY = 0;
+      var tMat,
+          tX = 0,
+          tY = 0;
       this.m_localAnchor1.SetV(def.localAnchorA);
       this.m_localAnchor2.SetV(def.localAnchorB);
       this.m_localXAxis1.SetV(def.localAxisA);
@@ -12991,15 +12988,15 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
     *
     */
    b2PrismaticJoint.prototype.GetJointTranslation = function () {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var p1 = bA.GetWorldPoint(this.m_localAnchor1);
-      var p2 = bB.GetWorldPoint(this.m_localAnchor2);
-      var dX = p2.x - p1.x;
-      var dY = p2.y - p1.y;
-      var axis = bA.GetWorldVector(this.m_localXAxis1);
-      var translation = axis.x * dX + axis.y * dY;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          p1 = bA.GetWorldPoint(this.m_localAnchor1),
+          p2 = bB.GetWorldPoint(this.m_localAnchor2),
+          dX = p2.x - p1.x,
+          dY = p2.y - p1.y,
+          axis = bA.GetWorldVector(this.m_localXAxis1),
+          translation = axis.x * dX + axis.y * dY;
       return translation;
    };
 
@@ -13010,33 +13007,33 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
     *
     */
    b2PrismaticJoint.prototype.GetJointSpeed = function () {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var p1X = bA.m_sweep.c.x + r1X;
-      var p1Y = bA.m_sweep.c.y + r1Y;
-      var p2X = bB.m_sweep.c.x + r2X;
-      var p2Y = bB.m_sweep.c.y + r2Y;
-      var dX = p2X - p1X;
-      var dY = p2Y - p1Y;
-      var axis = bA.GetWorldVector(this.m_localXAxis1);
-      var v1 = bA.m_linearVelocity;
-      var v2 = bB.m_linearVelocity;
-      var w1 = bA.m_angularVelocity;
-      var w2 = bB.m_angularVelocity;
-      var speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
+      var p1X = bA.m_sweep.c.x + r1X,
+          p1Y = bA.m_sweep.c.y + r1Y,
+          p2X = bB.m_sweep.c.x + r2X,
+          p2Y = bB.m_sweep.c.y + r2Y,
+          dX = p2X - p1X,
+          dY = p2Y - p1Y,
+          axis = bA.GetWorldVector(this.m_localXAxis1),
+          v1 = bA.m_linearVelocity,
+          v2 = bB.m_linearVelocity,
+          w1 = bA.m_angularVelocity,
+          w2 = bB.m_angularVelocity,
+          speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
       return speed;
    };
 
@@ -13173,28 +13170,28 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
     *
     */
    b2PrismaticJoint.prototype.InitVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var tX = 0;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          tX = 0;
       this.m_localCenterA.SetV(bA.GetLocalCenter());
       this.m_localCenterB.SetV(bB.GetLocalCenter());
-      var xf1 = bA.GetTransform();
-      var xf2 = bB.GetTransform();
+      var xf1 = bA.GetTransform(),
+          xf2 = bB.GetTransform();
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
-      var r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
+      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x,
+          r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
       tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
-      var r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
+      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x,
+          r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
-      var dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
+      var dX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X,
+          dY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
       this.m_invMassA = bA.m_invMass;
       this.m_invMassB = bB.m_invMass;
       this.m_invIA = bA.m_invI;
@@ -13208,10 +13205,10 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
          this.m_perp.SetV(b2Math.MulMV(xf1.R, this.m_localYAxis1));
          this.m_s1 = (dX + r1X) * this.m_perp.y - (dY + r1Y) * this.m_perp.x;
          this.m_s2 = r2X * this.m_perp.y - r2Y * this.m_perp.x;
-         var m1 = this.m_invMassA;
-         var m2 = this.m_invMassB;
-         var i1 = this.m_invIA;
-         var i2 = this.m_invIB;
+         var m1 = this.m_invMassA,
+          m2 = this.m_invMassB,
+          i1 = this.m_invIA,
+          i2 = this.m_invIB;
          this.m_K.col1.x = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
          this.m_K.col1.y = i1 * this.m_s1 + i2 * this.m_s2;
          this.m_K.col1.z = i1 * this.m_s1 * this.m_a1 + i2 * this.m_s2 * this.m_a2;
@@ -13254,10 +13251,10 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
          this.m_impulse.x *= step.dtRatio;
          this.m_impulse.y *= step.dtRatio;
          this.m_motorImpulse *= step.dtRatio;
-         var PX = this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.x;
-         var PY = this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.y;
-         var L1 = this.m_impulse.x * this.m_s1 + this.m_impulse.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_a1;
-         var L2 = this.m_impulse.x * this.m_s2 + this.m_impulse.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_a2;
+         var PX = this.m_impulse.x * this.m_perp.x + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.x,
+          PY = this.m_impulse.x * this.m_perp.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_axis.y,
+          L1 = this.m_impulse.x * this.m_s1 + this.m_impulse.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_a1,
+          L2 = this.m_impulse.x * this.m_s2 + this.m_impulse.y + (this.m_motorImpulse + this.m_impulse.z) * this.m_a2;
          bA.m_linearVelocity.x -= this.m_invMassA * PX;
          bA.m_linearVelocity.y -= this.m_invMassA * PY;
          bA.m_angularVelocity -= this.m_invIA * L1;
@@ -13278,21 +13275,21 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
     *
     */
    b2PrismaticJoint.prototype.SolveVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var v1 = bA.m_linearVelocity;
-      var w1 = bA.m_angularVelocity;
-      var v2 = bB.m_linearVelocity;
-      var w2 = bB.m_angularVelocity;
-      var PX = 0;
-      var PY = 0;
-      var L1 = 0;
-      var L2 = 0;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          v1 = bA.m_linearVelocity,
+          w1 = bA.m_angularVelocity,
+          v2 = bB.m_linearVelocity,
+          w2 = bB.m_angularVelocity,
+          PX = 0,
+          PY = 0,
+          L1 = 0,
+          L2 = 0;
       if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
-         var Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
-         var impulse = this.m_motorMass * (this.m_motorSpeed - Cdot);
-         var oldImpulse = this.m_motorImpulse;
-         var maxImpulse = step.dt * this.m_maxMotorForce;
+         var Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
+          impulse = this.m_motorMass * (this.m_motorSpeed - Cdot),
+          oldImpulse = this.m_motorImpulse,
+          maxImpulse = step.dt * this.m_maxMotorForce;
          this.m_motorImpulse = b2Math.Clamp(this.m_motorImpulse + impulse, (-maxImpulse), maxImpulse);
          impulse = this.m_motorImpulse - oldImpulse;
          PX = impulse * this.m_axis.x;
@@ -13306,12 +13303,12 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
          v2.y += this.m_invMassB * PY;
          w2 += this.m_invIB * L2;
       }
-      var Cdot1X = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1;
-      var Cdot1Y = w2 - w1;
+      var Cdot1X = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1,
+          Cdot1Y = w2 - w1;
       if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
-         var Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1;
-         var f1 = this.m_impulse.Copy();
-         var df = this.m_K.Solve33(new b2Vec3(), (-Cdot1X), (-Cdot1Y), (-Cdot2));
+         var Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
+          f1 = this.m_impulse.Copy(),
+          df = this.m_K.Solve33(new b2Vec3(), (-Cdot1X), (-Cdot1Y), (-Cdot2));
          this.m_impulse.Add(df);
          if (this.m_limitState == b2Joint.e_atLowerLimit) {
             this.m_impulse.z = b2Math.Max(this.m_impulse.z, 0.0);
@@ -13319,9 +13316,9 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
          else if (this.m_limitState == b2Joint.e_atUpperLimit) {
             this.m_impulse.z = b2Math.Min(this.m_impulse.z, 0.0);
          }
-         var bX = (-Cdot1X) - (this.m_impulse.z - f1.z) * this.m_K.col3.x;
-         var bY = (-Cdot1Y) - (this.m_impulse.z - f1.z) * this.m_K.col3.y;
-         var f2r = this.m_K.Solve22(new b2Vec2(), bX, bY);
+         var bX = (-Cdot1X) - (this.m_impulse.z - f1.z) * this.m_K.col3.x,
+          bY = (-Cdot1Y) - (this.m_impulse.z - f1.z) * this.m_K.col3.y,
+          f2r = this.m_K.Solve22(new b2Vec2(), bX, bY);
          f2r.x += f1.x;
          f2r.y += f1.y;
          this.m_impulse.x = f2r.x;
@@ -13369,40 +13366,40 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
     */
    b2PrismaticJoint.prototype.SolvePositionConstraints = function (baumgarte) {
       baumgarte = baumgarte || 0;
-      var limitC = 0;
-      var oldLimitImpulse = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var c1 = bA.m_sweep.c;
-      var a1 = bA.m_sweep.a;
-      var c2 = bB.m_sweep.c;
-      var a2 = bB.m_sweep.a;
-      var tMat;
-      var tX = 0;
-      var m1 = 0;
-      var m2 = 0;
-      var i1 = 0;
-      var i2 = 0;
-      var linearError = 0.0;
-      var angularError = 0.0;
-      var active = false;
-      var C2 = 0.0;
-      var R1 = b2Mat22.FromAngle(a1);
-      var R2 = b2Mat22.FromAngle(a2);
+      var limitC = 0,
+          oldLimitImpulse = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          c1 = bA.m_sweep.c,
+          a1 = bA.m_sweep.a,
+          c2 = bB.m_sweep.c,
+          a2 = bB.m_sweep.a,
+          tMat,
+          tX = 0,
+          m1 = 0,
+          m2 = 0,
+          i1 = 0,
+          i2 = 0,
+          linearError = 0.0,
+          angularError = 0.0,
+          active = false,
+          C2 = 0.0,
+          R1 = b2Mat22.FromAngle(a1),
+          R2 = b2Mat22.FromAngle(a2);
       tMat = R1;
-      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x;
-      var r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
+      var r1X = this.m_localAnchor1.x - this.m_localCenterA.x,
+          r1Y = this.m_localAnchor1.y - this.m_localCenterA.y;
       tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = R2;
-      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x;
-      var r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
+      var r2X = this.m_localAnchor2.x - this.m_localCenterB.x,
+          r2Y = this.m_localAnchor2.y - this.m_localCenterB.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var dX = c2.x + r2X - c1.x - r1X;
-      var dY = c2.y + r2Y - c1.y - r1Y;
+      var dX = c2.x + r2X - c1.x - r1X,
+          dY = c2.y + r2Y - c1.y - r1Y;
       if (this.m_enableLimit) {
          this.m_axis = b2Math.MulMV(R1, this.m_localXAxis1);
          this.m_a1 = (dX + r1X) * this.m_axis.y - (dY + r1Y) * this.m_axis.x;
@@ -13427,9 +13424,9 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
       this.m_perp = b2Math.MulMV(R1, this.m_localYAxis1);
       this.m_s1 = (dX + r1X) * this.m_perp.y - (dY + r1Y) * this.m_perp.x;
       this.m_s2 = r2X * this.m_perp.y - r2Y * this.m_perp.x;
-      var impulse = new b2Vec3();
-      var C1X = this.m_perp.x * dX + this.m_perp.y * dY;
-      var C1Y = a2 - a1 - this.m_refAngle;
+      var impulse = new b2Vec3(),
+          C1X = this.m_perp.x * dX + this.m_perp.y * dY,
+          C1Y = a2 - a1 - this.m_refAngle;
       linearError = b2Math.Max(linearError, b2Math.Abs(C1X));
       angularError = b2Math.Abs(C1Y);
       if (active) {
@@ -13453,9 +13450,9 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
          m2 = this.m_invMassB;
          i1 = this.m_invIA;
          i2 = this.m_invIB;
-         var k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2;
-         var k12 = i1 * this.m_s1 + i2 * this.m_s2;
-         var k22 = i1 + i2;
+         var k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2,
+          k12 = i1 * this.m_s1 + i2 * this.m_s2,
+          k22 = i1 + i2;
          this.m_K.col1.Set(k11, k12, 0.0);
          this.m_K.col2.Set(k12, k22, 0.0);
          var impulse1 = this.m_K.Solve22(new b2Vec2(), (-C1X), (-C1Y));
@@ -13463,10 +13460,10 @@ b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = (function(superClass
          impulse.y = impulse1.y;
          impulse.z = 0.0;
       }
-      var PX = impulse.x * this.m_perp.x + impulse.z * this.m_axis.x;
-      var PY = impulse.x * this.m_perp.y + impulse.z * this.m_axis.y;
-      var L1 = impulse.x * this.m_s1 + impulse.y + impulse.z * this.m_a1;
-      var L2 = impulse.x * this.m_s2 + impulse.y + impulse.z * this.m_a2;
+      var PX = impulse.x * this.m_perp.x + impulse.z * this.m_axis.x,
+          PY = impulse.x * this.m_perp.y + impulse.z * this.m_axis.y,
+          L1 = impulse.x * this.m_s1 + impulse.y + impulse.z * this.m_a1,
+          L2 = impulse.x * this.m_s2 + impulse.y + impulse.z * this.m_a2;
       c1.x -= this.m_invMassA * PX;
       c1.y -= this.m_invMassA * PY;
       a1 -= this.m_invIA * L1;
@@ -13668,9 +13665,9 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
       this.m_u1 = new b2Vec2();
       this.m_u2 = new b2Vec2();
       b2PulleyJoint.__super__.constructor.call(this, def);
-      var tMat;
-      var tX = 0;
-      var tY = 0;
+      var tMat,
+          tX = 0,
+          tY = 0;
       this.m_ground = this.m_bodyA.m_world.m_groundBody;
       this.m_groundAnchor1.x = def.groundAnchorA.x - this.m_ground.m_xf.position.x;
       this.m_groundAnchor1.y = def.groundAnchorA.y - this.m_ground.m_xf.position.y;
@@ -13760,11 +13757,11 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
     *
     */
    b2PulleyJoint.prototype.GetLength1 = function () {
-      var p = this.m_bodyA.GetWorldPoint(this.m_localAnchor1);
-      var sX = this.m_ground.m_xf.position.x + this.m_groundAnchor1.x;
-      var sY = this.m_ground.m_xf.position.y + this.m_groundAnchor1.y;
-      var dX = p.x - sX;
-      var dY = p.y - sY;
+      var p = this.m_bodyA.GetWorldPoint(this.m_localAnchor1),
+          sX = this.m_ground.m_xf.position.x + this.m_groundAnchor1.x,
+          sY = this.m_ground.m_xf.position.y + this.m_groundAnchor1.y,
+          dX = p.x - sX,
+          dY = p.y - sY;
       return Math.sqrt(dX * dX + dY * dY);
    };
 
@@ -13775,11 +13772,11 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
     *
     */
    b2PulleyJoint.prototype.GetLength2 = function () {
-      var p = this.m_bodyB.GetWorldPoint(this.m_localAnchor2);
-      var sX = this.m_ground.m_xf.position.x + this.m_groundAnchor2.x;
-      var sY = this.m_ground.m_xf.position.y + this.m_groundAnchor2.y;
-      var dX = p.x - sX;
-      var dY = p.y - sY;
+      var p = this.m_bodyB.GetWorldPoint(this.m_localAnchor2),
+          sX = this.m_ground.m_xf.position.x + this.m_groundAnchor2.x,
+          sY = this.m_ground.m_xf.position.y + this.m_groundAnchor2.y,
+          dX = p.x - sX,
+          dY = p.y - sY;
       return Math.sqrt(dX * dX + dY * dY);
    };
 
@@ -13800,33 +13797,33 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
     *
     */
    b2PulleyJoint.prototype.InitVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var p1X = bA.m_sweep.c.x + r1X;
-      var p1Y = bA.m_sweep.c.y + r1Y;
-      var p2X = bB.m_sweep.c.x + r2X;
-      var p2Y = bB.m_sweep.c.y + r2Y;
-      var s1X = this.m_ground.m_xf.position.x + this.m_groundAnchor1.x;
-      var s1Y = this.m_ground.m_xf.position.y + this.m_groundAnchor1.y;
-      var s2X = this.m_ground.m_xf.position.x + this.m_groundAnchor2.x;
-      var s2Y = this.m_ground.m_xf.position.y + this.m_groundAnchor2.y;
+      var p1X = bA.m_sweep.c.x + r1X,
+          p1Y = bA.m_sweep.c.y + r1Y,
+          p2X = bB.m_sweep.c.x + r2X,
+          p2Y = bB.m_sweep.c.y + r2Y,
+          s1X = this.m_ground.m_xf.position.x + this.m_groundAnchor1.x,
+          s1Y = this.m_ground.m_xf.position.y + this.m_groundAnchor1.y,
+          s2X = this.m_ground.m_xf.position.x + this.m_groundAnchor2.x,
+          s2Y = this.m_ground.m_xf.position.y + this.m_groundAnchor2.y;
       this.m_u1.Set(p1X - s1X, p1Y - s1Y);
       this.m_u2.Set(p2X - s2X, p2Y - s2Y);
-      var length1 = this.m_u1.Length();
-      var length2 = this.m_u2.Length();
+      var length1 = this.m_u1.Length(),
+          length2 = this.m_u2.Length();
       if (length1 > b2Settings.b2_linearSlop) {
          this.m_u1.Multiply(1.0 / length1);
       }
@@ -13861,8 +13858,8 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
       else {
          this.m_limitState2 = b2Joint.e_atUpperLimit;
       }
-      var cr1u1 = r1X * this.m_u1.y - r1Y * this.m_u1.x;
-      var cr2u2 = r2X * this.m_u2.y - r2Y * this.m_u2.x;
+      var cr1u1 = r1X * this.m_u1.y - r1Y * this.m_u1.x,
+          cr2u2 = r2X * this.m_u2.y - r2Y * this.m_u2.x;
       this.m_limitMass1 = bA.m_invMass + bA.m_invI * cr1u1 * cr1u1;
       this.m_limitMass2 = bB.m_invMass + bB.m_invI * cr2u2 * cr2u2;
       this.m_pulleyMass = this.m_limitMass1 + this.m_ratio * this.m_ratio * this.m_limitMass2;
@@ -13873,10 +13870,10 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
          this.m_impulse *= step.dtRatio;
          this.m_limitImpulse1 *= step.dtRatio;
          this.m_limitImpulse2 *= step.dtRatio;
-         var P1X = ((-this.m_impulse) - this.m_limitImpulse1) * this.m_u1.x;
-         var P1Y = ((-this.m_impulse) - this.m_limitImpulse1) * this.m_u1.y;
-         var P2X = ((-this.m_ratio * this.m_impulse) - this.m_limitImpulse2) * this.m_u2.x;
-         var P2Y = ((-this.m_ratio * this.m_impulse) - this.m_limitImpulse2) * this.m_u2.y;
+         var P1X = ((-this.m_impulse) - this.m_limitImpulse1) * this.m_u1.x,
+          P1Y = ((-this.m_impulse) - this.m_limitImpulse1) * this.m_u1.y,
+          P2X = ((-this.m_ratio * this.m_impulse) - this.m_limitImpulse2) * this.m_u2.x,
+          P2Y = ((-this.m_ratio * this.m_impulse) - this.m_limitImpulse2) * this.m_u2.y;
          bA.m_linearVelocity.x += bA.m_invMass * P1X;
          bA.m_linearVelocity.y += bA.m_invMass * P1Y;
          bA.m_angularVelocity += bA.m_invI * (r1X * P1Y - r1Y * P1X);
@@ -13898,32 +13895,32 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
     *
     */
    b2PulleyJoint.prototype.SolveVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat;
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
-      var tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y,
+          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var v1X = 0;
-      var v1Y = 0;
-      var v2X = 0;
-      var v2Y = 0;
-      var P1X = 0;
-      var P1Y = 0;
-      var P2X = 0;
-      var P2Y = 0;
-      var Cdot = 0;
-      var impulse = 0;
-      var oldImpulse = 0;
+      var v1X = 0,
+          v1Y = 0,
+          v2X = 0,
+          v2Y = 0,
+          P1X = 0,
+          P1Y = 0,
+          P2X = 0,
+          P2Y = 0,
+          Cdot = 0,
+          impulse = 0,
+          oldImpulse = 0;
       if (this.m_state == b2Joint.e_atUpperLimit) {
          v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
          v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
@@ -13983,29 +13980,29 @@ b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = (function(superClass) {
     */
    b2PulleyJoint.prototype.SolvePositionConstraints = function (baumgarte) {
       baumgarte = baumgarte || 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var s1X = this.m_ground.m_xf.position.x + this.m_groundAnchor1.x;
-      var s1Y = this.m_ground.m_xf.position.y + this.m_groundAnchor1.y;
-      var s2X = this.m_ground.m_xf.position.x + this.m_groundAnchor2.x;
-      var s2Y = this.m_ground.m_xf.position.y + this.m_groundAnchor2.y;
-      var r1X = 0;
-      var r1Y = 0;
-      var r2X = 0;
-      var r2Y = 0;
-      var p1X = 0;
-      var p1Y = 0;
-      var p2X = 0;
-      var p2Y = 0;
-      var length1 = 0;
-      var length2 = 0;
-      var C = 0;
-      var impulse = 0;
-      var oldImpulse = 0;
-      var oldLimitPositionImpulse = 0;
-      var tX = 0;
-      var linearError = 0.0;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          s1X = this.m_ground.m_xf.position.x + this.m_groundAnchor1.x,
+          s1Y = this.m_ground.m_xf.position.y + this.m_groundAnchor1.y,
+          s2X = this.m_ground.m_xf.position.x + this.m_groundAnchor2.x,
+          s2Y = this.m_ground.m_xf.position.y + this.m_groundAnchor2.y,
+          r1X = 0,
+          r1Y = 0,
+          r2X = 0,
+          r2Y = 0,
+          p1X = 0,
+          p1Y = 0,
+          p2X = 0,
+          p2Y = 0,
+          length1 = 0,
+          length2 = 0,
+          C = 0,
+          impulse = 0,
+          oldImpulse = 0,
+          oldLimitPositionImpulse = 0,
+          tX = 0,
+          linearError = 0.0;
       if (this.m_state == b2Joint.e_atUpperLimit) {
          tMat = bA.m_xf.R;
          r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
@@ -14269,11 +14266,11 @@ b2PulleyJointDef = Box2D.Dynamics.Joints.b2PulleyJointDef = (function(superClass
       this.groundAnchorB.SetV(gaB);
       this.localAnchorA = this.bodyA.GetLocalPoint(anchorA);
       this.localAnchorB = this.bodyB.GetLocalPoint(anchorB);
-      var d1X = anchorA.x - gaA.x;
-      var d1Y = anchorA.y - gaA.y;
+      var d1X = anchorA.x - gaA.x,
+          d1Y = anchorA.y - gaA.y;
       this.lengthA = Math.sqrt(d1X * d1X + d1Y * d1Y);
-      var d2X = anchorB.x - gaB.x;
-      var d2Y = anchorB.y - gaB.y;
+      var d2X = anchorB.x - gaB.x,
+          d2Y = anchorB.y - gaB.y;
       this.lengthB = Math.sqrt(d2X * d2X + d2Y * d2Y);
       this.ratio = r;
       var C = this.lengthA + this.ratio * this.lengthB;
@@ -14530,27 +14527,27 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
     *
     */
    b2RevoluteJoint.prototype.InitVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var tX = 0;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          tX = 0;
       if (this.m_enableMotor || this.m_enableLimit) {}
       tMat = bA.m_xf.R;
-      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-      var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
+      var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
       r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
       r1X = tX;
       tMat = bB.m_xf.R;
-      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-      var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+      var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
       r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
       r2X = tX;
-      var m1 = bA.m_invMass;
-      var m2 = bB.m_invMass;
-      var i1 = bA.m_invI;
-      var i2 = bB.m_invI;
+      var m1 = bA.m_invMass,
+          m2 = bB.m_invMass,
+          i1 = bA.m_invI,
+          i2 = bB.m_invI;
       this.m_mass.col1.x = m1 + m2 + r1Y * r1Y * i1 + r2Y * r2Y * i2;
       this.m_mass.col2.x = (-r1Y * r1X * i1) - r2Y * r2X * i2;
       this.m_mass.col3.x = (-r1Y * i1) - r2Y * i2;
@@ -14593,8 +14590,8 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
          this.m_impulse.x *= step.dtRatio;
          this.m_impulse.y *= step.dtRatio;
          this.m_motorImpulse *= step.dtRatio;
-         var PX = this.m_impulse.x;
-         var PY = this.m_impulse.y;
+         var PX = this.m_impulse.x,
+          PY = this.m_impulse.y;
          bA.m_linearVelocity.x -= m1 * PX;
          bA.m_linearVelocity.y -= m1 * PY;
          bA.m_angularVelocity -= i1 * ((r1X * PY - r1Y * PX) + this.m_motorImpulse + this.m_impulse.z);
@@ -14615,28 +14612,28 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
     *
     */
    b2RevoluteJoint.prototype.SolveVelocityConstraints = function (step) {
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var tMat;
-      var tX = 0;
-      var newImpulse = 0;
-      var r1X = 0;
-      var r1Y = 0;
-      var r2X = 0;
-      var r2Y = 0;
-      var v1 = bA.m_linearVelocity;
-      var w1 = bA.m_angularVelocity;
-      var v2 = bB.m_linearVelocity;
-      var w2 = bB.m_angularVelocity;
-      var m1 = bA.m_invMass;
-      var m2 = bB.m_invMass;
-      var i1 = bA.m_invI;
-      var i2 = bB.m_invI;
+      var bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          tMat,
+          tX = 0,
+          newImpulse = 0,
+          r1X = 0,
+          r1Y = 0,
+          r2X = 0,
+          r2Y = 0,
+          v1 = bA.m_linearVelocity,
+          w1 = bA.m_angularVelocity,
+          v2 = bB.m_linearVelocity,
+          w2 = bB.m_angularVelocity,
+          m1 = bA.m_invMass,
+          m2 = bB.m_invMass,
+          i1 = bA.m_invI,
+          i2 = bB.m_invI;
       if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
-         var Cdot = w2 - w1 - this.m_motorSpeed;
-         var impulse = this.m_motorMass * ((-Cdot));
-         var oldImpulse = this.m_motorImpulse;
-         var maxImpulse = step.dt * this.m_maxMotorTorque;
+         var Cdot = w2 - w1 - this.m_motorSpeed,
+          impulse = this.m_motorMass * ((-Cdot)),
+          oldImpulse = this.m_motorImpulse,
+          maxImpulse = step.dt * this.m_maxMotorTorque;
          this.m_motorImpulse = b2Math.Clamp(this.m_motorImpulse + impulse, (-maxImpulse), maxImpulse);
          impulse = this.m_motorImpulse - oldImpulse;
          w1 -= i1 * impulse;
@@ -14655,9 +14652,9 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
          r2X = tX;
-         var Cdot1X = v2.x + ((-w2 * r2Y)) - v1.x - ((-w1 * r1Y));
-         var Cdot1Y = v2.y + (w2 * r2X) - v1.y - (w1 * r1X);
-         var Cdot2 = w2 - w1;
+         var Cdot1X = v2.x + ((-w2 * r2Y)) - v1.x - ((-w1 * r1Y)),
+          Cdot1Y = v2.y + (w2 * r2X) - v1.y - (w1 * r1X),
+          Cdot2 = w2 - w1;
          this.m_mass.Solve33(this.impulse3, (-Cdot1X), (-Cdot1Y), (-Cdot2));
          if (this.m_limitState == b2Joint.e_equalLimits) {
             this.m_impulse.Add(this.impulse3);
@@ -14706,8 +14703,8 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
          r2X = tX;
-         var CdotX = v2.x + ((-w2 * r2Y)) - v1.x - ((-w1 * r1Y));
-         var CdotY = v2.y + (w2 * r2X) - v1.y - (w1 * r1X);
+         var CdotX = v2.x + ((-w2 * r2Y)) - v1.x - ((-w1 * r1Y)),
+          CdotY = v2.y + (w2 * r2X) - v1.y - (w1 * r1X);
          this.m_mass.Solve22(this.impulse2, (-CdotX), (-CdotY));
          this.m_impulse.x += this.impulse2.x;
          this.m_impulse.y += this.impulse2.y;
@@ -14732,19 +14729,19 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
     */
    b2RevoluteJoint.prototype.SolvePositionConstraints = function (baumgarte) {
       baumgarte = baumgarte || 0;
-      var oldLimitImpulse = 0;
-      var C = 0;
-      var tMat;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var angularError = 0.0;
-      var positionError = 0.0;
-      var tX = 0;
-      var impulseX = 0;
-      var impulseY = 0;
+      var oldLimitImpulse = 0,
+          C = 0,
+          tMat,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          angularError = 0.0,
+          positionError = 0.0,
+          tX = 0,
+          impulseX = 0,
+          impulseY = 0;
       if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
-         var angle = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle;
-         var limitImpulse = 0.0;
+         var angle = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle,
+          limitImpulse = 0.0;
          if (this.m_limitState == b2Joint.e_equalLimits) {
             C = b2Math.Clamp(angle - this.m_lowerAngle, (-b2Settings.b2_maxAngularCorrection), b2Settings.b2_maxAngularCorrection);
             limitImpulse = (-this.m_motorMass * C);
@@ -14768,32 +14765,32 @@ b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = (function(superClass) 
          bB.SynchronizeTransform();
       } {
          tMat = bA.m_xf.R;
-         var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
-         var r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
+         var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
+          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
          tX = (tMat.col1.x * r1X + tMat.col2.x * r1Y);
          r1Y = (tMat.col1.y * r1X + tMat.col2.y * r1Y);
          r1X = tX;
          tMat = bB.m_xf.R;
-         var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
-         var r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
+         var r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x,
+          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
          tX = (tMat.col1.x * r2X + tMat.col2.x * r2Y);
          r2Y = (tMat.col1.y * r2X + tMat.col2.y * r2Y);
          r2X = tX;
-         var CX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X;
-         var CY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y;
-         var CLengthSquared = CX * CX + CY * CY;
-         var CLength = Math.sqrt(CLengthSquared);
+         var CX = bB.m_sweep.c.x + r2X - bA.m_sweep.c.x - r1X,
+          CY = bB.m_sweep.c.y + r2Y - bA.m_sweep.c.y - r1Y,
+          CLengthSquared = CX * CX + CY * CY,
+          CLength = Math.sqrt(CLengthSquared);
          positionError = CLength;
-         var invMass1 = bA.m_invMass;
-         var invMass2 = bB.m_invMass;
-         var invI1 = bA.m_invI;
-         var invI2 = bB.m_invI;
-         var k_allowedStretch = 10.0 * b2Settings.b2_linearSlop;
+         var invMass1 = bA.m_invMass,
+          invMass2 = bB.m_invMass,
+          invI1 = bA.m_invI,
+          invI2 = bB.m_invI,
+          k_allowedStretch = 10.0 * b2Settings.b2_linearSlop;
          if (CLengthSquared > k_allowedStretch * k_allowedStretch) {
-            var uX = CX / CLength;
-            var uY = CY / CLength;
-            var k = invMass1 + invMass2;
-            var m = 1.0 / k;
+            var uX = CX / CLength,
+          uY = CY / CLength,
+          k = invMass1 + invMass2,
+          m = 1.0 / k;
             impulseX = m * ((-CX));
             impulseY = m * ((-CY));
             var k_beta = 0.5;
@@ -15072,26 +15069,26 @@ b2WeldJoint = Box2D.Dynamics.Joints.b2WeldJoint = (function(superClass) {
     *
     */
    b2WeldJoint.prototype.InitVelocityConstraints = function (step) {
-      var tMat;
-      var tX = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
+      var tMat,
+          tX = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB;
       tMat = bA.m_xf.R;
-      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
-      var rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
+      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x,
+          rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
       rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
       rAX = tX;
       tMat = bB.m_xf.R;
-      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
-      var rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
+      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x,
+          rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
       rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
       rBX = tX;
-      var mA = bA.m_invMass;
-      var mB = bB.m_invMass;
-      var iA = bA.m_invI;
-      var iB = bB.m_invI;
+      var mA = bA.m_invMass,
+          mB = bB.m_invMass,
+          iA = bA.m_invI,
+          iB = bB.m_invI;
       this.m_mass.col1.x = mA + mB + rAY * rAY * iA + rBY * rBY * iB;
       this.m_mass.col2.x = (-rAY * rAX * iA) - rBY * rBX * iB;
       this.m_mass.col3.x = (-rAY * iA) - rBY * iB;
@@ -15124,34 +15121,34 @@ b2WeldJoint = Box2D.Dynamics.Joints.b2WeldJoint = (function(superClass) {
     *
     */
    b2WeldJoint.prototype.SolveVelocityConstraints = function (step) {
-      var tMat;
-      var tX = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
-      var vA = bA.m_linearVelocity;
-      var wA = bA.m_angularVelocity;
-      var vB = bB.m_linearVelocity;
-      var wB = bB.m_angularVelocity;
-      var mA = bA.m_invMass;
-      var mB = bB.m_invMass;
-      var iA = bA.m_invI;
-      var iB = bB.m_invI;
+      var tMat,
+          tX = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB,
+          vA = bA.m_linearVelocity,
+          wA = bA.m_angularVelocity,
+          vB = bB.m_linearVelocity,
+          wB = bB.m_angularVelocity,
+          mA = bA.m_invMass,
+          mB = bB.m_invMass,
+          iA = bA.m_invI,
+          iB = bB.m_invI;
       tMat = bA.m_xf.R;
-      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
-      var rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
+      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x,
+          rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
       rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
       rAX = tX;
       tMat = bB.m_xf.R;
-      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
-      var rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
+      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x,
+          rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
       rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
       rBX = tX;
-      var Cdot1X = vB.x - wB * rBY - vA.x + wA * rAY;
-      var Cdot1Y = vB.y + wB * rBX - vA.y - wA * rAX;
-      var Cdot2 = wB - wA;
-      var impulse = new b2Vec3();
+      var Cdot1X = vB.x - wB * rBY - vA.x + wA * rAY,
+          Cdot1Y = vB.y + wB * rBX - vA.y - wA * rAX,
+          Cdot2 = wB - wA,
+          impulse = new b2Vec3();
       this.m_mass.Solve33(impulse, (-Cdot1X), (-Cdot1Y), (-Cdot2));
       this.m_impulse.Add(impulse);
       vA.x -= mA * impulse.x;
@@ -15172,32 +15169,32 @@ b2WeldJoint = Box2D.Dynamics.Joints.b2WeldJoint = (function(superClass) {
     */
    b2WeldJoint.prototype.SolvePositionConstraints = function (baumgarte) {
       baumgarte = baumgarte || 0;
-      var tMat;
-      var tX = 0;
-      var bA = this.m_bodyA;
-      var bB = this.m_bodyB;
+      var tMat,
+          tX = 0,
+          bA = this.m_bodyA,
+          bB = this.m_bodyB;
       tMat = bA.m_xf.R;
-      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x;
-      var rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
+      var rAX = this.m_localAnchorA.x - bA.m_sweep.localCenter.x,
+          rAY = this.m_localAnchorA.y - bA.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rAX + tMat.col2.x * rAY);
       rAY = (tMat.col1.y * rAX + tMat.col2.y * rAY);
       rAX = tX;
       tMat = bB.m_xf.R;
-      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x;
-      var rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
+      var rBX = this.m_localAnchorB.x - bB.m_sweep.localCenter.x,
+          rBY = this.m_localAnchorB.y - bB.m_sweep.localCenter.y;
       tX = (tMat.col1.x * rBX + tMat.col2.x * rBY);
       rBY = (tMat.col1.y * rBX + tMat.col2.y * rBY);
       rBX = tX;
-      var mA = bA.m_invMass;
-      var mB = bB.m_invMass;
-      var iA = bA.m_invI;
-      var iB = bB.m_invI;
-      var C1X = bB.m_sweep.c.x + rBX - bA.m_sweep.c.x - rAX;
-      var C1Y = bB.m_sweep.c.y + rBY - bA.m_sweep.c.y - rAY;
-      var C2 = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle;
-      var k_allowedStretch = 10.0 * b2Settings.b2_linearSlop;
-      var positionError = Math.sqrt(C1X * C1X + C1Y * C1Y);
-      var angularError = b2Math.Abs(C2);
+      var mA = bA.m_invMass,
+          mB = bB.m_invMass,
+          iA = bA.m_invI,
+          iB = bB.m_invI,
+          C1X = bB.m_sweep.c.x + rBX - bA.m_sweep.c.x - rAX,
+          C1Y = bB.m_sweep.c.y + rBY - bA.m_sweep.c.y - rAY,
+          C2 = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle,
+          k_allowedStretch = 10.0 * b2Settings.b2_linearSlop,
+          positionError = Math.sqrt(C1X * C1X + C1Y * C1Y),
+          angularError = b2Math.Abs(C2);
       if (positionError > k_allowedStretch) {
          iA *= 1.0;
          iB *= 1.0;
@@ -15460,8 +15457,8 @@ Box2D.Dynamics.b2ContactFilter = b2ContactFilter = (function() {
     *
     */
    b2ContactFilter.prototype.ShouldCollide = function (fixtureA, fixtureB) {
-      var filter1 = fixtureA.GetFilterData();
-      var filter2 = fixtureB.GetFilterData();
+      var filter1 = fixtureA.GetFilterData(),
+          filter2 = fixtureB.GetFilterData();
       if (filter1.groupIndex == filter2.groupIndex && filter1.groupIndex != 0) {
          return filter1.groupIndex > 0;
       }
@@ -15541,9 +15538,9 @@ Box2D.Dynamics.b2Fixture = b2Fixture = (function() {
       if (this.m_body == null) return;
       var edge = this.m_body.GetContactList();
       while (edge) {
-         var contact = edge.contact;
-         var fixtureA = contact.GetFixtureA();
-         var fixtureB = contact.GetFixtureB();
+         var contact = edge.contact,
+          fixtureA = contact.GetFixtureA(),
+          fixtureB = contact.GetFixtureB();
          if (fixtureA == this || fixtureB == this) contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
          edge = edge.next;
       }
@@ -15570,9 +15567,9 @@ Box2D.Dynamics.b2Fixture = b2Fixture = (function() {
       if (this.m_body) return;
       var edge = this.m_body.GetContactList();
       while (edge) {
-         var contact = edge.contact;
-         var fixtureA = contact.GetFixtureA();
-         var fixtureB = contact.GetFixtureB();
+         var contact = edge.contact,
+          fixtureA = contact.GetFixtureA(),
+          fixtureB = contact.GetFixtureB();
          if (fixtureA == this || fixtureB == this) contact.FlagForFiltering();
          edge = edge.next;
       }
@@ -15803,8 +15800,8 @@ Box2D.Dynamics.b2Fixture = b2Fixture = (function() {
     */
    b2Fixture.prototype.Synchronize = function (broadPhase, transform1, transform2) {
       if (!this.m_proxy) return;
-      var aabb1 = new b2AABB();
-      var aabb2 = new b2AABB();
+      var aabb1 = new b2AABB(),
+          aabb2 = new b2AABB();
       this.m_shape.ComputeAABB(aabb1, transform1);
       this.m_shape.ComputeAABB(aabb2, transform2);
       this.m_aabb.Combine(aabb1, aabb2);
@@ -15847,16 +15844,16 @@ Box2D.Dynamics.b2ContactManager = b2ContactManager = (function() {
     *
     */
    b2ContactManager.prototype.AddPair = function (proxyUserDataA, proxyUserDataB) {
-      var fixtureA = (proxyUserDataA instanceof b2Fixture ? proxyUserDataA : null);
-      var fixtureB = (proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null);
-      var bodyA = fixtureA.GetBody();
-      var bodyB = fixtureB.GetBody();
+      var fixtureA = (proxyUserDataA instanceof b2Fixture ? proxyUserDataA : null),
+          fixtureB = (proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null),
+          bodyA = fixtureA.GetBody(),
+          bodyB = fixtureB.GetBody();
       if (bodyA == bodyB) return;
       var edge = bodyB.GetContactList();
       while (edge) {
          if (edge.other == bodyA) {
-            var fA = edge.contact.GetFixtureA();
-            var fB = edge.contact.GetFixtureB();
+            var fA = edge.contact.GetFixtureA(),
+          fB = edge.contact.GetFixtureB();
             if (fA == fixtureA && fB == fixtureB) return;
             if (fA == fixtureB && fB == fixtureA) return;
          }
@@ -15916,10 +15913,10 @@ Box2D.Dynamics.b2ContactManager = b2ContactManager = (function() {
     *
     */
    b2ContactManager.prototype.Destroy = function (c) {
-      var fixtureA = c.GetFixtureA();
-      var fixtureB = c.GetFixtureB();
-      var bodyA = fixtureA.GetBody();
-      var bodyB = fixtureB.GetBody();
+      var fixtureA = c.GetFixtureA(),
+          fixtureB = c.GetFixtureB(),
+          bodyA = fixtureA.GetBody(),
+          bodyB = fixtureB.GetBody();
       if (c.IsTouching()) {
          this.m_contactListener.EndContact(c);
       }
@@ -15963,10 +15960,10 @@ Box2D.Dynamics.b2ContactManager = b2ContactManager = (function() {
    b2ContactManager.prototype.Collide = function () {
       var c = this.m_world.m_contactList;
       while (c) {
-         var fixtureA = c.GetFixtureA();
-         var fixtureB = c.GetFixtureB();
-         var bodyA = fixtureA.GetBody();
-         var bodyB = fixtureB.GetBody();
+         var fixtureA = c.GetFixtureA(),
+          fixtureB = c.GetFixtureB(),
+          bodyA = fixtureA.GetBody(),
+          bodyB = fixtureB.GetBody();
          if (bodyA.IsAwake() == false && bodyB.IsAwake() == false) {
             c = c.GetNext();
             continue;
@@ -15986,9 +15983,9 @@ Box2D.Dynamics.b2ContactManager = b2ContactManager = (function() {
             }
             c.m_flags &= ~b2Contact.e_filterFlag;
          }
-         var proxyA = fixtureA.m_proxy;
-         var proxyB = fixtureB.m_proxy;
-         var overlap = this.m_broadPhase.TestOverlap(proxyA, proxyB);
+         var proxyA = fixtureA.m_proxy,
+          proxyB = fixtureB.m_proxy,
+          overlap = this.m_broadPhase.TestOverlap(proxyA, proxyB);
          if (overlap == false) {
             cNuke = c;
             c = cNuke.GetNext();
@@ -16115,9 +16112,9 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
     */
    b2Body.prototype.connectEdges = function (s1, s2, angle1) {
       angle1 = angle1 || 0;
-      var angle2 = Math.atan2(s2.GetDirectionVector().y, s2.GetDirectionVector().x);
-      var coreOffset = Math.tan((angle2 - angle1) * 0.5);
-      var core = b2Math.MulFV(coreOffset, s2.GetDirectionVector());
+      var angle2 = Math.atan2(s2.GetDirectionVector().y, s2.GetDirectionVector().x),
+          coreOffset = Math.tan((angle2 - angle1) * 0.5),
+          core = b2Math.MulFV(coreOffset, s2.GetDirectionVector());
       core = b2Math.SubtractVV(core, s2.GetNormalVector());
       core = b2Math.MulFV(b2Settings.b2_toiSlop, core);
       core = b2Math.AddVV(core, s2.GetVertex1());
@@ -16181,9 +16178,9 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
       if (this.m_world.IsLocked() == true) {
          return;
       }
-      var node = this.m_fixtureList;
-      var ppF = null;
-      var found = false;
+      var node = this.m_fixtureList,
+          ppF = null,
+          found = false;
       while (node != null) {
          if (node == fixture) {
             if (ppF) ppF.m_next = fixture.m_next;
@@ -16198,8 +16195,8 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
       while (edge) {
          var c = edge.contact;
          edge = edge.next;
-         var fixtureA = c.GetFixtureA();
-         var fixtureB = c.GetFixtureB();
+         var fixtureA = c.GetFixtureA(),
+          fixtureB = c.GetFixtureB();
          if (fixture == fixtureA || fixture == fixtureB) {
             this.m_world.m_contactManager.Destroy(c);
          }
@@ -16231,8 +16228,8 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
       }
       this.m_xf.R.Set(angle);
       this.m_xf.position.SetV(position);
-      var tMat = this.m_xf.R;
-      var tVec = this.m_sweep.localCenter;
+      var tMat = this.m_xf.R,
+          tVec = this.m_sweep.localCenter;
       this.m_sweep.c.x = (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
       this.m_sweep.c.y = (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       this.m_sweep.c.x += this.m_xf.position.x;
@@ -16460,12 +16457,12 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
     *
     */
    b2Body.prototype.Split = function (callback) {
-      var linearVelocity = this.GetLinearVelocity().Copy();
-      var angularVelocity = this.GetAngularVelocity();
-      var center = this.GetWorldCenter();
-      var body1 = this;
-      var body2 = this.m_world.CreateBody(this.GetDefinition());
-      var prev;
+      var linearVelocity = this.GetLinearVelocity().Copy(),
+          angularVelocity = this.GetAngularVelocity(),
+          center = this.GetWorldCenter(),
+          body1 = this,
+          body2 = this.m_world.CreateBody(this.GetDefinition()),
+          prev;
       for (var f = body1.m_fixtureList; f;) {
          if (callback(f)) {
             var next = f.m_next;
@@ -16489,10 +16486,10 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
       }
       body1.ResetMassData();
       body2.ResetMassData();
-      var center1 = body1.GetWorldCenter();
-      var center2 = body2.GetWorldCenter();
-      var velocity1 = b2Math.AddVV(linearVelocity, b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center1, center)));
-      var velocity2 = b2Math.AddVV(linearVelocity, b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center2, center)));
+      var center1 = body1.GetWorldCenter(),
+          center2 = body2.GetWorldCenter(),
+          velocity1 = b2Math.AddVV(linearVelocity, b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center1, center))),
+          velocity2 = b2Math.AddVV(linearVelocity, b2Math.CrossFV(angularVelocity, b2Math.SubtractVV(center2, center)));
       body1.SetLinearVelocity(velocity1);
       body2.SetLinearVelocity(velocity2);
       body1.SetAngularVelocity(angularVelocity);
@@ -16521,14 +16518,14 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
          f = next;
       }
       body1.m_fixtureCount = 0;
-      var body1 = this;
-      var body2 = other;
-      var center1 = body1.GetWorldCenter();
-      var center2 = body2.GetWorldCenter();
-      var velocity1 = body1.GetLinearVelocity().Copy();
-      var velocity2 = body2.GetLinearVelocity().Copy();
-      var angular1 = body1.GetAngularVelocity();
-      var angular = body2.GetAngularVelocity();
+      var body1 = this,
+          body2 = other,
+          center1 = body1.GetWorldCenter(),
+          center2 = body2.GetWorldCenter(),
+          velocity1 = body1.GetLinearVelocity().Copy(),
+          velocity2 = body2.GetLinearVelocity().Copy(),
+          angular1 = body1.GetAngularVelocity(),
+          angular = body2.GetAngularVelocity();
       body1.ResetMassData();
       this.SynchronizeFixtures();
    };
@@ -16659,8 +16656,8 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
     *
     */
    b2Body.prototype.GetWorldPoint = function (localPoint) {
-      var A = this.m_xf.R;
-      var u = new b2Vec2(A.col1.x * localPoint.x + A.col2.x * localPoint.y, A.col1.y * localPoint.x + A.col2.y * localPoint.y);
+      var A = this.m_xf.R,
+          u = new b2Vec2(A.col1.x * localPoint.x + A.col2.x * localPoint.y, A.col1.y * localPoint.x + A.col2.y * localPoint.y);
       u.x += this.m_xf.position.x;
       u.y += this.m_xf.position.y;
       return u;
@@ -16713,8 +16710,8 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
     *
     */
    b2Body.prototype.GetLinearVelocityFromLocalPoint = function (localPoint) {
-      var A = this.m_xf.R;
-      var worldPoint = new b2Vec2(A.col1.x * localPoint.x + A.col2.x * localPoint.y, A.col1.y * localPoint.x + A.col2.y * localPoint.y);
+      var A = this.m_xf.R,
+          worldPoint = new b2Vec2(A.col1.x * localPoint.x + A.col2.x * localPoint.y, A.col1.y * localPoint.x + A.col2.y * localPoint.y);
       worldPoint.x += this.m_xf.position.x;
       worldPoint.y += this.m_xf.position.y;
       return new b2Vec2(this.m_linearVelocity.x - this.m_angularVelocity * (worldPoint.y - this.m_sweep.c.y), this.m_linearVelocity.y + this.m_angularVelocity * (worldPoint.x - this.m_sweep.c.x));
@@ -16905,8 +16902,8 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
       if (flag == this.IsActive()) {
          return;
       }
-      var broadPhase;
-      var f;
+      var broadPhase,
+          f;
       if (flag) {
          this.m_flags |= b2Body.e_activeFlag;
          broadPhase = this.m_world.m_contactManager.m_broadPhase;
@@ -17041,12 +17038,12 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
    b2Body.prototype.SynchronizeFixtures = function () {
       var xf1 = b2Body.s_xf1;
       xf1.R.Set(this.m_sweep.a0);
-      var tMat = xf1.R;
-      var tVec = this.m_sweep.localCenter;
+      var tMat = xf1.R,
+          tVec = this.m_sweep.localCenter;
       xf1.position.x = this.m_sweep.c0.x - (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
       xf1.position.y = this.m_sweep.c0.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
-      var f;
-      var broadPhase = this.m_world.m_contactManager.m_broadPhase;
+      var f,
+          broadPhase = this.m_world.m_contactManager.m_broadPhase;
       for (f = this.m_fixtureList;
       f; f = f.m_next) {
          f.Synchronize(broadPhase, xf1, this.m_xf);
@@ -17061,8 +17058,8 @@ Box2D.Dynamics.b2Body = b2Body = (function() {
     */
    b2Body.prototype.SynchronizeTransform = function () {
       this.m_xf.R.Set(this.m_sweep.a);
-      var tMat = this.m_xf.R;
-      var tVec = this.m_sweep.localCenter;
+      var tMat = this.m_xf.R,
+          tVec = this.m_sweep.localCenter;
       this.m_xf.position.x = this.m_sweep.c.x - (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
       this.m_xf.position.y = this.m_sweep.c.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
    };
@@ -17318,8 +17315,8 @@ Box2D.Dynamics.b2DebugDraw = b2DebugDraw = (function() {
     */
    b2DebugDraw.prototype.DrawPolygon = function (vertices, vertexCount, color) {
       if (!vertexCount) return;
-      var s = this.m_ctx;
-      var drawScale = this.m_drawScale;
+      var s = this.m_ctx,
+          drawScale = this.m_drawScale;
       s.beginPath();
       s.strokeStyle = this._color(color.color, this.m_alpha);
       s.moveTo(vertices[0].x * drawScale, vertices[0].y * drawScale);
@@ -17341,8 +17338,8 @@ Box2D.Dynamics.b2DebugDraw = b2DebugDraw = (function() {
     */
    b2DebugDraw.prototype.DrawSolidPolygon = function (vertices, vertexCount, color) {
       if (!vertexCount) return;
-      var s = this.m_ctx;
-      var drawScale = this.m_drawScale;
+      var s = this.m_ctx,
+          drawScale = this.m_drawScale;
       s.beginPath();
       s.strokeStyle = this._color(color.color, this.m_alpha);
       s.fillStyle = this._color(color.color, this.m_fillAlpha);
@@ -17366,8 +17363,8 @@ Box2D.Dynamics.b2DebugDraw = b2DebugDraw = (function() {
     */
    b2DebugDraw.prototype.DrawCircle = function (center, radius, color) {
       if (!radius) return;
-      var s = this.m_ctx;
-      var drawScale = this.m_drawScale;
+      var s = this.m_ctx,
+          drawScale = this.m_drawScale;
       s.beginPath();
       s.strokeStyle = this._color(color.color, this.m_alpha);
       s.arc(center.x * drawScale, center.y * drawScale, radius * drawScale, 0, Math.PI * 2, true);
@@ -17524,8 +17521,8 @@ Box2D.Dynamics.b2ContactFilter = b2ContactFilter = (function() {
     *
     */
    b2ContactFilter.prototype.ShouldCollide = function (fixtureA, fixtureB) {
-      var filter1 = fixtureA.GetFilterData();
-      var filter2 = fixtureB.GetFilterData();
+      var filter1 = fixtureA.GetFilterData(),
+          filter2 = fixtureB.GetFilterData();
       if (filter1.groupIndex == filter2.groupIndex && filter1.groupIndex != 0) {
          return filter1.groupIndex > 0;
       }
@@ -17679,10 +17676,10 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
     *
     */
    b2Island.prototype.Solve = function (step, gravity, allowSleep) {
-      var i = 0;
-      var j = 0;
-      var b;
-      var joint;
+      var i = 0,
+          j = 0,
+          b,
+          joint;
       for (i = 0;
       i < this.m_bodyCount; ++i) {
          b = this.m_bodies[i];
@@ -17720,8 +17717,8 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
       i < this.m_bodyCount; ++i) {
          b = this.m_bodies[i];
          if (b.GetType() == b2Body.b2_staticBody) continue;
-         var translationX = step.dt * b.m_linearVelocity.x;
-         var translationY = step.dt * b.m_linearVelocity.y;
+         var translationX = step.dt * b.m_linearVelocity.x,
+          translationY = step.dt * b.m_linearVelocity.y;
          if ((translationX * translationX + translationY * translationY) > b2Settings.b2_maxTranslationSquared) {
             b.m_linearVelocity.Normalize();
             b.m_linearVelocity.x *= b2Settings.b2_maxTranslation * step.inv_dt;
@@ -17745,8 +17742,8 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
       }
       for (i = 0;
       i < step.positionIterations; ++i) {
-         var contactsOkay = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
-         var jointsOkay = true;
+         var contactsOkay = contactSolver.SolvePositionConstraints(b2Settings.b2_contactBaumgarte),
+          jointsOkay = true;
          for (j = 0;
          j < this.m_jointCount; ++j) {
             joint = this.m_joints[j];
@@ -17759,9 +17756,9 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
       }
       this.Report(contactSolver.m_constraints);
       if (allowSleep) {
-         var minSleepTime = Number.MAX_VALUE;
-         var linTolSqr = b2Settings.b2_linearSleepTolerance * b2Settings.b2_linearSleepTolerance;
-         var angTolSqr = b2Settings.b2_angularSleepTolerance * b2Settings.b2_angularSleepTolerance;
+         var minSleepTime = Number.MAX_VALUE,
+          linTolSqr = b2Settings.b2_linearSleepTolerance * b2Settings.b2_linearSleepTolerance,
+          angTolSqr = b2Settings.b2_angularSleepTolerance * b2Settings.b2_angularSleepTolerance;
          for (i = 0;
          i < this.m_bodyCount; ++i) {
             b = this.m_bodies[i];
@@ -17798,8 +17795,8 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
     *
     */
    b2Island.prototype.SolveTOI = function (subStep) {
-      var i = 0;
-      var j = 0;
+      var i = 0,
+          j = 0;
       this.m_contactSolver.Initialize(subStep, this.m_contacts, this.m_contactCount, this.m_allocator);
       var contactSolver = this.m_contactSolver;
       for (i = 0;
@@ -17818,8 +17815,8 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
       i < this.m_bodyCount; ++i) {
          var b = this.m_bodies[i];
          if (b.GetType() == b2Body.b2_staticBody) continue;
-         var translationX = subStep.dt * b.m_linearVelocity.x;
-         var translationY = subStep.dt * b.m_linearVelocity.y;
+         var translationX = subStep.dt * b.m_linearVelocity.x,
+          translationY = subStep.dt * b.m_linearVelocity.y;
          if ((translationX * translationX + translationY * translationY) > b2Settings.b2_maxTranslationSquared) {
             b.m_linearVelocity.Normalize();
             b.m_linearVelocity.x *= b2Settings.b2_maxTranslation * subStep.inv_dt;
@@ -17844,8 +17841,8 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
       var k_toiBaumgarte = 0.75;
       for (i = 0;
       i < subStep.positionIterations; ++i) {
-         var contactsOkay = contactSolver.SolvePositionConstraints(k_toiBaumgarte);
-         var jointsOkay = true;
+         var contactsOkay = contactSolver.SolvePositionConstraints(k_toiBaumgarte),
+          jointsOkay = true;
          for (j = 0;
          j < this.m_jointCount; ++j) {
             var jointOkay = this.m_joints[j].SolvePositionConstraints(b2Settings.b2_contactBaumgarte);
@@ -17869,8 +17866,8 @@ Box2D.Dynamics.b2Island = b2Island = (function() {
          return;
       }
       for (var i = 0; i < this.m_contactCount; ++i) {
-         var c = this.m_contacts[i];
-         var cc = constraints[i];
+         var c = this.m_contacts[i],
+          cc = constraints[i];
          for (var j = 0; j < cc.pointCount; ++j) {
             b2Island.s_impulse.normalImpulses[j] = cc.points[j].normalImpulse;
             b2Island.s_impulse.tangentImpulses[j] = cc.points[j].tangentImpulse;
@@ -18140,8 +18137,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
       j.m_edgeB.next = j.m_bodyB.m_jointList;
       if (j.m_bodyB.m_jointList) j.m_bodyB.m_jointList.prev = j.m_edgeB;
       j.m_bodyB.m_jointList = j.m_edgeB;
-      var bodyA = def.bodyA;
-      var bodyB = def.bodyB;
+      var bodyA = def.bodyA,
+          bodyB = def.bodyB;
       if (def.collideConnected == false) {
          var edge = bodyB.GetContactList();
          while (edge) {
@@ -18171,8 +18168,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
       if (j == this.m_jointList) {
          this.m_jointList = j.m_next;
       }
-      var bodyA = j.m_bodyA;
-      var bodyB = j.m_bodyB;
+      var bodyA = j.m_bodyA,
+          bodyB = j.m_bodyB;
       bodyA.SetAwake(true);
       bodyB.SetAwake(true);
       if (j.m_edgeA.prev) {
@@ -18415,21 +18412,21 @@ Box2D.Dynamics.b2World = b2World = (function() {
          return;
       }
       this.m_debugDraw.m_sprite.graphics.clear();
-      var flags = this.m_debugDraw.GetFlags();
-      var i = 0;
-      var b;
-      var f;
-      var s;
-      var j;
-      var bp;
-      var invQ = new b2Vec2;
-      var x1 = new b2Vec2;
-      var x2 = new b2Vec2;
-      var xf;
-      var b1 = new b2AABB();
-      var b2 = new b2AABB();
-      var vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()];
-      var color = new b2Color(0, 0, 0);
+      var flags = this.m_debugDraw.GetFlags(),
+          i = 0,
+          b,
+          f,
+          s,
+          j,
+          bp,
+          invQ = new b2Vec2,
+          x1 = new b2Vec2,
+          x2 = new b2Vec2,
+          xf,
+          b1 = new b2AABB(),
+          b2 = new b2AABB(),
+          vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()],
+          color = new b2Color(0, 0, 0);
       if (flags & b2DebugDraw.e_shapeBit) {
          for (b = this.m_bodyList;
          b; b = b.m_next) {
@@ -18474,10 +18471,10 @@ Box2D.Dynamics.b2World = b2World = (function() {
       if (flags & b2DebugDraw.e_pairBit) {
          color.Set(0.3, 0.9, 0.9);
          for (var contact = this.m_contactManager.m_contactList; contact; contact = contact.GetNext()) {
-            var fixtureA = contact.GetFixtureA();
-            var fixtureB = contact.GetFixtureB();
-            var cA = fixtureA.GetAABB().GetCenter();
-            var cB = fixtureB.GetAABB().GetCenter();
+            var fixtureA = contact.GetFixtureA(),
+          fixtureB = contact.GetFixtureB(),
+          cA = fixtureA.GetAABB().GetCenter(),
+          cB = fixtureB.GetAABB().GetCenter();
             this.m_debugDraw.DrawSegment(cA, cB, color);
          }
       }
@@ -18519,8 +18516,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.QueryAABB = function (callback, aabb) {
-      var __this = this;
-      var broadPhase = __this.m_contactManager.m_broadPhase;
+      var __this = this,
+          broadPhase = __this.m_contactManager.m_broadPhase;
 
       function WorldQueryWrapper(proxy) {
          return callback(broadPhase.GetUserData(proxy));
@@ -18563,8 +18560,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.QueryPoint = function (callback, p) {
-      var __this = this;
-      var broadPhase = __this.m_contactManager.m_broadPhase;
+      var __this = this,
+          broadPhase = __this.m_contactManager.m_broadPhase;
 
       function WorldQueryWrapper(proxy) {
          var fixture = (broadPhase.GetUserData(proxy) instanceof b2Fixture ? broadPhase.GetUserData(proxy) : null);
@@ -18586,17 +18583,17 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.RayCast = function (callback, point1, point2) {
-      var __this = this;
-      var broadPhase = __this.m_contactManager.m_broadPhase;
-      var output = new b2RayCastOutput;
+      var __this = this,
+          broadPhase = __this.m_contactManager.m_broadPhase,
+          output = new b2RayCastOutput;
 
       function RayCastWrapper(input, proxy) {
-         var userData = broadPhase.GetUserData(proxy);
-         var fixture = (userData instanceof b2Fixture ? userData : null);
-         var hit = fixture.RayCast(output, input);
+         var userData = broadPhase.GetUserData(proxy),
+          fixture = (userData instanceof b2Fixture ? userData : null),
+          hit = fixture.RayCast(output, input);
          if (hit) {
-            var fraction = output.fraction;
-            var point = new b2Vec2((1.0 - fraction) * point1.x + fraction * point2.x, (1.0 - fraction) * point1.y + fraction * point2.y);
+            var fraction = output.fraction,
+          point = new b2Vec2((1.0 - fraction) * point1.x + fraction * point2.x, (1.0 - fraction) * point1.y + fraction * point2.y);
             return callback(fixture, point, output.normal, fraction);
          }
          return input.maxFraction;
@@ -18613,8 +18610,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.RayCastOne = function (point1, point2) {
-      var __this = this;
-      var result;
+      var __this = this,
+          result;
 
       function RayCastOneWrapper(fixture, point, normal, fraction) {
          fraction = fraction || 0;
@@ -18633,8 +18630,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.RayCastAll = function (point1, point2) {
-      var __this = this;
-      var result = new Vector();
+      var __this = this,
+          result = new Vector();
 
       function RayCastAllWrapper(fixture, point, normal, fraction) {
          fraction = fraction || 0;
@@ -18708,8 +18705,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
       for (var j = this.m_jointList; j; j = j.m_next) {
          j.m_islandFlag = false;
       }
-      var stackSize = parseInt(this.m_bodyCount);
-      var stack = this.s_stack;
+      var stackSize = parseInt(this.m_bodyCount),
+          stack = this.s_stack;
       for (var seed = this.m_bodyList; seed; seed = seed.m_next) {
          if (seed.m_flags & b2Body.e_islandFlag) {
             continue;
@@ -18800,14 +18797,14 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.SolveTOI = function (step) {
-      var b;
-      var fA;
-      var fB;
-      var bA;
-      var bB;
-      var cEdge;
-      var j;
-      var island = this.m_island;
+      var b,
+          fA,
+          fB,
+          bA,
+          bB,
+          cEdge,
+          j,
+          island = this.m_island;
       island.Initialize(this.m_bodyCount, b2Settings.b2_maxTOIContactsPerIsland, b2Settings.b2_maxTOIJointsPerIsland, null, this.m_contactManager.m_contactListener, this.m_contactSolver);
       var queue = b2World.s_queue;
       for (b = this.m_bodyList;
@@ -18825,8 +18822,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
          j.m_islandFlag = false;
       }
       for (;;) {
-         var minContact = null;
-         var minTOI = 1.0;
+         var minContact = null,
+          minTOI = 1.0;
          for (c = this.m_contactList;
          c; c = c.m_next) {
             if (c.IsSensor() == true || c.IsEnabled() == false || c.IsContinuous() == false) {
@@ -18895,8 +18892,8 @@ Box2D.Dynamics.b2World = b2World = (function() {
             seed = bB;
          }
          island.Clear();
-         var queueStart = 0;
-         var queueSize = 0;
+         var queueStart = 0,
+          queueSize = 0;
          queue[queueStart + queueSize++] = seed;
          seed.m_flags |= b2Body.e_islandFlag;
          while (queueSize > 0) {
@@ -18999,24 +18996,24 @@ Box2D.Dynamics.b2World = b2World = (function() {
     *
     */
    b2World.prototype.DrawJoint = function (joint) {
-      var b1 = joint.GetBodyA();
-      var b2 = joint.GetBodyB();
-      var xf1 = b1.m_xf;
-      var xf2 = b2.m_xf;
-      var x1 = xf1.position;
-      var x2 = xf2.position;
-      var p1 = joint.GetAnchorA();
-      var p2 = joint.GetAnchorB();
-      var color = b2World.s_jointColor;
+      var b1 = joint.GetBodyA(),
+          b2 = joint.GetBodyB(),
+          xf1 = b1.m_xf,
+          xf2 = b2.m_xf,
+          x1 = xf1.position,
+          x2 = xf2.position,
+          p1 = joint.GetAnchorA(),
+          p2 = joint.GetAnchorB(),
+          color = b2World.s_jointColor;
       switch (joint.m_type) {
       case b2Joint.e_distanceJoint:
          this.m_debugDraw.DrawSegment(p1, p2, color);
          break;
       case b2Joint.e_pulleyJoint:
          {
-            var pulley = ((joint instanceof b2PulleyJoint ? joint : null));
-            var s1 = pulley.GetGroundAnchorA();
-            var s2 = pulley.GetGroundAnchorB();
+            var pulley = ((joint instanceof b2PulleyJoint ? joint : null)),
+          s1 = pulley.GetGroundAnchorA(),
+          s2 = pulley.GetGroundAnchorB();
             this.m_debugDraw.DrawSegment(s1, p1, color);
             this.m_debugDraw.DrawSegment(s2, p2, color);
             this.m_debugDraw.DrawSegment(s1, s2, color);
@@ -19044,20 +19041,20 @@ Box2D.Dynamics.b2World = b2World = (function() {
       switch (shape.m_type) {
       case b2Shape.e_circleShape:
          {
-            var circle = ((shape instanceof b2CircleShape ? shape : null));
-            var center = b2Math.MulX(xf, circle.m_p);
-            var radius = circle.m_radius;
-            var axis = xf.R.col1;
+            var circle = ((shape instanceof b2CircleShape ? shape : null)),
+          center = b2Math.MulX(xf, circle.m_p),
+          radius = circle.m_radius,
+          axis = xf.R.col1;
             this.m_debugDraw.DrawSolidCircle(center, radius, axis, color);
          }
          break;
       case b2Shape.e_polygonShape:
          {
-            var i = 0;
-            var poly = ((shape instanceof b2PolygonShape ? shape : null));
-            var vertexCount = parseInt(poly.GetVertexCount());
-            var localVertices = poly.GetVertices();
-            var vertices = new Vector(vertexCount);
+            var i = 0,
+          poly = ((shape instanceof b2PolygonShape ? shape : null)),
+          vertexCount = parseInt(poly.GetVertexCount()),
+          localVertices = poly.GetVertices(),
+          vertices = new Vector(vertexCount);
             for (i = 0;
             i < vertexCount; ++i) {
                vertices[i] = b2Math.MulX(xf, localVertices[i]);
@@ -19112,7 +19109,7 @@ Box2D.Dynamics.b2DestructionListener = b2DestructionListener = (function() {
    return b2DestructionListener;
 })();
 
-return Box2D;
+    return Box2D;
 }).call(this);
 if ('undefined' !== typeof module) {
     module.exports = Box2D;

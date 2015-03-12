@@ -1,7 +1,7 @@
 fs = require('fs')
 path = require('path')
 {exec} = require('child_process')
-
+options = {}
 ###> ========================================================================
     Build the coffeescript classes
 ======================================================================== <###
@@ -50,7 +50,7 @@ task 'perfc', 'performance test', ->
 task 'perfa', 'performance test', ->
 
   Box2D = require('box2dweb')
-  Redux = require('./web/packages/box2d/Box2D.js')
+  Redux = require('./web/packages/box2d/Box2D.min.js')
 
   d1 = Date.now()
   _tester Redux
@@ -112,7 +112,8 @@ _tester = (Box2D) ->
 namespace = ['Box2D']
 classes = []
 option '-o', '--override', 'use overrides'
-task 'redux', 'Redux the box2sweb library', (options) ->
+task 'redux', 'Redux the box2sweb library', (o) ->
+  options = o
 
   namespace = ['Box2D']   # namespace root
   classes = []            # list of classes
@@ -400,64 +401,136 @@ loadClasses = (obj) ->
   return
 
 
-###
+###> ========================================================================
  * Optimizations
-###
+======================================================================== <###
 _opt = (s) ->
+  if options.override?
+    _rule2 _rule1 s
+  else
+    s
 
+###> ========================================================================
+ * Rule 1
+ *
+ *  > if (x === undefined) x = 0;
+ *
+ *  < x = x || 0;
+ *
+======================================================================== <###
+_rule1 = (s) ->
+  op = /if\s*\(\s*([A-Za-z0-9._]*)\s*===\s*undefined\s*\)\s*([A-Za-z0-9._]*)\s*=\s*([A-Za-z0-9._]*)\s*;/
 
-  ###
-   * Rule 1
-   *
-   *  > if (x === undefined) x = 0;
-   *  < x = x || 0;
-   *
-  ###
-  op1 = /if\s*\(\s*([A-Za-z0-9._]*)\s*===\s*undefined\s*\)\s*([A-Za-z0-9._]*)\s*=\s*([A-Za-z0-9._]*)\s*;/
-
-  re1 = ($0, $1, $2, $3) ->
+  re = ($0, $1, $2, $3) ->
     if $1 is $2
       "#{$1} = #{$1} || #{$3};"
     else
       $0
 
-
   if 'string' is typeof s
     if s.indexOf('\n')
       s1 = s.split('\n')
       for s2, index in s1
-        if op1.test(s2)
-          s1[index] = s2.replace(op1, re1)
+        if op.test(s2)
+          s1[index] = s2.replace(op, re)
       s = s1.join('\n')
 
     else
-      if op1.test(s)
-        s = s.replace(op1, re1)
+      if op.test(s)
+        s = s.replace(op, re)
   else
     for s1, index in s
-      if op1.test(s)
-        s[index] = s1.replace(op1, re1)
-
+      if op.test(s)
+        s[index] = s1.replace(op, re)
 
   return s
+###> ========================================================================
+ * Rule 2
+ *
+ *  > var x1...;
+ *  > var x2...;
+ *
+ *  < var x1...,
+ *        x2...;
+ *
+======================================================================== <###
+_rule2 = (s) ->
+  if 'string' is typeof s
+    if s.indexOf('\n')
+      s = __rule2(s.split('\n')).join('\n')
+  else
+    s = __rule2(s)
+  return s
+
+__rule2 = (lines) ->
+  op = /^\s*var\s*.*;$/
+  re1 = /^\s*(var)\s*/
+  re2 = /;$/
+
+  flag = new Array(lines.length)
+  for line, index in lines
+      flag[index] = op.test(line)
+
+  for line, index in lines
+    if flag[index]
+      if index < lines.length-1
+        if flag[index+1]
+          lines[index] = line.replace(re2, ',')
+
+  for line, index in lines
+    if flag[index]
+      if index > 0
+        if flag[index-1]
+          lines[index] = line.replace(re1, '          ')
+
+  return lines
+
+
 
 ###> ========================================================================
     test the optimization regexp
 ======================================================================== <###
-task 'test', 'test', ->
+task 'test', 'test', () ->
+  options = override: true
 
-  x = "if (x_ === undefined) x_ = 0;"
-  console.log x
-  console.log _opt(x)
+#  x = "if (x_ === undefined) x_ = 0;"
+#  console.log x
+#  console.log _opt(x)
+#
+#  x = [
+#    "if (x_ === undefined) x_ = 0;"
+#    "if (y_ === undefined) y_ = 0;"
+#  ]
+#  console.log x
+#  console.log _opt(x)
+#
+#  x = "if (x_ === undefined) x_ = 0;\nif (y_ === undefined) y_ = 0;"
+#  console.log x
+#  console.log _opt(x)
 
-  x = [
-    "if (x_ === undefined) x_ = 0;"
-    "if (y_ === undefined) y_ = 0;"
-  ]
-  console.log x
-  console.log _opt(x)
+  x = """
+      if (this.m_debugDraw == null) {
+         return;
+      }
+      this.m_debugDraw.m_sprite.graphics.clear();
+      var flags = this.m_debugDraw.GetFlags();
+      var i = 0;
+      var b;
+      var f;
+      var s;
+      var j;
+      var bp;
+      frodo(this);
+      var invQ = new b2Vec2;
+      var x1 = new b2Vec2;
+      var x2 = new b2Vec2;
+      var xf;
+"""
+  x = x.split('\n')
+  for line, index in x
+    x[index] = '      '+line
 
-  x = "if (x_ === undefined) x_ = 0;\nif (y_ === undefined) y_ = 0;"
-  console.log x
-  console.log _opt(x)
+  console.log _opt(x.join(('\n')))
 
+
+#uglifyjs -m -o Box2D.min.js  -c drop_console=true,join_vars=true,sequences=true,drop_debugger=true,conditionals=true,booleans=true,if_return=true,evaluate=true Box2D.js
