@@ -75,26 +75,26 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
 
         parseUInt: function(v) {
             return Math.abs(parseInt(v));
-        },
-
-        Common: {
-            b2internal: b2internal,
-            Math: {}
-        },
-
-        Collision: {
-            IBroadPhase: IBroadPhase,
-            Shapes: {}
-        },
-
-        Dynamics: {
-            Contacts: {},
-            Controllers: {},
-            Joints: {}
         }
     },
     Vector = Array,
     Vector_a2j_Number = Box2D.NVector;
+
+    Box2D.Common = {
+        b2internal: b2internal,
+            Math: {}
+    };
+
+    Box2D.Collision = {
+        IBroadPhase: IBroadPhase,
+            Shapes: {}
+    };
+
+    Box2D.Dynamics = {
+        Contacts: {},
+        Controllers: {},
+        Joints: {}
+    };
 
     
    /**
@@ -1658,15 +1658,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
 
        this.m_p = new b2Vec2();
        radius = radius || 0;
-       b2Shape.call(this);
+       //b2Shape.call(this);
        this.m_type = b2Shape.e_circleShape;
        this.m_radius = radius;
    };
 
+   b2CircleShape.prototype                  = Object.create(b2Shape.prototype );
    b2CircleShape.prototype.m_type           = b2Shape.e_circleShape;
    b2CircleShape.prototype.m_p              = null;
 
-   b2CircleShape.prototype = Object.create(b2Shape.prototype );
 
    /**
     * Copy
@@ -18275,6 +18275,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
 
     return Box2D;
 }).call(this);
-if ('undefined' !== typeof module) {
+if (module !== void 0) {
     module.exports = Box2D;
 }

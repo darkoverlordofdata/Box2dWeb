@@ -53,13 +53,13 @@ task 'redux', 'Redux the box2sweb library', (o) ->
    *
    *
   ###
-  eval(String(fs.readFileSync('./src/box2d_web.js')))
-  loadClasses Box2D
+#  eval(String(fs.readFileSync('./src/box2d_web.js')))
+#  loadClasses Box2D
 
   ###
    * Hold your bits - mikolalysenko has already done this!
   ###
-#  Box2D = require('box2dweb')
+  Box2D = require('box2dweb')
 
   postDefs = []
   statics = {}
@@ -105,12 +105,12 @@ task 'redux', 'Redux the box2sweb library', (o) ->
       ctor = ctor.toString().split(/\n/)
       ctor.pop()    # remove start block
       ctor.shift()  # remove end block
+      uber = klass.src.prototype.__super?.constructor
       ###
       # remove this super
       ###
-      if klass.src.prototype.__super?
-        uber = klass.src.prototype.__super.constructor
-        m1 = klass.namespace + '.' + uber.name + '.' + uber.name + '.apply(this, arguments);'
+      if uber?
+        m1 = klass.namespace+'.'+uber.name+'.'+uber.name+'.apply(this, arguments);'
         for line, ix in ctor
           if line.indexOf(m1) >= 0
             ctor[ix] = ''
@@ -135,16 +135,14 @@ task 'redux', 'Redux the box2sweb library', (o) ->
         ###
         # replace super
         ###
-        if klass.src.prototype.__super?
-          uber = klass.src.prototype.__super.constructor
+        if uber?
           m2 = 'this.__super.' + uber.name + '.call(this'
           for line, ix in init
             if line.indexOf(m2) >= 0
               init[ix] = line.replace(m2, uber.name+'.call(this')
               foundSuper = true
 
-      if klass.src.prototype.__super? and not foundSuper
-        uber = klass.src.prototype.__super.constructor
+      if uber? and not foundSuper
         init.unshift tab+tab+uber.name+'.apply(this, arguments);'
 
 
@@ -152,7 +150,7 @@ task 'redux', 'Redux the box2sweb library', (o) ->
        * The constructor
        *
       ###
-      if (options.override and fs.existsSync(pathname+klass.name+'_ctor.js'))
+      if options.override and fs.existsSync(pathname+klass.name+'_ctor.js')
         code.push String(fs.readFileSync(pathname+klass.name+'_ctor.js'))
       else
         code.push ''
@@ -164,14 +162,12 @@ task 'redux', 'Redux the box2sweb library', (o) ->
         code.push '    *'
         code.push '    */'
         code.push tab + klass.name + ' = ' + klass.namespace + '.' + klass.name + ' = function '+klass.name+'('+args+'){'
-        code.push _opt(ctor.join('\n'))
-        code.push _opt(init.join('\n'))
+        code.push _optimize(ctor.join('\n'))
+        code.push _optimize(init.join('\n'))
         code.push tab + '};'
         code.push tab + klass.name + '.constructor = '+klass.name+';'
-
-      if klass.src.prototype.__super?
-        uber = klass.src.prototype.__super.constructor
-        code.push tab + klass.name + '.prototype = Object.create('+uber.name+'.prototype );'
+        if uber?
+          code.push tab + klass.name + '.prototype = Object.create('+uber.name+'.prototype );'
 
 
       ###
@@ -194,7 +190,7 @@ task 'redux', 'Redux the box2sweb library', (o) ->
        *  Instance Fields
        *
       ###
-      if (fs.existsSync(pathname+klass.name+'.properties.js'))
+      if fs.existsSync(pathname+klass.name+'.properties.js')
         props = String(fs.readFileSync(pathname+klass.name+'.properties.js'))
         code.push ''
         for prop in props.split('\n')
@@ -219,7 +215,7 @@ task 'redux', 'Redux the box2sweb library', (o) ->
               code.push '    * @param ' + param
             code.push '    *'
             code.push '    */'
-            code.push tab + klass.name + '.' + methodName + ' = ' + _opt(func.join('\n')) + ';'
+            code.push tab + klass.name + '.' + methodName + ' = ' + _optimize(func.join('\n')) + ';'
 
 
       ###
@@ -232,8 +228,7 @@ task 'redux', 'Redux the box2sweb library', (o) ->
           args = func.substring(func.indexOf('(')+1, func.indexOf(')'))
 
           func = method.toString().split('\n')
-          if klass.src.prototype.__super?
-            uber = klass.src.prototype.__super.constructor
+          if uber?
             m3 = 'this.__super.' + methodName + '.call(this'
 
             for line, ix in func
@@ -248,11 +243,11 @@ task 'redux', 'Redux the box2sweb library', (o) ->
             code.push '    * @param ' + param
           code.push '    *'
           code.push '    */'
-          code.push tab + klass.name + '.prototype.' + methodName + ' = ' + _opt(func.join('\n')) + ';'
+          code.push tab + klass.name + '.prototype.' + methodName + ' = ' + _optimize(func.join('\n')) + ';'
 
 
       prog = []
-      prog.push _opt(code.join('\n'))
+      prog.push _optimize(code.join('\n'))
       while (val = postDefs.pop())
         ns = val[0].split('.')
         prog.push tab+klass.name+'.'+ns[ns.length-1]+' = '+val[1]
@@ -308,7 +303,7 @@ loadClasses = (obj) ->
 ###> ========================================================================
  * Optimizations
 ======================================================================== <###
-_opt = (s) ->
+_optimize = (s) ->
   if options.override?
     _rule2 _rule1 s
   else
@@ -355,7 +350,7 @@ _rule1 = (s) ->
  *  > var x2...;
  *
  *  < var x1...,
- *        x2...;
+ *  <     x2...;
  *
 ======================================================================== <###
 _rule2 = (s) ->
@@ -390,51 +385,3 @@ __rule2 = (lines) ->
   return lines
 
 
-
-###> ========================================================================
-    test the optimization regexp
-======================================================================== <###
-task 'test', 'test', () ->
-  options = override: true
-
-#  x = "if (x_ === undefined) x_ = 0;"
-#  console.log x
-#  console.log _opt(x)
-#
-#  x = [
-#    "if (x_ === undefined) x_ = 0;"
-#    "if (y_ === undefined) y_ = 0;"
-#  ]
-#  console.log x
-#  console.log _opt(x)
-#
-#  x = "if (x_ === undefined) x_ = 0;\nif (y_ === undefined) y_ = 0;"
-#  console.log x
-#  console.log _opt(x)
-
-  x = """
-      if (this.m_debugDraw == null) {
-         return;
-      }
-      this.m_debugDraw.m_sprite.graphics.clear();
-      var flags = this.m_debugDraw.GetFlags();
-      var i = 0;
-      var b;
-      var f;
-      var s;
-      var j;
-      var bp;
-      frodo(this);
-      var invQ = new b2Vec2;
-      var x1 = new b2Vec2;
-      var x2 = new b2Vec2;
-      var xf;
-"""
-  x = x.split('\n')
-  for line, index in x
-    x[index] = '      '+line
-
-  console.log _opt(x.join(('\n')))
-
-
-#uglifyjs -m -o Box2D.min.js  -c drop_console=true,join_vars=true,sequences=true,drop_debugger=true,conditionals=true,booleans=true,if_return=true,evaluate=true Box2D.js
