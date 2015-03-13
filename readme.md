@@ -36,7 +36,7 @@ that creates 10,000 bullets. The classes involved have completed phase II.
 Typical results in chrome:
 
     Box2D - (5269, 5113, 5167, 5488, 5336) = 26373 ms
-    Redux - (3541, 3575, 3550, 3421, 3622) = 17709 ms
+    Redux - (3541, 3575, 3550, 3421, 3622) = 17709 ms 3063, 2794, 3137, 3300, 3345 = 15639 ms
 
 
 

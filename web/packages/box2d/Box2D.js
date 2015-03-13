@@ -14,7 +14,12 @@
  * 2. Altered source versions must be plainly marked as such, and must not be
  * misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
- *//* Box2dWeb Redux Copyright (c) 2015 by DarkOverlordOfData */
+ *//* Box2dWeb Redux Copyright (c) 2015 by DarkOverlordOfData
+ *
+ *      A redux of mikolalysenko's npm listing of
+ *      Uli Hecht's port of Box2DFlash which is the
+ *      flash port of Erin Catto's box2d library.
+ */
 
 'use strict;'
 var Box2D = (function() {
@@ -106,15 +111,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Color = Box2D.Common.b2Color = function b2Color(rr, gg, bb){
-      this._r = 0;
-      this._g = 0;
-      this._b = 0;
-      rr = rr || 0;
-      gg = gg || 0;
-      bb = bb || 0;
-      this._r = Box2D.parseUInt(255 * b2Math.Clamp(rr, 0.0, 1.0));
-      this._g = Box2D.parseUInt(255 * b2Math.Clamp(gg, 0.0, 1.0));
-      this._b = Box2D.parseUInt(255 * b2Math.Clamp(bb, 0.0, 1.0));
+      this._r = Box2D.parseUInt(255 * b2Math.Clamp(rr || 0, 0.0, 1.0));
+      this._g = Box2D.parseUInt(255 * b2Math.Clamp(gg || 0, 0.0, 1.0));
+      this._b = Box2D.parseUInt(255 * b2Math.Clamp(bb || 0, 0.0, 1.0));
    };
    b2Color.constructor = b2Color;
 
@@ -127,9 +126,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Color.prototype.Set = function (rr, gg, bb) {
-      rr = rr || 0;
-      gg = gg || 0;
-      bb = bb || 0;
       this._r = Box2D.parseUInt(255 * b2Math.Clamp(rr, 0.0, 1.0));
       this._g = Box2D.parseUInt(255 * b2Math.Clamp(gg, 0.0, 1.0));
       this._b = Box2D.parseUInt(255 * b2Math.Clamp(bb, 0.0, 1.0));
@@ -218,12 +214,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Vec2 = Box2D.Common.Math.b2Vec2 = function b2Vec2(x_, y_){
 
-      this.x = x_ || 0;
-      this.y = y_ || 0;
+      this.x = x_ || 0.0;
+      this.y = y_ || 0.0;
    };
 
-   b2Vec2.prototype.x = 0;
-   b2Vec2.prototype.y = 0;
+   b2Vec2.prototype.x = 0.0;
+   b2Vec2.prototype.y = 0.0;
 
 
    /**
@@ -234,8 +230,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec2.Make = function (x_, y_) {
-      x_ = x_ || 0;
-      y_ = y_ || 0;
       return new b2Vec2(x_, y_);
    };
 
@@ -258,8 +252,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec2.prototype.Set = function (x_, y_) {
-      x_ = x_ || 0;
-      y_ = y_ || 0;
       this.x = x_;
       this.y = y_;
    };
@@ -335,7 +327,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec2.prototype.Multiply = function (a) {
-      a = a || 0;
       this.x *= a;
       this.y *= a;
    };
@@ -371,7 +362,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec2.prototype.CrossVF = function (s) {
-      s = s || 0;
       var tX = this.x;
       this.x = s * this.y;
       this.y = (-s * tX);
@@ -384,7 +374,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec2.prototype.CrossFV = function (s) {
-      s = s || 0;
       var tX = this.x;
       this.x = (-s * this.y);
       this.y = s * tX;
@@ -508,9 +497,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec3.prototype.Set = function (x, y, z) {
-      x = x || 0;
-      y = y || 0;
-      z = z || 0;
       this.x = x;
       this.y = y;
       this.z = z;
@@ -591,7 +577,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Vec3.prototype.Multiply = function (a) {
-      a = a || 0;
       this.x *= a;
       this.y *= a;
       this.z *= a;
@@ -617,7 +602,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Mat22.FromAngle = function (angle) {
-      angle = angle || 0;
       var mat = new b2Mat22();
       mat.Set(angle);
       return mat;
@@ -643,7 +627,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Mat22.prototype.Set = function (angle) {
-      angle = angle || 0;
       var c = Math.cos(angle),
           s = Math.sin(angle);
       this.col1.x = c;
@@ -767,8 +750,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Mat22.prototype.Solve = function (out, bX, bY) {
-      bX = bX || 0;
-      bY = bY || 0;
       var a11 = this.col1.x,
           a12 = this.col2.x,
           a21 = this.col1.y,
@@ -805,9 +786,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.col1 = new b2Vec3();
       this.col2 = new b2Vec3();
       this.col3 = new b2Vec3();
-      c1 = c1 || null;
-      c2 = c2 || null;
-      c3 = c3 || null;
       if (!c1 && !c2 && !c3) {
          this.col1.SetZero();
          this.col2.SetZero();
@@ -920,8 +898,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Mat33.prototype.Solve22 = function (out, bX, bY) {
-      bX = bX || 0;
-      bY = bY || 0;
       var a11 = this.col1.x,
           a12 = this.col2.x,
           a21 = this.col1.y,
@@ -945,9 +921,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Mat33.prototype.Solve33 = function (out, bX, bY, bZ) {
-      bX = bX || 0;
-      bY = bY || 0;
-      bZ = bZ || 0;
       var a11 = this.col1.x,
           a21 = this.col1.y,
           a31 = this.col1.z,
@@ -1133,7 +1106,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.IsValid = function (x) {
-      x = x || 0;
       return isFinite(x);
    };
 
@@ -1167,9 +1139,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.CrossVF = function (a, s) {
-      s = s || 0;
-      var v = new b2Vec2(s * a.y, (-s * a.x));
-      return v;
+       return new b2Vec2(s * a.y, (-s * a.x));
    };
 
    /**
@@ -1180,9 +1150,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.CrossFV = function (s, a) {
-      s = s || 0;
-      var v = new b2Vec2((-s * a.y), s * a.x);
-      return v;
+       return new b2Vec2((-s * a.y), s * a.x);
    };
 
    /**
@@ -1193,8 +1161,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.MulMV = function (A, v) {
-      var u = new b2Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
-      return u;
+       return new b2Vec2(A.col1.x * v.x + A.col2.x * v.y, A.col1.y * v.x + A.col2.y * v.y);
    };
 
    /**
@@ -1205,8 +1172,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.MulTMV = function (A, v) {
-      var u = new b2Vec2(b2Math.Dot(v, A.col1), b2Math.Dot(v, A.col2));
-      return u;
+       return new b2Vec2(b2Math.Dot(v, A.col1), b2Math.Dot(v, A.col2));
    };
 
    /**
@@ -1246,8 +1212,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.AddVV = function (a, b) {
-      var v = new b2Vec2(a.x + b.x, a.y + b.y);
-      return v;
+      return new b2Vec2(a.x + b.x, a.y + b.y);
    };
 
    /**
@@ -1258,8 +1223,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.SubtractVV = function (a, b) {
-      var v = new b2Vec2(a.x - b.x, a.y - b.y);
-      return v;
+       return new b2Vec2(a.x - b.x, a.y - b.y);
    };
 
    /**
@@ -1296,9 +1260,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.MulFV = function (s, a) {
-      s = s || 0;
-      var v = new b2Vec2(s * a.x, s * a.y);
-      return v;
+      return new b2Vec2(s * a.x, s * a.y);
    };
 
    /**
@@ -1309,8 +1271,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.AddMM = function (A, B) {
-      var C = b2Mat22.FromVV(b2Math.AddVV(A.col1, B.col1), b2Math.AddVV(A.col2, B.col2));
-      return C;
+      return b2Mat22.FromVV(b2Math.AddVV(A.col1, B.col1), b2Math.AddVV(A.col2, B.col2));
    };
 
    /**
@@ -1321,8 +1282,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.MulMM = function (A, B) {
-      var C = b2Mat22.FromVV(b2Math.MulMV(A, B.col1), b2Math.MulMV(A, B.col2));
-      return C;
+      return b2Mat22.FromVV(b2Math.MulMV(A, B.col1), b2Math.MulMV(A, B.col2));
    };
 
    /**
@@ -1334,9 +1294,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Math.MulTMM = function (A, B) {
       var c1 = new b2Vec2(b2Math.Dot(A.col1, B.col1), b2Math.Dot(A.col2, B.col1)),
-          c2 = new b2Vec2(b2Math.Dot(A.col1, B.col2), b2Math.Dot(A.col2, B.col2)),
-          C = b2Mat22.FromVV(c1, c2);
-      return C;
+          c2 = new b2Vec2(b2Math.Dot(A.col1, B.col2), b2Math.Dot(A.col2, B.col2));
+      return b2Mat22.FromVV(c1, c2);
    };
 
    /**
@@ -1346,7 +1305,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.Abs = function (a) {
-      a = a || 0;
       return a > 0.0 ? a : (-a);
    };
 
@@ -1357,8 +1315,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.AbsV = function (a) {
-      var b = new b2Vec2(b2Math.Abs(a.x), b2Math.Abs(a.y));
-      return b;
+      return new b2Vec2(b2Math.Abs(a.x), b2Math.Abs(a.y));
    };
 
    /**
@@ -1368,8 +1325,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.AbsM = function (A) {
-      var B = b2Mat22.FromVV(b2Math.AbsV(A.col1), b2Math.AbsV(A.col2));
-      return B;
+      return b2Mat22.FromVV(b2Math.AbsV(A.col1), b2Math.AbsV(A.col2));
    };
 
    /**
@@ -1380,8 +1336,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.Min = function (a, b) {
-      a = a || 0;
-      b = b || 0;
       return a < b ? a : b;
    };
 
@@ -1393,8 +1347,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.MinV = function (a, b) {
-      var c = new b2Vec2(b2Math.Min(a.x, b.x), b2Math.Min(a.y, b.y));
-      return c;
+      return new b2Vec2(b2Math.Min(a.x, b.x), b2Math.Min(a.y, b.y));
    };
 
    /**
@@ -1405,8 +1358,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.Max = function (a, b) {
-      a = a || 0;
-      b = b || 0;
       return a > b ? a : b;
    };
 
@@ -1418,8 +1369,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.MaxV = function (a, b) {
-      var c = new b2Vec2(b2Math.Max(a.x, b.x), b2Math.Max(a.y, b.y));
-      return c;
+      return new b2Vec2(b2Math.Max(a.x, b.x), b2Math.Max(a.y, b.y));
    };
 
    /**
@@ -1431,9 +1381,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.Clamp = function (a, low, high) {
-      a = a || 0;
-      low = low || 0;
-      high = high || 0;
       return a < low ? low : a > high ? high : a;
    };
 
@@ -1480,11 +1427,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.RandomRange = function (lo, hi) {
-      lo = lo || 0;
-      hi = hi || 0;
-      var r = Math.random();
-      r = (hi - lo) * r + lo;
-      return r;
+      return (hi - lo) * Math.random() + lo;
    };
 
    /**
@@ -1494,7 +1437,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.NextPowerOfTwo = function (x) {
-      x = x || 0;
       x |= (x >> 1) & 0x7FFFFFFF;
       x |= (x >> 2) & 0x3FFFFFFF;
       x |= (x >> 4) & 0x0FFFFFFF;
@@ -1510,9 +1452,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.IsPowerOfTwo = function (x) {
-      x = x || 0;
-      var result = x > 0 && (x & (x - 1)) == 0;
-      return result;
+      return x > 0 && (x & (x - 1)) == 0;
    };
    b2Math.b2Transform_identity = new b2Transform(b2Math.b2Vec2_zero, b2Math.b2Mat22_identity);
    /**
