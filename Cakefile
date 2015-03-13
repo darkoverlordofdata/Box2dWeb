@@ -258,7 +258,7 @@ task 'redux', 'Redux the box2sweb library', (o) ->
 
 
 ###
- * Traverse pojs object tree
+ * Build the final output
 ###
 _buildjs = ->
 
