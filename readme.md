@@ -12,7 +12,7 @@ and exposed the postDefs object. I based an automated process on this version.
 
 Phase I: automated recompilation of the code to use modern idioms
 
-    Complete.
+    POC, Complete.
     The redux process iterates over the live Box2D object, extracting the source code for all methods.
     This code is used to generate new class definitions, 1 class per file. Multiple initializations are
     reduced to 1 constructor function.This cuts the function call overhead in half when allocating new
@@ -22,8 +22,16 @@ Phase I: automated recompilation of the code to use modern idioms
 Phase II: move scalar property definitions to the prototype and remove them from the constructor
 
     In Progress.
-    Allows manually written overrides for constructors to be merged in during the redux process.
-    This should also reduce overhead:
+    Set Strict Mode.
+    Fix:
+        ==/!= for non null values
+        undefined vars
+        define function inside for/next
+        new Array(1,...)
+    Performance tune array initializations
+    Remove dead code
+
+    Add properties to prototypes - this should also reduce overhead:
     1. Avoids unnecessary initialization code
     2. Results in fewer hidden classes
 
@@ -38,6 +46,7 @@ Typical results in chrome:
     Box2D - (5269, 5113, 5167, 5488, 5336) = 26373 ms
     Redux - (3541, 3575, 3550, 3421, 3622) = 17709 ms 3063, 2794, 3137, 3300, 3345 = 15639 ms
 
+2718
 
 
 ## Install

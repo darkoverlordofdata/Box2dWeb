@@ -19,7 +19,7 @@ options = {}
 ###> ========================================================================
     Build the javascript classes
 ======================================================================== <###
-task 'buildjs', 'build box2d', ->   _buildjs()
+task 'build', 'build box2d', ->   _buildjs()
 
 
 ###> ========================================================================
@@ -31,6 +31,7 @@ classes = []
 option '-o', '--override', 'use overrides'
 task 'redux', 'Redux the box2sweb library', (o) ->
   options = o
+  return
 
   namespace = ['Box2D']   # namespace root
   classes = []            # list of classes
@@ -53,13 +54,13 @@ task 'redux', 'Redux the box2sweb library', (o) ->
    *
    *
   ###
-#  eval(String(fs.readFileSync('./src/box2d_web.js')))
-#  loadClasses Box2D
+  eval(String(fs.readFileSync('./web/box2d_web.js')))
+  loadClasses Box2D
 
   ###
    * Hold your bits - mikolalysenko has already done this!
   ###
-  Box2D = require('box2dweb')
+#  Box2D = require('box2dweb')
 
   postDefs = []
   statics = {}
@@ -270,10 +271,10 @@ _buildjs = ->
     src.push(String(fs.readFileSync(f+'.js')))
 
   template = String(fs.readFileSync('./lib/template.js'))
-  .replace("'{% Box2D %}'", src.join('\n'))
+  .replace('/*{% Box2D %}*/', src.join('\n'))
 
   fs.writeFileSync("./web/packages/box2d/Box2D.js", template)
-
+  exec "uglifyjs -m -o ./web/packages/box2d/Box2D.min.js  ./web/packages/box2d/Box2D.js"
 
 ###
  * Traverse pojs object tree

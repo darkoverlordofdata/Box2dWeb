@@ -21,10 +21,10 @@
  *      flash port of Erin Catto's box2d library.
  */
 
-'use strict;'
 var Box2D = (function() {
-var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
-    b2BuoyancyController, b2CircleContact, b2CircleShape, b2Collision, b2Color, b2ConstantAccelController,
+    'use strict';
+var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues, b2BuoyancyController,
+    b2CircleContact, b2CircleShape, b2Collision, b2Color, b2ConstantAccelController,
     b2ConstantForceController, b2Contact, b2ContactConstraint, b2ContactConstraintPoint, b2ContactEdge,
     b2ContactFactory, b2ContactFilter, b2ContactID, b2ContactImpulse, b2ContactListener, b2ContactManager,
     b2ContactPoint, b2ContactRegister, b2ContactResult, b2ContactSolver, b2Controller, b2ControllerEdge,
@@ -39,69 +39,26 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     b2RayCastInput, b2RayCastOutput, b2RevoluteJoint, b2RevoluteJointDef, b2Segment, b2SeparationFunction,
     b2Settings, b2Shape, b2Simplex, b2SimplexCache, b2SimplexVertex, b2Sweep, b2TOIInput,
     b2TensorDampingController, b2TimeOfImpact, b2TimeStep, b2Transform, b2Vec2, b2Vec3, b2WeldJoint,
-    b2WeldJointDef, b2World, b2WorldManifold, parseUInt,
-    b2internal = 'Box2D.Common.b2internal',
-    IBroadPhase = 'Box2D.Collision.IBroadPhase',
-    Box2D = {
-
-        is: function(o1, o2) {
-            var ref;
-            if (o1 === null) {
-                return false;
-            }
-            if ((o2 instanceof Function) && (o1 instanceof o2)) {
-                return true;
-            }
-            if (((ref = o1.constructor.__implements) != null ? ref[o2.name] : void 0)) {
-                return true;
-            }
-            return false;
-        },
-
-        generateCallback: function(context, cb) {
-            return function() {
-                cb.apply(context, arguments);
-            };
-        },
-
-        NVector: function(length) {
-            var a, i;
-            if (length == null) {
-                length = 0;
-            }
-            a = new Array(length);
-            i = 0;
-            while (i < length) {
-                a[i] = 0;
-                ++i;
-            }
-            return a;
-        },
-
-        parseUInt: function(v) {
-            return Math.abs(parseInt(v));
+    b2WeldJointDef, b2World, b2WorldManifold,
+    b2Assert = function (a) {
+        if (!a) {
+            throw "Assertion Failed";
         }
     },
-    Vector = Array,
-    Vector_a2j_Number = Box2D.NVector;
-
-    Box2D.Common = {
-        b2internal: b2internal,
+    Box2D = {
+        Common: {
             Math: {}
-    };
-
-    Box2D.Collision = {
-        IBroadPhase: IBroadPhase,
+        },
+        Collision: {
             Shapes: {}
+        },
+        Dynamics: {
+            Contacts: {},
+            Controllers: {},
+            Joints: {}
+        }
     };
 
-    Box2D.Dynamics = {
-        Contacts: {},
-        Controllers: {},
-        Joints: {}
-    };
-
-    
    /**
     *  Class b2Color
     *
@@ -110,12 +67,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param bb
     *
     */
-   b2Color = Box2D.Common.b2Color = function b2Color(rr, gg, bb){
-      this._r = Box2D.parseUInt(255 * b2Math.Clamp(rr || 0, 0.0, 1.0));
-      this._g = Box2D.parseUInt(255 * b2Math.Clamp(gg || 0, 0.0, 1.0));
-      this._b = Box2D.parseUInt(255 * b2Math.Clamp(bb || 0, 0.0, 1.0));
+   b2Color = Box2D.Common.b2Color = function b2Color(rr, gg, bb) {
+      this._r = Math.abs(parseInt((255 * b2Math.Clamp(rr || 0, 0.0, 1.0)), 10));
+      this._g = Math.abs(parseInt((255 * b2Math.Clamp(gg || 0, 0.0, 1.0)), 10));
+      this._b = Math.abs(parseInt((255 * b2Math.Clamp(bb || 0, 0.0, 1.0)), 10));
    };
    b2Color.constructor = b2Color;
+   b2Color.prototype._r = 0;
+   b2Color.prototype._g = 0;
+   b2Color.prototype._b = 0;
 
    /**
     * Set
@@ -126,9 +86,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Color.prototype.Set = function (rr, gg, bb) {
-      this._r = Box2D.parseUInt(255 * b2Math.Clamp(rr, 0.0, 1.0));
-      this._g = Box2D.parseUInt(255 * b2Math.Clamp(gg, 0.0, 1.0));
-      this._b = Box2D.parseUInt(255 * b2Math.Clamp(bb, 0.0, 1.0));
+      this._r = Math.abs(parseInt(parseUInt(255 * b2Math.Clamp(rr, 0.0, 1.0)), 10));
+      this._g = Math.abs(parseInt(parseUInt(255 * b2Math.Clamp(gg, 0.0, 1.0)), 10));
+      this._b = Math.abs(parseInt(parseUInt(255 * b2Math.Clamp(bb, 0.0, 1.0)), 10));
    };
 
    /**
@@ -137,10 +97,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Settings = Box2D.Common.b2Settings = function b2Settings(){
-
-
-   };
+   b2Settings = Box2D.Common.b2Settings = function b2Settings() {};
    b2Settings.constructor = b2Settings;
 
    b2Settings.VERSION = "2.1alpha";
@@ -185,17 +142,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       return restitution1 > restitution2 ? restitution1 : restitution2;
    };
 
-   /**
-    * Static b2Assert
-    *
-    * @param a
-    *
-    */
-   b2Settings.b2Assert = function (a) {
-      if (!a) {
-         throw "Assertion Failed";
-      }
-   };
    b2Settings.b2_angularSleepTolerance = 2.0 / 180.0 * b2Settings.b2_pi;
    b2Settings.b2_maxRotationSquared = b2Settings.b2_maxRotation * b2Settings.b2_maxRotation;
    b2Settings.b2_maxRotation = 0.5 * b2Settings.b2_pi;
@@ -212,7 +158,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param y_
     *
     */
-   b2Vec2 = Box2D.Common.Math.b2Vec2 = function b2Vec2(x_, y_){
+   b2Vec2 = Box2D.Common.Math.b2Vec2 = function b2Vec2(x_, y_) {
 
       this.x = x_ || 0.0;
       this.y = y_ || 0.0;
@@ -467,14 +413,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param z
     *
     */
-   b2Vec3 = Box2D.Common.Math.b2Vec3 = function b2Vec3(x, y, z){
+   b2Vec3 = Box2D.Common.Math.b2Vec3 = function b2Vec3(x, y, z) {
 
-      x = x || 0;
-      y = y || 0;
-      z = z || 0;
-      this.x = x;
-      this.y = y;
-      this.z = z;
+      this.x = x || 0;
+      this.y = y || 0;
+      this.z = z || 0;
    };
    b2Vec3.constructor = b2Vec3;
 
@@ -588,7 +531,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Mat22 = Box2D.Common.Math.b2Mat22 = function b2Mat22(){
+   b2Mat22 = Box2D.Common.Math.b2Mat22 = function b2Mat22() {
       this.col1 = new b2Vec2();
       this.col2 = new b2Vec2();
       this.SetIdentity();
@@ -731,7 +674,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           c = this.col1.y,
           d = this.col2.y,
           det = a * d - b * c;
-      if (det != 0.0) {
+      if (det !== 0.0) {
          det = 1.0 / det;
       }
       out.col1.x = det * d;
@@ -755,7 +698,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           a21 = this.col1.y,
           a22 = this.col2.y,
           det = a11 * a22 - a12 * a21;
-      if (det != 0.0) {
+      if (det !== 0.0) {
          det = 1.0 / det;
       }
       out.x = det * (a22 * bX - a12 * bY);
@@ -782,7 +725,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param c3
     *
     */
-   b2Mat33 = Box2D.Common.Math.b2Mat33 = function b2Mat33(c1, c2, c3){
+   b2Mat33 = Box2D.Common.Math.b2Mat33 = function b2Mat33(c1, c2, c3) {
       this.col1 = new b2Vec3();
       this.col2 = new b2Vec3();
       this.col3 = new b2Vec3();
@@ -903,7 +846,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           a21 = this.col1.y,
           a22 = this.col2.y,
           det = a11 * a22 - a12 * a21;
-      if (det != 0.0) {
+      if (det !== 0.0) {
          det = 1.0 / det;
       }
       out.x = det * (a22 * bX - a12 * bY);
@@ -931,7 +874,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           a23 = this.col3.y,
           a33 = this.col3.z,
           det = a11 * (a22 * a33 - a32 * a23) + a21 * (a32 * a13 - a12 * a33) + a31 * (a12 * a23 - a22 * a13);
-      if (det != 0.0) {
+      if (det !== 0.0) {
          det = 1.0 / det;
       }
       out.x = det * (bX * (a22 * a33 - a32 * a23) + bY * (a32 * a13 - a12 * a33) + bZ * (a12 * a23 - a22 * a13));
@@ -946,9 +889,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Sweep = Box2D.Common.Math.b2Sweep = function b2Sweep(){
+   b2Sweep = Box2D.Common.Math.b2Sweep = function b2Sweep() {
       this.localCenter = new b2Vec2();
-      this.c0 = new b2Vec2;
+      this.c0 = new b2Vec2();
       this.c = new b2Vec2();
 
    };
@@ -1028,8 +971,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param r
     *
     */
-   b2Transform = Box2D.Common.Math.b2Transform = function b2Transform(pos, r){
-      this.position = new b2Vec2;
+   b2Transform = Box2D.Common.Math.b2Transform = function b2Transform(pos, r) {
+      this.position = new b2Vec2();
       this.R = new b2Mat22();
       pos = pos || null;
       r = r || null;
@@ -1090,7 +1033,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Math = Box2D.Common.Math.b2Math = function b2Math(){
+   b2Math = Box2D.Common.Math.b2Math = function b2Math() {
 
 
    };
@@ -1452,7 +1395,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Math.IsPowerOfTwo = function (x) {
-      return x > 0 && (x & (x - 1)) == 0;
+      return x > 0 && (x & (x - 1)) === 0;
    };
    b2Math.b2Transform_identity = new b2Transform(b2Math.b2Vec2_zero, b2Math.b2Mat22_identity);
    /**
@@ -1461,7 +1404,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param
     *
     */
-   b2Shape = Box2D.Collision.Shapes.b2Shape = function b2Shape(){};
+   b2Shape = Box2D.Collision.Shapes.b2Shape = function b2Shape() {};
    b2Shape.prototype.m_type         = b2Shape.e_unknownShape;
    b2Shape.prototype.m_radius       = b2Settings.b2_linearSlop;
 
@@ -1594,7 +1537,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param radius
     *
     */
-   b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = function b2CircleShape(radius){
+   b2CircleShape = Box2D.Collision.Shapes.b2CircleShape = function b2CircleShape(radius) {
 
        this.m_p = new b2Vec2();
        radius = radius || 0;
@@ -1628,7 +1571,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2CircleShape.prototype.Set = function (other) {
       b2Shape.prototype.Set.call(this, other);
-      if (Box2D.is(other, b2CircleShape)) {
+      if (other instanceof b2CircleShape) {
          var other2 = (other instanceof b2CircleShape ? other : null);
          this.m_p.SetV(other2.m_p);
       }
@@ -1811,13 +1754,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = function b2PolygonShape(){
+   b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape = function b2PolygonShape() {
 
       b2Shape.call(this);
       this.m_type = b2Shape.e_polygonShape;
       this.m_centroid = new b2Vec2();
-      this.m_vertices = new Vector();
-      this.m_normals = new Vector();
+      this.m_vertices = []; //new Vector();
+      this.m_normals = []; //new Vector();
    };
    b2PolygonShape.constructor = b2PolygonShape;
    b2PolygonShape.prototype = Object.create(b2Shape.prototype );
@@ -1939,17 +1882,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonShape.ComputeOBB = function (obb, vs, count) {
-      count = count || 0;
-      var i = 0,
-          p = new Vector(count + 1);
-      for (i = 0;
-      i < count; ++i) {
-         p[i] = vs[i];
+      var i,
+          p = [];
+      for (i = 0; i < count; ++i) {
+          p.push(vs[i]);
       }
-      p[count] = p[0];
+       p.push(p[0]);
       var minArea = Number.MAX_VALUE;
-      for (i = 1;
-      i <= count; ++i) {
+      for (i = 1; i <= count; ++i) {
          var root = p[parseInt(i - 1)],
           uxX = p[i].x - root.x,
           uxY = p[i].y - root.y,
@@ -2010,7 +1950,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2PolygonShape.prototype.Set = function (other) {
       b2Shape.prototype.Set.call(this, other);
-      if (Box2D.is(other, b2PolygonShape)) {
+      if (other instanceof b2PolygonShape) {
          var other2 = (other instanceof b2PolygonShape ? other : null);
          this.m_centroid.SetV(other2.m_centroid);
          this.m_vertexCount = other2.m_vertexCount;
@@ -2031,11 +1971,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2PolygonShape.prototype.SetAsArray = function (vertices, vertexCount) {
       vertexCount = vertexCount || 0;
-      var v = new Vector();
-      var i = 0,
+      var v = [];
+      var i,
          tVec;
-      for (i = 0;
-      i < vertices.length; ++i) {
+      for (i = 0; i < vertices.length; ++i) {
          tVec = vertices[i];
          v.push(tVec);
       }
@@ -2051,21 +1990,19 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2PolygonShape.prototype.SetAsVector = function (vertices, vertexCount) {
       vertexCount = vertexCount || 0;
-      if (vertexCount == 0) vertexCount = vertices.length;
-      b2Settings.b2Assert(2 <= vertexCount);
+      if (vertexCount === 0) vertexCount = vertices.length;
+      b2Assert(2 <= vertexCount);
       this.m_vertexCount = vertexCount;
       this.Reserve(vertexCount);
       var i = 0;
-      for (i = 0;
-      i < this.m_vertexCount; i++) {
+      for (i = 0; i < this.m_vertexCount; i++) {
          this.m_vertices[i].SetV(vertices[i]);
       }
-      for (i = 0;
-      i < this.m_vertexCount; ++i) {
+      for (i = 0; i < this.m_vertexCount; ++i) {
          var i1 = parseInt(i),
           i2 = parseInt(i + 1 < this.m_vertexCount ? i + 1 : 0),
           edge = b2Math.SubtractVV(this.m_vertices[i2], this.m_vertices[i1]);
-         b2Settings.b2Assert(edge.LengthSquared() > Number.MIN_VALUE);
+         b2Assert(edge.LengthSquared() > Number.MIN_VALUE);
          this.m_normals[i].SetV(b2Math.CrossVF(edge, 1.0));
          this.m_normals[i].Normalize();
       }
@@ -2211,7 +2148,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          tVec = this.m_normals[i];
          var numerator = (tVec.x * tX + tVec.y * tY),
           denominator = (tVec.x * dX + tVec.y * dY);
-         if (denominator == 0.0) {
+         if (denominator === 0.0) {
             if (numerator < 0.0) {
                return false;
             }
@@ -2277,8 +2214,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonShape.prototype.ComputeMass = function (massData, density) {
-      density = density || 0;
-      if (this.m_vertexCount == 2) {
+      if (this.m_vertexCount === 2) {
          massData.center.x = 0.5 * (this.m_vertices[0].x + this.m_vertices[1].x);
          massData.center.y = 0.5 * (this.m_vertices[0].y + this.m_vertices[1].y);
          massData.mass = 0.0;
@@ -2329,17 +2265,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonShape.prototype.ComputeSubmergedArea = function (normal, offset, xf, c) {
-      offset = offset || 0;
       var normalL = b2Math.MulTMV(xf.R, normal),
           offsetL = offset - b2Math.Dot(normal, xf.position),
-          depths = new Vector_a2j_Number(),
+          depths = [],
           diveCount = 0,
           intoIndex = parseInt((-1)),
           outoIndex = parseInt((-1)),
           lastSubmerged = false,
           i = 0;
-      for (i = 0;
-      i < this.m_vertexCount; ++i) {
+      for (i = 0; i < this.m_vertexCount; ++i) {
          depths[i] = b2Math.Dot(normalL, this.m_vertices[i]) - offsetL;
          var isSubmerged = depths[i] < (-Number.MIN_VALUE);
          if (i > 0) {
@@ -2371,7 +2305,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          }
          break;
       case 1:
-         if (intoIndex == (-1)) {
+         if (intoIndex === (-1)) {
             intoIndex = this.m_vertexCount - 1;
          }
          else {
@@ -2390,9 +2324,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           p2 = this.m_vertices[intoIndex2],
           p3;
       i = intoIndex2;
-      while (i != outoIndex2) {
+      while (i !== outoIndex2) {
          i = (i + 1) % this.m_vertexCount;
-         if (i == outoIndex2) p3 = outoVec;
+         if (i === outoIndex2) p3 = outoVec;
          else p3 = this.m_vertices[i];
          var triangleArea = 0.5 * ((p2.x - intoVec.x) * (p3.y - intoVec.y) - (p2.y - intoVec.y) * (p3.x - intoVec.x));
          area += triangleArea;
@@ -2524,7 +2458,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2EdgeChainDef = Box2D.Collision.Shapes.b2EdgeChainDef = function b2EdgeChainDef(){
+   b2EdgeChainDef = Box2D.Collision.Shapes.b2EdgeChainDef = function b2EdgeChainDef() {
 
       this.vertexCount = 0;
       this.isALoop = true;
@@ -2539,7 +2473,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param v2
     *
     */
-   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape = function b2EdgeShape(v1, v2){
+   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape = function b2EdgeShape(v1, v2) {
 
       this.s_supportVec = new b2Vec2();
       this.m_v1 = new b2Vec2();
@@ -2691,7 +2625,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             v2.x = (-d2 / (d1 - d2) * v1.x) + d1 / (d1 - d2) * v2.x;
             v2.y = (-d2 / (d1 - d2) * v1.y) + d1 / (d1 - d2) * v2.y;
          }
-         else {}
+         //else {}
       }
       c.x = (v0.x + v1.x + v2.x) / 3;
       c.y = (v0.y + v1.y + v2.y) / 3;
@@ -2945,7 +2879,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2MassData = Box2D.Collision.Shapes.b2MassData = function b2MassData(){
+   b2MassData = Box2D.Collision.Shapes.b2MassData = function b2MassData() {
       this.mass = 0.0;
       this.center = new b2Vec2(0, 0);
       this.I = 0.0;
@@ -2959,7 +2893,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   Features = Box2D.Collision.Features = function Features(){
+   Features = Box2D.Collision.Features = function Features() {
 
 
    };
@@ -2971,7 +2905,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactID = Box2D.Collision.b2ContactID = function b2ContactID(){
+   b2ContactID = Box2D.Collision.b2ContactID = function b2ContactID() {
       this.features = new Features();
       this.features._m_id = this;
    };
@@ -3005,7 +2939,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   ClipVertex = Box2D.Collision.ClipVertex = function ClipVertex(){
+   ClipVertex = Box2D.Collision.ClipVertex = function ClipVertex() {
       this.v = new b2Vec2();
       this.id = new b2ContactID();
 
@@ -3029,7 +2963,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2AABB = Box2D.Collision.b2AABB = function b2AABB(){
+   b2AABB = Box2D.Collision.b2AABB = function b2AABB() {
       this.lowerBound = new b2Vec2();
       this.upperBound = new b2Vec2();
 
@@ -3206,9 +3140,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2SimplexCache = Box2D.Collision.b2SimplexCache = function b2SimplexCache(){
-      this.indexA = new Vector_a2j_Number(3);
-      this.indexB = new Vector_a2j_Number(3);
+   b2SimplexCache = Box2D.Collision.b2SimplexCache = function b2SimplexCache() {
+      this.indexA = [0, 0, 0];
+      this.indexB = [0, 0, 0];
 
    };
    b2SimplexCache.constructor = b2SimplexCache;
@@ -3219,7 +3153,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Bound = Box2D.Collision.b2Bound = function b2Bound(){
+   b2Bound = Box2D.Collision.b2Bound = function b2Bound() {
 
 
    };
@@ -3232,7 +3166,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Bound.prototype.IsLower = function () {
-      return (this.value & 1) == 0;
+      return (this.value & 1) === 0;
    };
 
    /**
@@ -3242,7 +3176,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Bound.prototype.IsUpper = function () {
-      return (this.value & 1) == 1;
+      return (this.value & 1) === 1;
    };
 
    /**
@@ -3269,12 +3203,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2BoundValues = Box2D.Collision.b2BoundValues = function b2BoundValues(){
+   b2BoundValues = Box2D.Collision.b2BoundValues = function b2BoundValues() {
 
-      this.lowerValues = new Vector_a2j_Number();
+      this.lowerValues = [];
       this.lowerValues[0] = 0.0;
       this.lowerValues[1] = 0.0;
-      this.upperValues = new Vector_a2j_Number();
+      this.upperValues = [];
       this.upperValues[0] = 0.0;
       this.upperValues[1] = 0.0;
    };
@@ -3286,7 +3220,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ManifoldPoint = Box2D.Collision.b2ManifoldPoint = function b2ManifoldPoint(){
+   b2ManifoldPoint = Box2D.Collision.b2ManifoldPoint = function b2ManifoldPoint() {
       this.m_localPoint = new b2Vec2();
       this.m_id = new b2ContactID();
       this.Reset();
@@ -3325,12 +3259,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Manifold = Box2D.Collision.b2Manifold = function b2Manifold(){
+   b2Manifold = Box2D.Collision.b2Manifold = function b2Manifold() {
       this.m_pointCount = 0;
-      this.m_points = new Vector(b2Settings.b2_maxManifoldPoints);
+
+      this.m_points = [];
       for (var i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
-         this.m_points[i] = new b2ManifoldPoint();
+         this.m_points.push(new b2ManifoldPoint());
       }
+
+
       this.m_localPlaneNormal = new b2Vec2();
       this.m_localPoint = new b2Vec2();
    };
@@ -3390,14 +3327,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Collision = Box2D.Collision.b2Collision = function b2Collision(){
+   b2Collision = Box2D.Collision.b2Collision = function b2Collision() {
 
 
    };
    b2Collision.constructor = b2Collision;
 
-   b2Collision.s_edgeAO = new Vector_a2j_Number(1);
-   b2Collision.s_edgeBO = new Vector_a2j_Number(1);
+   b2Collision.s_edgeAO = [0];
+   b2Collision.s_edgeBO = [0];
    b2Collision.s_localTangent = new b2Vec2();
    b2Collision.s_localNormal = new b2Vec2();
    b2Collision.s_planePoint = new b2Vec2();
@@ -3496,8 +3433,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           v2Y = xf2.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       v2X -= v1X;
       v2Y -= v1Y;
-      var separation = v2X * normal1WorldX + v2Y * normal1WorldY;
-      return separation;
+      return v2X * normal1WorldX + v2Y * normal1WorldY;
    };
 
    /**
@@ -3558,7 +3494,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          return s;
       }
       while (true) {
-         if (increment == (-1)) edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
+         if (increment === (-1)) edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
          else edge = bestEdge + 1 < count1 ? bestEdge + 1 : 0;s = b2Collision.EdgeSeparation(poly1, xf1, edge, poly2, xf2);
          if (s > bestSeparation) {
             bestEdge = edge;
@@ -3638,10 +3574,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Collision.MakeClipPointVector = function () {
-      var r = new Vector(2);
-      r[0] = new ClipVertex();
-      r[1] = new ClipVertex();
-      return r;
+      return [new ClipVertex(), new ClipVertex()];
    };
 
    /**
@@ -3932,7 +3865,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactPoint = Box2D.Collision.b2ContactPoint = function b2ContactPoint(){
+   b2ContactPoint = Box2D.Collision.b2ContactPoint = function b2ContactPoint() {
       this.position = new b2Vec2();
       this.velocity = new b2Vec2();
       this.normal = new b2Vec2();
@@ -3947,7 +3880,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2SimplexVertex = Box2D.Collision.b2SimplexVertex = function b2SimplexVertex(){
+   b2SimplexVertex = Box2D.Collision.b2SimplexVertex = function b2SimplexVertex() {
 
 
    };
@@ -3974,14 +3907,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Simplex = Box2D.Collision.b2Simplex = function b2Simplex(){
+   b2Simplex = Box2D.Collision.b2Simplex = function b2Simplex() {
       this.m_v1 = new b2SimplexVertex();
       this.m_v2 = new b2SimplexVertex();
       this.m_v3 = new b2SimplexVertex();
-      this.m_vertices = new Vector(3);
-      this.m_vertices[0] = this.m_v1;
-      this.m_vertices[1] = this.m_v2;
-      this.m_vertices[2] = this.m_v3;
+
+      this.m_vertices = [this.m_v1, this.m_v2, this.m_v3];
    };
    b2Simplex.constructor = b2Simplex;
 
@@ -3996,7 +3927,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Simplex.prototype.ReadCache = function (cache, proxyA, transformA, proxyB, transformB) {
-      b2Settings.b2Assert(0 <= cache.count && cache.count <= 3);
+      b2Assert(0 <= cache.count && cache.count <= 3);
       var wALocal,
           wBLocal;
       this.m_count = cache.count;
@@ -4015,11 +3946,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (this.m_count > 1) {
          var metric1 = cache.metric,
           metric2 = this.GetMetric();
-         if (metric2 < .5 * metric1 || 2.0 * metric1 < metric2 || metric2 < Number.MIN_VALUE) {
+         if (metric2 < 0.5 * metric1 || 2.0 * metric1 < metric2 || metric2 < Number.MIN_VALUE) {
             this.m_count = 0;
          }
       }
-      if (this.m_count == 0) {
+      if (this.m_count === 0) {
          v = vertices[0];
          v.indexA = 0;
          v.indexB = 0;
@@ -4040,11 +3971,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Simplex.prototype.WriteCache = function (cache) {
       cache.metric = this.GetMetric();
-      cache.count = Box2D.parseUInt(this.m_count);
+      cache.count = Math.abs(parseInt((this.m_count), 10));
       var vertices = this.m_vertices;
       for (var i = 0; i < this.m_count; i++) {
-         cache.indexA[i] = Box2D.parseUInt(vertices[i].indexA);
-         cache.indexB[i] = Box2D.parseUInt(vertices[i].indexB);
+         cache.indexA[i] = Math.abs(parseInt((vertices[i].indexA), 10));
+         cache.indexB[i] = Math.abs(parseInt((vertices[i].indexB), 10));
       }
    };
 
@@ -4070,7 +4001,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             }
          }
       default:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          return new b2Vec2();
       }
    };
@@ -4084,14 +4015,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2Simplex.prototype.GetClosestPoint = function () {
       switch (this.m_count) {
       case 0:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          return new b2Vec2();
       case 1:
          return this.m_v1.w;
       case 2:
          return new b2Vec2(this.m_v1.a * this.m_v1.w.x + this.m_v2.a * this.m_v2.w.x, this.m_v1.a * this.m_v1.w.y + this.m_v2.a * this.m_v2.w.y);
       default:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          return new b2Vec2();
       }
    };
@@ -4106,7 +4037,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2Simplex.prototype.GetWitnessPoints = function (pA, pB) {
       switch (this.m_count) {
       case 0:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          break;
       case 1:
          pA.SetV(this.m_v1.wA);
@@ -4123,7 +4054,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          pB.y = pA.y = this.m_v1.a * this.m_v1.wA.y + this.m_v2.a * this.m_v2.wA.y + this.m_v3.a * this.m_v3.wA.y;
          break;
       default:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          break;
       }
    };
@@ -4137,7 +4068,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2Simplex.prototype.GetMetric = function () {
       switch (this.m_count) {
       case 0:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          return 0.0;
       case 1:
          return 0.0;
@@ -4146,7 +4077,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       case 3:
          return b2Math.CrossVV(b2Math.SubtractVV(this.m_v2.w, this.m_v1.w), b2Math.SubtractVV(this.m_v3.w, this.m_v1.w));
       default:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          return 0.0;
       }
    };
@@ -4262,15 +4193,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Distance = Box2D.Collision.b2Distance = function b2Distance(){
+   b2Distance = Box2D.Collision.b2Distance = function b2Distance() {
 
 
    };
    b2Distance.constructor = b2Distance;
 
    b2Distance.s_simplex = new b2Simplex();
-   b2Distance.s_saveA = new Vector_a2j_Number(3);
-   b2Distance.s_saveB = new Vector_a2j_Number(3);
+   b2Distance.s_saveA = [0, 0, 0];
+   b2Distance.s_saveB = [0, 0, 0];
 
    /**
     * Static Distance
@@ -4281,7 +4212,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Distance.Distance = function (output, cache, input) {
-      ++b2Distance.b2_gjkCalls;
+      //++b2Distance.b2_gjkCalls;
       var proxyA = input.proxyA,
           proxyB = input.proxyB,
           transformA = input.transformA,
@@ -4301,8 +4232,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           iter = 0;
       while (iter < k_maxIters) {
          saveCount = simplex.m_count;
-         for (i = 0;
-         i < saveCount; i++) {
+         for (i = 0; i < saveCount; i++) {
             saveA[i] = vertices[i].indexA;
             saveB[i] = vertices[i].indexB;
          }
@@ -4316,14 +4246,17 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             simplex.Solve3();
             break;
          default:
-            b2Settings.b2Assert(false);
+            b2Assert(false);
          }
-         if (simplex.m_count == 3) {
+         if (simplex.m_count === 3) {
             break;
          }
          p = simplex.GetClosestPoint();
          distanceSqr2 = p.LengthSquared();
-         if (distanceSqr2 > distanceSqr1) {}
+          /**
+           * todo: this looks like a bug
+           */
+         //if (distanceSqr2 > distanceSqr1) {}
          distanceSqr1 = distanceSqr2;
          var d = simplex.GetSearchDirection();
          if (d.LengthSquared() < Number.MIN_VALUE * Number.MIN_VALUE) {
@@ -4338,9 +4271,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          ++iter;
          ++b2Distance.b2_gjkIters;
          var duplicate = false;
-         for (i = 0;
-         i < saveCount; i++) {
-            if (vertex.indexA == saveA[i] && vertex.indexB == saveB[i]) {
+         for (i = 0; i < saveCount; i++) {
+            if (vertex.indexA === saveA[i] && vertex.indexB === saveB[i]) {
                duplicate = true;
                break;
             }
@@ -4383,7 +4315,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DistanceInput = Box2D.Collision.b2DistanceInput = function b2DistanceInput(){
+   b2DistanceInput = Box2D.Collision.b2DistanceInput = function b2DistanceInput() {
 
 
    };
@@ -4395,7 +4327,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DistanceOutput = Box2D.Collision.b2DistanceOutput = function b2DistanceOutput(){
+   b2DistanceOutput = Box2D.Collision.b2DistanceOutput = function b2DistanceOutput() {
       this.pointA = new b2Vec2();
       this.pointB = new b2Vec2();
 
@@ -4408,7 +4340,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DistanceProxy = Box2D.Collision.b2DistanceProxy = function b2DistanceProxy(){
+   b2DistanceProxy = Box2D.Collision.b2DistanceProxy = function b2DistanceProxy() {
 
 
    };
@@ -4425,7 +4357,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       case b2Shape.e_circleShape:
          {
             var circle = (shape instanceof b2CircleShape ? shape : null);
-            this.m_vertices = new Vector(1, true);
+            this.m_vertices = [true];
             this.m_vertices[0] = circle.m_p;
             this.m_count = 1;
             this.m_radius = circle.m_radius;
@@ -4440,7 +4372,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          }
          break;
       default:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
       }
    };
 
@@ -4500,7 +4432,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2DistanceProxy.prototype.GetVertex = function (index) {
       index = index || 0;
-      b2Settings.b2Assert(0 <= index && index < this.m_count);
+      b2Assert(0 <= index && index < this.m_count);
       return this.m_vertices[index];
    };
 
@@ -4510,7 +4442,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DynamicTreeNode = Box2D.Collision.b2DynamicTreeNode = function b2DynamicTreeNode(){
+   b2DynamicTreeNode = Box2D.Collision.b2DynamicTreeNode = function b2DynamicTreeNode() {
       this.aabb = new b2AABB();
 
    };
@@ -4532,7 +4464,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DynamicTree = Box2D.Collision.b2DynamicTree = function b2DynamicTree(){
+   b2DynamicTree = Box2D.Collision.b2DynamicTree = function b2DynamicTree() {
 
       this.m_root = null;
       this.m_freeList = null;
@@ -4581,7 +4513,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2DynamicTree.prototype.MoveProxy = function (proxy, aabb, displacement) {
-      b2Settings.b2Assert(proxy.IsLeaf());
+      b2Assert(proxy.IsLeaf());
       if (proxy.aabb.Contains(aabb)) {
          return false;
       }
@@ -4608,7 +4540,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       for (var i = 0; i < iterations; i++) {
          var node = this.m_root,
           bit = 0;
-         while (node.IsLeaf() == false) {
+         while (node.IsLeaf() === false) {
             node = (this.m_path >> bit) & 1 ? node.child2 : node.child1;
             bit = (bit + 1) & 31;
          }++this.m_path;
@@ -4646,7 +4578,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2DynamicTree.prototype.Query = function (callback, aabb) {
       if (this.m_root == null) return;
-      var stack = new Vector(),
+      var stack = [],
           count = 0;
       stack[count++] = this.m_root;
       while (count > 0) {
@@ -4690,12 +4622,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          segmentAABB.upperBound.x = Math.max(p1.x, tX);
          segmentAABB.upperBound.y = Math.max(p1.y, tY);
       }
-      var stack = new Vector(),
+      var stack = [],
           count = 0;
       stack[count++] = this.m_root;
       while (count > 0) {
          var node = stack[--count];
-         if (node.aabb.TestOverlap(segmentAABB) == false) {
+         if (node.aabb.TestOverlap(segmentAABB) === false) {
             continue;
          }
          var c = node.aabb.GetCenter(),
@@ -4708,7 +4640,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             subInput.p2 = input.p2;
             subInput.maxFraction = input.maxFraction;
             maxFraction = callback(subInput, node);
-            if (maxFraction == 0.0) return;
+            if (maxFraction === 0.0) return;
             if (maxFraction > 0.0) {
                tX = p1.x + maxFraction * (p2.x - p1.x);
                tY = p1.y + maxFraction * (p2.y - p1.y);
@@ -4769,7 +4701,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       var center = leaf.aabb.GetCenter(),
           sibling = this.m_root;
-      if (sibling.IsLeaf() == false) {
+      if (sibling.IsLeaf() === false) {
          do {
             var child1 = sibling.child1,
           child2 = sibling.child2,
@@ -4782,7 +4714,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                sibling = child2;
             }
          }
-         while (sibling.IsLeaf() == false)
+         while (sibling.IsLeaf() === false)
       }
       var node1 = sibling.parent,
           node2 = this.AllocateNode();
@@ -4790,7 +4722,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       node2.userData = null;
       node2.aabb.Combine(leaf.aabb, sibling.aabb);
       if (node1) {
-         if (sibling.parent.child1 == sibling) {
+         if (sibling.parent.child1 === sibling) {
             node1.child1 = node2;
          }
          else {
@@ -4824,21 +4756,21 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2DynamicTree.prototype.RemoveLeaf = function (leaf) {
-      if (leaf == this.m_root) {
+      if (leaf === this.m_root) {
          this.m_root = null;
          return;
       }
       var node2 = leaf.parent,
           node1 = node2.parent,
           sibling;
-      if (node2.child1 == leaf) {
+      if (node2.child1 === leaf) {
          sibling = node2.child2;
       }
       else {
          sibling = node2.child1;
       }
       if (node1) {
-         if (node1.child1 == node2) {
+         if (node1.child1 === node2) {
             node1.child1 = sibling;
          }
          else {
@@ -4866,7 +4798,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DynamicTreePair = Box2D.Collision.b2DynamicTreePair = function b2DynamicTreePair(){
+   b2DynamicTreePair = Box2D.Collision.b2DynamicTreePair = function b2DynamicTreePair() {
 
 
    };
@@ -4878,15 +4810,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DynamicTreeBroadPhase = Box2D.Collision.b2DynamicTreeBroadPhase = function b2DynamicTreeBroadPhase(){
+   b2DynamicTreeBroadPhase = Box2D.Collision.b2DynamicTreeBroadPhase = function b2DynamicTreeBroadPhase() {
       this.m_tree = new b2DynamicTree();
-      this.m_moveBuffer = new Vector();
-      this.m_pairBuffer = new Vector();
+      this.m_moveBuffer = [];
+      this.m_pairBuffer = [];
       this.m_pairCount = 0;
 
    };
    b2DynamicTreeBroadPhase.constructor = b2DynamicTreeBroadPhase;
-
    /**
     * CreateProxy
     *
@@ -4982,20 +4913,32 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       __this.m_pairCount = 0;
       var i = 0,
          queryProxy;
+
+       function QueryCallback(proxy) {
+           if (proxy === queryProxy) return true;
+           if (__this.m_pairCount === __this.m_pairBuffer.length) {
+               __this.m_pairBuffer[__this.m_pairCount] = new b2DynamicTreePair();
+           }
+           var pair = __this.m_pairBuffer[__this.m_pairCount];
+           pair.proxyA = proxy < queryProxy ? proxy : queryProxy;
+           pair.proxyB = proxy >= queryProxy ? proxy : queryProxy;++__this.m_pairCount;
+           return true;
+       };
+
       for (i = 0;
       i < __this.m_moveBuffer.length; ++i) {
          queryProxy = __this.m_moveBuffer[i];
 
-         function QueryCallback(proxy) {
-            if (proxy == queryProxy) return true;
-            if (__this.m_pairCount == __this.m_pairBuffer.length) {
-               __this.m_pairBuffer[__this.m_pairCount] = new b2DynamicTreePair();
-            }
-            var pair = __this.m_pairBuffer[__this.m_pairCount];
-            pair.proxyA = proxy < queryProxy ? proxy : queryProxy;
-            pair.proxyB = proxy >= queryProxy ? proxy : queryProxy;++__this.m_pairCount;
-            return true;
-         };
+         //function QueryCallback(proxy) {
+         //   if (proxy == queryProxy) return true;
+         //   if (__this.m_pairCount == __this.m_pairBuffer.length) {
+         //      __this.m_pairBuffer[__this.m_pairCount] = new b2DynamicTreePair();
+         //   }
+         //   var pair = __this.m_pairBuffer[__this.m_pairCount];
+         //   pair.proxyA = proxy < queryProxy ? proxy : queryProxy;
+         //   pair.proxyB = proxy >= queryProxy ? proxy : queryProxy;++__this.m_pairCount;
+         //   return true;
+         //};
          var fatAABB = __this.m_tree.GetFatAABB(queryProxy);
          __this.m_tree.Query(QueryCallback, fatAABB);
       }
@@ -5008,7 +4951,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          ++i;
          while (i < __this.m_pairCount) {
             var pair = __this.m_pairBuffer[i];
-            if (pair.proxyA != primaryPair.proxyA || pair.proxyB != primaryPair.proxyB) {
+            if (pair.proxyA !== primaryPair.proxyA || pair.proxyB !== primaryPair.proxyB) {
                break;
             }++i;
          }
@@ -5094,7 +5037,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Point = Box2D.Collision.b2Point = function b2Point(){
+   b2Point = Box2D.Collision.b2Point = function b2Point() {
       this.p = new b2Vec2();
 
    };
@@ -5132,7 +5075,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param maxFraction
     *
     */
-   b2RayCastInput = Box2D.Collision.b2RayCastInput = function b2RayCastInput(p1, p2, maxFraction){
+   b2RayCastInput = Box2D.Collision.b2RayCastInput = function b2RayCastInput(p1, p2, maxFraction) {
       this.p1 = new b2Vec2();
       this.p2 = new b2Vec2();
       p1 = p1 || null;
@@ -5150,7 +5093,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2RayCastOutput = Box2D.Collision.b2RayCastOutput = function b2RayCastOutput(){
+   b2RayCastOutput = Box2D.Collision.b2RayCastOutput = function b2RayCastOutput() {
       this.normal = new b2Vec2();
 
    };
@@ -5162,7 +5105,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Segment = Box2D.Collision.b2Segment = function b2Segment(){
+   b2Segment = Box2D.Collision.b2Segment = function b2Segment() {
       this.p1 = new b2Vec2();
       this.p2 = new b2Vec2();
 
@@ -5256,7 +5199,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2SeparationFunction = Box2D.Collision.b2SeparationFunction = function b2SeparationFunction(){
+   b2SeparationFunction = Box2D.Collision.b2SeparationFunction = function b2SeparationFunction() {
       this.m_localPoint = new b2Vec2();
       this.m_axis = new b2Vec2();
 
@@ -5281,7 +5224,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_proxyA = proxyA;
       this.m_proxyB = proxyB;
       var count = parseInt(cache.count);
-      b2Settings.b2Assert(0 < count && count < 3);
+      b2Assert(0 < count && count < 3);
       var localPointA,
           localPointA1,
           localPointA2,
@@ -5298,7 +5241,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           tVec,
           s = 0,
           sgn = 0;
-      if (count == 1) {
+      if (count === 1) {
          this.m_type = b2SeparationFunction.e_points;
          localPointA = this.m_proxyA.GetVertex(cache.indexA[0]);
          localPointB = this.m_proxyB.GetVertex(cache.indexB[0]);
@@ -5314,7 +5257,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_axis.y = pointBY - pointAY;
          this.m_axis.Normalize();
       }
-      else if (cache.indexB[0] == cache.indexB[1]) {
+      else if (cache.indexB[0] === cache.indexB[1]) {
          this.m_type = b2SeparationFunction.e_faceA;
          localPointA1 = this.m_proxyA.GetVertex(cache.indexA[0]);
          localPointA2 = this.m_proxyA.GetVertex(cache.indexA[1]);
@@ -5340,7 +5283,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             this.m_axis.NegativeSelf();
          }
       }
-      else if (cache.indexA[0] == cache.indexA[0]) {
+      else if (cache.indexA[0] === cache.indexA[0]) {
          this.m_type = b2SeparationFunction.e_faceB;
          localPointB1 = this.m_proxyB.GetVertex(cache.indexB[0]);
          localPointB2 = this.m_proxyB.GetVertex(cache.indexB[1]);
@@ -5383,7 +5326,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           b = dA.x * dB.x + dA.y * dB.y,
           denom = a * e - b * b;
          s = 0.0;
-         if (denom != 0.0) {
+         if (denom !== 0.0) {
             s = b2Math.Clamp((b * f - c * e) / denom, 0.0, 1.0);
          }
          var t = (b * s + f) / e;
@@ -5397,7 +5340,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          localPointB = new b2Vec2();
          localPointB.x = localPointB1.x + s * (localPointB2.x - localPointB1.x);
          localPointB.y = localPointB1.y + s * (localPointB2.y - localPointB1.y);
-         if (s == 0.0 || s == 1.0) {
+         if (s === 0.0 || s === 1.0) {
             this.m_type = b2SeparationFunction.e_faceB;
             this.m_axis = b2Math.CrossVF(b2Math.SubtractVV(localPointB2, localPointB1), 1.0);
             this.m_axis.Normalize();
@@ -5492,7 +5435,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             return seperation;
          }
       default:
-         b2Settings.b2Assert(false);
+         b2Assert(false);
          return 0.0;
       }
    };
@@ -5503,7 +5446,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2TimeOfImpact = Box2D.Collision.b2TimeOfImpact = function b2TimeOfImpact(){
+   b2TimeOfImpact = Box2D.Collision.b2TimeOfImpact = function b2TimeOfImpact() {
 
 
    };
@@ -5533,8 +5476,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           proxyB = input.proxyB,
           sweepA = input.sweepA,
           sweepB = input.sweepB;
-      b2Settings.b2Assert(sweepA.t0 == sweepB.t0);
-      b2Settings.b2Assert(1.0 - sweepA.t0 > Number.MIN_VALUE);
+      b2Assert(sweepA.t0 === sweepB.t0);
+      b2Assert(1.0 - sweepA.t0 > Number.MIN_VALUE);
       var radius = proxyA.m_radius + proxyB.m_radius,
           tolerance = input.tolerance,
           alpha = 0.0,
@@ -5561,7 +5504,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             alpha = 1.0;
             break;
          }
-         if (iter == 0) {
+         if (iter === 0) {
             if (separation > radius) {
                target = b2Math.Max(radius - tolerance, 0.75 * radius);
             }
@@ -5570,7 +5513,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             }
          }
          if (separation - target < 0.5 * tolerance) {
-            if (iter == 0) {
+            if (iter === 0) {
                alpha = 1.0;
                break;
             }
@@ -5612,7 +5555,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                   f2 = f;
                }++rootIterCount;
                ++b2TimeOfImpact.b2_toiRootIters;
-               if (rootIterCount == 50) {
+               if (rootIterCount === 50) {
                   break;
                }
             }
@@ -5624,7 +5567,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          alpha = newAlpha;
          iter++;
          ++b2TimeOfImpact.b2_toiIters;
-         if (iter == k_maxIterations) {
+         if (iter === k_maxIterations) {
             break;
          }
       }
@@ -5638,7 +5581,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2TOIInput = Box2D.Collision.b2TOIInput = function b2TOIInput(){
+   b2TOIInput = Box2D.Collision.b2TOIInput = function b2TOIInput() {
       this.proxyA = new b2DistanceProxy();
       this.proxyB = new b2DistanceProxy();
       this.sweepA = new b2Sweep();
@@ -5653,11 +5596,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2WorldManifold = Box2D.Collision.b2WorldManifold = function b2WorldManifold(){
+   b2WorldManifold = Box2D.Collision.b2WorldManifold = function b2WorldManifold() {
       this.m_normal = new b2Vec2();
-      this.m_points = new Vector(b2Settings.b2_maxManifoldPoints);
+
+      this.m_points = [];
       for (var i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
-         this.m_points[i] = new b2Vec2();
+         this.m_points.push(new b2Vec2());
       }
    };
    b2WorldManifold.constructor = b2WorldManifold;
@@ -5675,7 +5619,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2WorldManifold.prototype.Initialize = function (manifold, xfA, radiusA, xfB, radiusB) {
       radiusA = radiusA || 0;
       radiusB = radiusB || 0;
-      if (manifold.m_pointCount == 0) {
+      if (manifold.m_pointCount === 0) {
          return;
       }
       var i = 0,
@@ -5730,8 +5674,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             planePointY = xfA.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
             this.m_normal.x = normalX;
             this.m_normal.y = normalY;
-            for (i = 0;
-            i < manifold.m_pointCount; i++) {
+            for (i = 0; i < manifold.m_pointCount; i++) {
                tMat = xfB.R;
                tVec = manifold.m_points[i].m_localPoint;
                clipPointX = xfB.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
@@ -5753,8 +5696,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             planePointY = xfB.position.y + tMat.col1.y * tVec.x + tMat.col2.y * tVec.y;
             this.m_normal.x = (-normalX);
             this.m_normal.y = (-normalY);
-            for (i = 0;
-            i < manifold.m_pointCount; i++) {
+            for (i = 0; i < manifold.m_pointCount; i++) {
                tMat = xfA.R;
                tVec = manifold.m_points[i].m_localPoint;
                clipPointX = xfA.position.x + tMat.col1.x * tVec.x + tMat.col2.x * tVec.y;
@@ -5773,7 +5715,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2FilterData = Box2D.Dynamics.b2FilterData = function b2FilterData(){
+   b2FilterData = Box2D.Dynamics.b2FilterData = function b2FilterData() {
       this.categoryBits = 0x0001;
       this.maskBits = 0xFFFF;
       this.groupIndex = 0;
@@ -5801,7 +5743,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2TimeStep = Box2D.Dynamics.b2TimeStep = function b2TimeStep(){
+   b2TimeStep = Box2D.Dynamics.b2TimeStep = function b2TimeStep() {
 
 
    };
@@ -5827,7 +5769,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactRegister = Box2D.Dynamics.Contacts.b2ContactRegister = function b2ContactRegister(){
+   b2ContactRegister = Box2D.Dynamics.Contacts.b2ContactRegister = function b2ContactRegister() {
 
 
    };
@@ -5839,7 +5781,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactResult = Box2D.Dynamics.Contacts.b2ContactResult = function b2ContactResult(){
+   b2ContactResult = Box2D.Dynamics.Contacts.b2ContactResult = function b2ContactResult() {
       this.position = new b2Vec2();
       this.normal = new b2Vec2();
       this.id = new b2ContactID();
@@ -5853,7 +5795,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactEdge = Box2D.Dynamics.Contacts.b2ContactEdge = function b2ContactEdge(){
+   b2ContactEdge = Box2D.Dynamics.Contacts.b2ContactEdge = function b2ContactEdge() {
 
 
    };
@@ -5865,7 +5807,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactConstraintPoint = Box2D.Dynamics.Contacts.b2ContactConstraintPoint = function b2ContactConstraintPoint(){
+   b2ContactConstraintPoint = Box2D.Dynamics.Contacts.b2ContactConstraintPoint = function b2ContactConstraintPoint() {
       this.localPoint = new b2Vec2();
       this.rA = new b2Vec2();
       this.rB = new b2Vec2();
@@ -5879,15 +5821,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactConstraint = Box2D.Dynamics.Contacts.b2ContactConstraint = function b2ContactConstraint(){
+   b2ContactConstraint = Box2D.Dynamics.Contacts.b2ContactConstraint = function b2ContactConstraint() {
       this.localPlaneNormal = new b2Vec2();
       this.localPoint = new b2Vec2();
       this.normal = new b2Vec2();
       this.normalMass = new b2Mat22();
       this.K = new b2Mat22();
-      this.points = new Vector(b2Settings.b2_maxManifoldPoints);
+      this.points = [];
       for (var i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
-         this.points[i] = new b2ContactConstraintPoint();
+         this.points.push(new b2ContactConstraintPoint());
       }
    };
    b2ContactConstraint.constructor = b2ContactConstraint;
@@ -5898,7 +5840,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Contact = Box2D.Dynamics.Contacts.b2Contact = function b2Contact(){
+   b2Contact = Box2D.Dynamics.Contacts.b2Contact = function b2Contact() {
       this.m_nodeA = new b2ContactEdge();
       this.m_nodeB = new b2ContactEdge();
       this.m_manifold = new b2Manifold();
@@ -5947,7 +5889,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Contact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -5957,7 +5899,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Contact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -5982,7 +5924,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Contact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -6007,7 +5949,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Contact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -6071,7 +6013,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       var bodyA = fixtureA.GetBody(),
           bodyB = fixtureB.GetBody();
-      if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+      if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
          this.m_flags |= b2Contact.e_continuousFlag;
       }
       this.m_fixtureA = fixtureA;
@@ -6101,7 +6043,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -6116,7 +6058,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -6132,7 +6074,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -6143,7 +6085,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -6154,13 +6096,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -6195,7 +6137,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact = function b2CircleContact(){
+   b2CircleContact = Box2D.Dynamics.Contacts.b2CircleContact = function b2CircleContact() {
 
       b2Contact.apply(this, arguments);
    };
@@ -6275,7 +6217,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2CircleContact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -6285,7 +6227,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2CircleContact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -6310,7 +6252,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2CircleContact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -6335,7 +6277,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2CircleContact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -6398,7 +6340,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -6413,7 +6355,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -6429,7 +6371,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -6440,7 +6382,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -6451,13 +6393,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -6484,13 +6426,18 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PositionSolverManifold = Box2D.Dynamics.Contacts.b2PositionSolverManifold = function b2PositionSolverManifold(){
+   b2PositionSolverManifold = Box2D.Dynamics.Contacts.b2PositionSolverManifold = function b2PositionSolverManifold() {
 
       this.m_normal = new b2Vec2();
-      this.m_separations = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
-      this.m_points = new Vector(b2Settings.b2_maxManifoldPoints);
-      for (var i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
-         this.m_points[i] = new b2Vec2();
+      this.m_separations = [];
+      var i = b2Settings.b2_maxManifoldPoints;
+      while (i) {
+         this.m_separations.push(0);
+         i--;
+      }
+      this.m_points = [];
+      for (i = 0; i < b2Settings.b2_maxManifoldPoints; i++) {
+         this.m_points.push(new b2Vec2());
       }
    };
    b2PositionSolverManifold.constructor = b2PositionSolverManifold;
@@ -6505,7 +6452,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PositionSolverManifold.prototype.Initialize = function (cc) {
-      b2Settings.b2Assert(cc.pointCount > 0);
+      b2Assert(cc.pointCount > 0);
       var i = 0,
           clipPointX = 0,
           clipPointY = 0,
@@ -6552,8 +6499,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             planePointX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
             planePointY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             tMat = cc.bodyB.m_xf.R;
-            for (i = 0;
-            i < cc.pointCount; ++i) {
+            for (i = 0; i < cc.pointCount; ++i) {
                tVec = cc.points[i].localPoint;
                clipPointX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
                clipPointY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
@@ -6574,8 +6520,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             planePointX = cc.bodyB.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
             planePointY = cc.bodyB.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
             tMat = cc.bodyA.m_xf.R;
-            for (i = 0;
-            i < cc.pointCount; ++i) {
+            for (i = 0; i < cc.pointCount; ++i) {
                tVec = cc.points[i].localPoint;
                clipPointX = cc.bodyA.m_xf.position.x + (tMat.col1.x * tVec.x + tMat.col2.x * tVec.y);
                clipPointY = cc.bodyA.m_xf.position.y + (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
@@ -6595,9 +6540,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactSolver = Box2D.Dynamics.Contacts.b2ContactSolver = function b2ContactSolver(){
+   b2ContactSolver = Box2D.Dynamics.Contacts.b2ContactSolver = function b2ContactSolver() {
       this.m_step = new b2TimeStep();
-      this.m_constraints = new Vector();
+      this.m_constraints = [];
 
    };
    b2ContactSolver.constructor = b2ContactSolver;
@@ -6626,8 +6571,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       while (this.m_constraints.length < this.m_constraintCount) {
          this.m_constraints[this.m_constraints.length] = new b2ContactConstraint();
       }
-      for (i = 0;
-      i < contactCount; ++i) {
+      for (i = 0; i < contactCount; ++i) {
          contact = contacts[i];
          var fixtureA = contact.m_fixtureA,
           fixtureB = contact.m_fixtureB,
@@ -6646,7 +6590,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           vBY = bodyB.m_linearVelocity.y,
           wA = bodyA.m_angularVelocity,
           wB = bodyB.m_angularVelocity;
-         b2Settings.b2Assert(manifold.m_pointCount > 0);
+         b2Assert(manifold.m_pointCount > 0);
          b2ContactSolver.s_worldManifold.Initialize(manifold, bodyA.m_xf, radiusA, bodyB.m_xf, radiusB);
          var normalX = b2ContactSolver.s_worldManifold.m_normal.x,
           normalY = b2ContactSolver.s_worldManifold.m_normal.y,
@@ -6700,7 +6644,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                ccp.velocityBias += (-cc.restitution * vRel);
             }
          }
-         if (cc.pointCount == 2) {
+         if (cc.pointCount === 2) {
             var ccp1 = cc.points[0],
           ccp2 = cc.points[1],
           invMassA = bodyA.m_invMass,
@@ -6754,8 +6698,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           tCount = 0;
          if (step.warmStarting) {
             tCount = c.pointCount;
-            for (j = 0;
-            j < tCount; ++j) {
+            for (j = 0; j < tCount; ++j) {
                var ccp = c.points[j];
                ccp.normalImpulse *= step.dtRatio;
                ccp.tangentImpulse *= step.dtRatio;
@@ -6771,8 +6714,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          }
          else {
             tCount = c.pointCount;
-            for (j = 0;
-            j < tCount; ++j) {
+            for (j = 0; j < tCount; ++j) {
                var ccp2 = c.points[j];
                ccp2.normalImpulse = 0.0;
                ccp2.tangentImpulse = 0.0;
@@ -6829,8 +6771,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           tangentY = (-normalX),
           friction = c.friction,
           tX = 0;
-         for (j = 0;
-         j < c.pointCount; j++) {
+         for (j = 0; j < c.pointCount; j++) {
             ccp = c.points[j];
             dvX = vB.x - wB * ccp.rB.y - vA.x + wA * ccp.rA.y;
             dvY = vB.y + wB * ccp.rB.x - vA.y - wA * ccp.rA.x;
@@ -6850,7 +6791,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             ccp.tangentImpulse = newImpulse;
          }
          var tCount = parseInt(c.pointCount);
-         if (c.pointCount == 1) {
+         if (c.pointCount === 1) {
             ccp = c.points[0];
             dvX = vB.x + ((-wB * ccp.rB.y)) - vA.x - ((-wA * ccp.rA.y));
             dvY = vB.y + (wB * ccp.rB.x) - vA.y - (wA * ccp.rA.x);
@@ -7047,7 +6988,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact = function b2EdgeAndCircleContact(){
+   b2EdgeAndCircleContact = Box2D.Dynamics.Contacts.b2EdgeAndCircleContact = function b2EdgeAndCircleContact() {
 
       b2Contact.apply(this, arguments);
    };
@@ -7139,7 +7080,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2EdgeAndCircleContact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -7149,7 +7090,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2EdgeAndCircleContact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -7174,7 +7115,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2EdgeAndCircleContact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -7199,7 +7140,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2EdgeAndCircleContact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -7262,7 +7203,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -7277,7 +7218,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -7293,7 +7234,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -7304,7 +7245,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -7315,13 +7256,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -7348,7 +7289,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2NullContact = Box2D.Dynamics.Contacts.b2NullContact = function b2NullContact(){
+   b2NullContact = Box2D.Dynamics.Contacts.b2NullContact = function b2NullContact() {
 
       b2Contact.call(this);
    };
@@ -7394,7 +7335,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2NullContact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -7404,7 +7345,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2NullContact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -7429,7 +7370,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2NullContact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -7454,7 +7395,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2NullContact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -7526,7 +7467,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       var bodyA = fixtureA.GetBody(),
           bodyB = fixtureB.GetBody();
-      if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+      if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
          this.m_flags |= b2Contact.e_continuousFlag;
       }
       this.m_fixtureA = fixtureA;
@@ -7556,7 +7497,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -7571,7 +7512,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -7587,7 +7528,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -7598,7 +7539,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -7609,13 +7550,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -7642,7 +7583,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact = function b2PolyAndCircleContact(){
+   b2PolyAndCircleContact = Box2D.Dynamics.Contacts.b2PolyAndCircleContact = function b2PolyAndCircleContact() {
 
       b2Contact.apply(this, arguments);
    };
@@ -7677,8 +7618,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2PolyAndCircleContact.prototype.Reset = function (fixtureA, fixtureB) {
       b2Contact.prototype.Reset.call(this, fixtureA, fixtureB);
-      b2Settings.b2Assert(fixtureA.GetType() == b2Shape.e_polygonShape);
-      b2Settings.b2Assert(fixtureB.GetType() == b2Shape.e_circleShape);
+      b2Assert(fixtureA.GetType() === b2Shape.e_polygonShape);
+      b2Assert(fixtureB.GetType() === b2Shape.e_circleShape);
    };
 
    /**
@@ -7724,7 +7665,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndCircleContact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -7734,7 +7675,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndCircleContact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -7759,7 +7700,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndCircleContact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -7784,7 +7725,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndCircleContact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -7847,7 +7788,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -7862,7 +7803,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -7878,7 +7819,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -7889,7 +7830,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -7900,13 +7841,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -7933,7 +7874,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact = function b2PolyAndEdgeContact(){
+   b2PolyAndEdgeContact = Box2D.Dynamics.Contacts.b2PolyAndEdgeContact = function b2PolyAndEdgeContact() {
 
       b2Contact.apply(this, arguments);
    };
@@ -7968,8 +7909,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2PolyAndEdgeContact.prototype.Reset = function (fixtureA, fixtureB) {
       b2Contact.prototype.Reset.call(this, fixtureA, fixtureB);
-      b2Settings.b2Assert(fixtureA.GetType() == b2Shape.e_polygonShape);
-      b2Settings.b2Assert(fixtureB.GetType() == b2Shape.e_edgeShape);
+      b2Assert(fixtureA.GetType() === b2Shape.e_polygonShape);
+      b2Assert(fixtureB.GetType() === b2Shape.e_edgeShape);
    };
 
    /**
@@ -8027,7 +7968,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndEdgeContact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -8037,7 +7978,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndEdgeContact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -8062,7 +8003,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndEdgeContact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -8087,7 +8028,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolyAndEdgeContact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -8150,7 +8091,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -8165,7 +8106,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -8181,7 +8122,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -8192,7 +8133,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -8203,13 +8144,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -8236,7 +8177,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact = function b2PolygonContact(){
+   b2PolygonContact = Box2D.Dynamics.Contacts.b2PolygonContact = function b2PolygonContact() {
 
       b2Contact.apply(this, arguments);
    };
@@ -8316,7 +8257,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonContact.prototype.IsTouching = function () {
-      return (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag;
+      return (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag;
    };
 
    /**
@@ -8326,7 +8267,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonContact.prototype.IsContinuous = function () {
-      return (this.m_flags & b2Contact.e_continuousFlag) == b2Contact.e_continuousFlag;
+      return (this.m_flags & b2Contact.e_continuousFlag) === b2Contact.e_continuousFlag;
    };
 
    /**
@@ -8351,7 +8292,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonContact.prototype.IsSensor = function () {
-      return (this.m_flags & b2Contact.e_sensorFlag) == b2Contact.e_sensorFlag;
+      return (this.m_flags & b2Contact.e_sensorFlag) === b2Contact.e_sensorFlag;
    };
 
    /**
@@ -8376,7 +8317,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PolygonContact.prototype.IsEnabled = function () {
-      return (this.m_flags & b2Contact.e_enabledFlag) == b2Contact.e_enabledFlag;
+      return (this.m_flags & b2Contact.e_enabledFlag) === b2Contact.e_enabledFlag;
    };
 
    /**
@@ -8439,7 +8380,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_manifold = tManifold;
       this.m_flags |= b2Contact.e_enabledFlag;
       var touching = false,
-          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) == b2Contact.e_touchingFlag,
+          wasTouching = (this.m_flags & b2Contact.e_touchingFlag) === b2Contact.e_touchingFlag,
           bodyA = this.m_fixtureA.m_body,
           bodyB = this.m_fixtureB.m_body,
           aabbOverlap = this.m_fixtureA.m_aabb.TestOverlap(this.m_fixtureB.m_aabb);
@@ -8454,7 +8395,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_manifold.m_pointCount = 0;
       }
       else {
-         if (bodyA.GetType() != b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() != b2Body.b2_dynamicBody || bodyB.IsBullet()) {
+         if (bodyA.GetType() !== b2Body.b2_dynamicBody || bodyA.IsBullet() || bodyB.GetType() !== b2Body.b2_dynamicBody || bodyB.IsBullet()) {
             this.m_flags |= b2Contact.e_continuousFlag;
          }
          else {
@@ -8470,7 +8411,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                var id2 = mp2.m_id;
                for (var j = 0; j < this.m_oldManifold.m_pointCount; ++j) {
                   var mp1 = this.m_oldManifold.m_points[j];
-                  if (mp1.m_id.key == id2.key) {
+                  if (mp1.m_id.key === id2.key) {
                      mp2.m_normalImpulse = mp1.m_normalImpulse;
                      mp2.m_tangentImpulse = mp1.m_tangentImpulse;
                      break;
@@ -8481,7 +8422,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          else {
             this.m_manifold.m_pointCount = 0;
          }
-         if (touching != wasTouching) {
+         if (touching !== wasTouching) {
             bodyA.SetAwake(true);
             bodyB.SetAwake(true);
          }
@@ -8492,13 +8433,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_flags &= ~b2Contact.e_touchingFlag;
       }
-      if (wasTouching == false && touching == true) {
+      if (wasTouching === false && touching === true) {
          listener.BeginContact(this);
       }
-      if (wasTouching == true && touching == false) {
+      if (wasTouching === true && touching === false) {
          listener.EndContact(this);
       }
-      if ((this.m_flags & b2Contact.e_sensorFlag) == 0) {
+      if ((this.m_flags & b2Contact.e_sensorFlag) === 0) {
          listener.PreSolve(this, this.m_oldManifold);
       }
    };
@@ -8525,7 +8466,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param allocator
     *
     */
-   b2ContactFactory = Box2D.Dynamics.Contacts.b2ContactFactory = function b2ContactFactory(allocator){
+   b2ContactFactory = Box2D.Dynamics.Contacts.b2ContactFactory = function b2ContactFactory(allocator) {
 
       this.m_allocator = allocator;
       this.InitializeRegisters();
@@ -8547,7 +8488,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_registers[type1][type2].createFcn = createFcn;
       this.m_registers[type1][type2].destroyFcn = destroyFcn;
       this.m_registers[type1][type2].primary = true;
-      if (type1 != type2) {
+      if (type1 !== type2) {
          this.m_registers[type2][type1].createFcn = createFcn;
          this.m_registers[type2][type1].destroyFcn = destroyFcn;
          this.m_registers[type2][type1].primary = false;
@@ -8561,11 +8502,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2ContactFactory.prototype.InitializeRegisters = function () {
-      this.m_registers = new Vector(b2Shape.e_shapeTypeCount);
+      this.m_registers = [];
       for (var i = 0; i < b2Shape.e_shapeTypeCount; i++) {
-         this.m_registers[i] = new Vector(b2Shape.e_shapeTypeCount);
+         this.m_registers.push([]);
          for (var j = 0; j < b2Shape.e_shapeTypeCount; j++) {
-            this.m_registers[i][j] = new b2ContactRegister();
+            this.m_registers[i].push(new b2ContactRegister());
          }
       }
       this.AddType(b2CircleContact.Create, b2CircleContact.Destroy, b2Shape.e_circleShape, b2Shape.e_circleShape);
@@ -8641,7 +8582,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ControllerEdge = Box2D.Dynamics.Controllers.b2ControllerEdge = function b2ControllerEdge(){
+   b2ControllerEdge = Box2D.Dynamics.Controllers.b2ControllerEdge = function b2ControllerEdge() {
 
 
    };
@@ -8653,7 +8594,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Controller = Box2D.Dynamics.Controllers.b2Controller = function b2Controller(){
+   b2Controller = Box2D.Dynamics.Controllers.b2Controller = function b2Controller() {
 
 
    };
@@ -8705,14 +8646,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Controller.prototype.RemoveBody = function (body) {
       var edge = body.m_controllerList;
-      while (edge && edge.controller != this)
+      while (edge && edge.controller !== this)
       edge = edge.nextController;
       if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
       if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
       if (edge.nextController) edge.nextController.prevController = edge.prevController;
       if (edge.prevController) edge.prevController.nextController = edge.nextController;
-      if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-      if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
+      if (this.m_bodyList === edge) this.m_bodyList = edge.nextBody;
+      if (body.m_controllerList === edge) body.m_controllerList = edge.nextController;
       body.m_controllerCount--;
       this.m_bodyCount--;
    };
@@ -8764,7 +8705,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2BuoyancyController = Box2D.Dynamics.Controllers.b2BuoyancyController = function b2BuoyancyController(){
+   b2BuoyancyController = Box2D.Dynamics.Controllers.b2BuoyancyController = function b2BuoyancyController() {
 
       this.normal = new b2Vec2(0, (-1));
       this.offset = 0;
@@ -8793,7 +8734,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       for (var i = this.m_bodyList; i; i = i.nextBody) {
          var body = i.body;
-         if (body.IsAwake() == false) {
+         if (body.IsAwake() === false) {
             continue;
          }
          var areac = new b2Vec2(),
@@ -8881,14 +8822,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2BuoyancyController.prototype.RemoveBody = function (body) {
       var edge = body.m_controllerList;
-      while (edge && edge.controller != this)
+      while (edge && edge.controller !== this)
       edge = edge.nextController;
       if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
       if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
       if (edge.nextController) edge.nextController.prevController = edge.prevController;
       if (edge.prevController) edge.prevController.nextController = edge.nextController;
-      if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-      if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
+      if (this.m_bodyList === edge) this.m_bodyList = edge.nextBody;
+      if (body.m_controllerList === edge) body.m_controllerList = edge.nextController;
       body.m_controllerCount--;
       this.m_bodyCount--;
    };
@@ -8940,7 +8881,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ConstantAccelController = Box2D.Dynamics.Controllers.b2ConstantAccelController = function b2ConstantAccelController(){
+   b2ConstantAccelController = Box2D.Dynamics.Controllers.b2ConstantAccelController = function b2ConstantAccelController() {
 
       this.A = new b2Vec2(0, 0);
       b2Controller.apply(this, arguments);
@@ -9001,14 +8942,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2ConstantAccelController.prototype.RemoveBody = function (body) {
       var edge = body.m_controllerList;
-      while (edge && edge.controller != this)
+      while (edge && edge.controller !== this)
       edge = edge.nextController;
       if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
       if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
       if (edge.nextController) edge.nextController.prevController = edge.prevController;
       if (edge.prevController) edge.prevController.nextController = edge.nextController;
-      if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-      if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
+      if (this.m_bodyList === edge) this.m_bodyList = edge.nextBody;
+      if (body.m_controllerList === edge) body.m_controllerList = edge.nextController;
       body.m_controllerCount--;
       this.m_bodyCount--;
    };
@@ -9060,7 +9001,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ConstantForceController = Box2D.Dynamics.Controllers.b2ConstantForceController = function b2ConstantForceController(){
+   b2ConstantForceController = Box2D.Dynamics.Controllers.b2ConstantForceController = function b2ConstantForceController() {
 
       this.F = new b2Vec2(0, 0);
       b2Controller.apply(this, arguments);
@@ -9120,14 +9061,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2ConstantForceController.prototype.RemoveBody = function (body) {
       var edge = body.m_controllerList;
-      while (edge && edge.controller != this)
+      while (edge && edge.controller !== this)
       edge = edge.nextController;
       if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
       if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
       if (edge.nextController) edge.nextController.prevController = edge.prevController;
       if (edge.prevController) edge.prevController.nextController = edge.nextController;
-      if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-      if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
+      if (this.m_bodyList === edge) this.m_bodyList = edge.nextBody;
+      if (body.m_controllerList === edge) body.m_controllerList = edge.nextController;
       body.m_controllerCount--;
       this.m_bodyCount--;
    };
@@ -9179,7 +9120,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2GravityController = Box2D.Dynamics.Controllers.b2GravityController = function b2GravityController(){
+   b2GravityController = Box2D.Dynamics.Controllers.b2GravityController = function b2GravityController() {
 
       this.G = 1;
       this.invSqr = true;
@@ -9212,8 +9153,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             body1 = i.body;
             p1 = body1.GetWorldCenter();
             mass1 = body1.GetMass();
-            for (j = this.m_bodyList;
-            j != i; j = j.nextBody) {
+            for (j = this.m_bodyList; j !== i; j = j.nextBody) {
                body2 = j.body;
                p2 = body2.GetWorldCenter();
                dx = p2.x - p1.x;
@@ -9234,8 +9174,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             body1 = i.body;
             p1 = body1.GetWorldCenter();
             mass1 = body1.GetMass();
-            for (j = this.m_bodyList;
-            j != i; j = j.nextBody) {
+            for (j = this.m_bodyList; j !== i; j = j.nextBody) {
                body2 = j.body;
                p2 = body2.GetWorldCenter();
                dx = p2.x - p1.x;
@@ -9290,14 +9229,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2GravityController.prototype.RemoveBody = function (body) {
       var edge = body.m_controllerList;
-      while (edge && edge.controller != this)
+      while (edge && edge.controller !== this)
       edge = edge.nextController;
       if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
       if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
       if (edge.nextController) edge.nextController.prevController = edge.prevController;
       if (edge.prevController) edge.prevController.nextController = edge.nextController;
-      if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-      if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
+      if (this.m_bodyList === edge) this.m_bodyList = edge.nextBody;
+      if (body.m_controllerList === edge) body.m_controllerList = edge.nextController;
       body.m_controllerCount--;
       this.m_bodyCount--;
    };
@@ -9349,7 +9288,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2TensorDampingController = Box2D.Dynamics.Controllers.b2TensorDampingController = function b2TensorDampingController(){
+   b2TensorDampingController = Box2D.Dynamics.Controllers.b2TensorDampingController = function b2TensorDampingController() {
 
       this.T = new b2Mat22();
       this.maxTimestep = 0;
@@ -9438,14 +9377,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2TensorDampingController.prototype.RemoveBody = function (body) {
       var edge = body.m_controllerList;
-      while (edge && edge.controller != this)
+      while (edge && edge.controller !== this)
       edge = edge.nextController;
       if (edge.prevBody) edge.prevBody.nextBody = edge.nextBody;
       if (edge.nextBody) edge.nextBody.prevBody = edge.prevBody;
       if (edge.nextController) edge.nextController.prevController = edge.prevController;
       if (edge.prevController) edge.prevController.nextController = edge.nextController;
-      if (this.m_bodyList == edge) this.m_bodyList = edge.nextBody;
-      if (body.m_controllerList == edge) body.m_controllerList = edge.nextController;
+      if (this.m_bodyList === edge) this.m_bodyList = edge.nextBody;
+      if (body.m_controllerList === edge) body.m_controllerList = edge.nextController;
       body.m_controllerCount--;
       this.m_bodyCount--;
    };
@@ -9497,12 +9436,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2Joint = Box2D.Dynamics.Joints.b2Joint = function b2Joint(def){
+   b2Joint = Box2D.Dynamics.Joints.b2Joint = function b2Joint(def) {
       this.m_edgeA = new b2JointEdge();
       this.m_edgeB = new b2JointEdge();
       this.m_localCenterA = new b2Vec2();
       this.m_localCenterB = new b2Vec2();
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -9752,7 +9691,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2JointDef = Box2D.Dynamics.Joints.b2JointDef = function b2JointDef(){
+   b2JointDef = Box2D.Dynamics.Joints.b2JointDef = function b2JointDef() {
 
       this.type = b2Joint.e_unknownJoint;
       this.userData = null;
@@ -9768,7 +9707,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2JointEdge = Box2D.Dynamics.Joints.b2JointEdge = function b2JointEdge(){
+   b2JointEdge = Box2D.Dynamics.Joints.b2JointEdge = function b2JointEdge() {
 
 
    };
@@ -9780,7 +9719,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Jacobian = Box2D.Dynamics.Joints.b2Jacobian = function b2Jacobian(){
+   b2Jacobian = Box2D.Dynamics.Joints.b2Jacobian = function b2Jacobian() {
       this.linearA = new b2Vec2();
       this.linearB = new b2Vec2();
 
@@ -9839,7 +9778,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = function b2DistanceJoint(def){
+   b2DistanceJoint = Box2D.Dynamics.Joints.b2DistanceJoint = function b2DistanceJoint(def) {
 
       this.m_localAnchor1 = new b2Vec2();
       this.m_localAnchor2 = new b2Vec2();
@@ -10000,17 +9939,17 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       var cr1u = (r1X * this.m_u.y - r1Y * this.m_u.x),
           cr2u = (r2X * this.m_u.y - r2Y * this.m_u.x),
           invMass = bA.m_invMass + bA.m_invI * cr1u * cr1u + bB.m_invMass + bB.m_invI * cr2u * cr2u;
-      this.m_mass = invMass != 0.0 ? 1.0 / invMass : 0.0;
+      this.m_mass = invMass !== 0.0 ? 1.0 / invMass : 0.0;
       if (this.m_frequencyHz > 0.0) {
          var C = length - this.m_length,
           omega = 2.0 * Math.PI * this.m_frequencyHz,
           d = 2.0 * this.m_mass * this.m_dampingRatio * omega,
           k = this.m_mass * omega * omega;
          this.m_gamma = step.dt * (d + step.dt * k);
-         this.m_gamma = this.m_gamma != 0.0 ? 1 / this.m_gamma : 0.0;
+         this.m_gamma = this.m_gamma !== 0.0 ? 1 / this.m_gamma : 0.0;
          this.m_bias = C * step.dt * k * this.m_gamma;
          this.m_mass = invMass + this.m_gamma;
-         this.m_mass = this.m_mass != 0.0 ? 1.0 / this.m_mass : 0.0;
+         this.m_mass = this.m_mass !== 0.0 ? 1.0 / this.m_mass : 0.0;
       }
       if (step.warmStarting) {
          this.m_impulse *= step.dtRatio;
@@ -10192,7 +10131,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2DistanceJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -10217,7 +10156,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef = function b2DistanceJointDef(){
+   b2DistanceJointDef = Box2D.Dynamics.Joints.b2DistanceJointDef = function b2DistanceJointDef() {
 
       this.localAnchorA = new b2Vec2();
       this.localAnchorB = new b2Vec2();
@@ -10271,7 +10210,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2FrictionJoint = Box2D.Dynamics.Joints.b2FrictionJoint = function b2FrictionJoint(def){
+   b2FrictionJoint = Box2D.Dynamics.Joints.b2FrictionJoint = function b2FrictionJoint(def) {
 
       this.m_localAnchorA = new b2Vec2();
       this.m_localAnchorB = new b2Vec2();
@@ -10588,7 +10527,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2FrictionJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -10613,7 +10552,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2FrictionJointDef = Box2D.Dynamics.Joints.b2FrictionJointDef = function b2FrictionJointDef(){
+   b2FrictionJointDef = Box2D.Dynamics.Joints.b2FrictionJointDef = function b2FrictionJointDef() {
 
       this.localAnchorA = new b2Vec2();
       this.localAnchorB = new b2Vec2();
@@ -10660,7 +10599,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = function b2GearJoint(def){
+   b2GearJoint = Box2D.Dynamics.Joints.b2GearJoint = function b2GearJoint(def) {
 
       this.m_groundAnchor1 = new b2Vec2();
       this.m_groundAnchor2 = new b2Vec2();
@@ -10678,7 +10617,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           coordinate2 = 0;
       this.m_ground1 = def.joint1.GetBodyA();
       this.m_bodyA = def.joint1.GetBodyB();
-      if (type1 == b2Joint.e_revoluteJoint) {
+      if (type1 === b2Joint.e_revoluteJoint) {
          this.m_revolute1 = (def.joint1 instanceof b2RevoluteJoint ? def.joint1 : null);
          this.m_groundAnchor1.SetV(this.m_revolute1.m_localAnchor1);
          this.m_localAnchor1.SetV(this.m_revolute1.m_localAnchor2);
@@ -10692,7 +10631,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       this.m_ground2 = def.joint2.GetBodyA();
       this.m_bodyB = def.joint2.GetBodyB();
-      if (type2 == b2Joint.e_revoluteJoint) {
+      if (type2 === b2Joint.e_revoluteJoint) {
          this.m_revolute2 = (def.joint2 instanceof b2RevoluteJoint ? def.joint2 : null);
          this.m_groundAnchor2.SetV(this.m_revolute2.m_localAnchor1);
          this.m_localAnchor2.SetV(this.m_revolute2.m_localAnchor2);
@@ -10992,7 +10931,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2GearJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -11017,7 +10956,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2GearJointDef = Box2D.Dynamics.Joints.b2GearJointDef = function b2GearJointDef(){
+   b2GearJointDef = Box2D.Dynamics.Joints.b2GearJointDef = function b2GearJointDef() {
 
       b2JointDef.call(this);
       this.type = b2Joint.e_gearJoint;
@@ -11048,7 +10987,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = function b2LineJoint(def){
+   b2LineJoint = Box2D.Dynamics.Joints.b2LineJoint = function b2LineJoint(def) {
 
       this.m_localAnchor1 = new b2Vec2();
       this.m_localAnchor2 = new b2Vec2();
@@ -11139,9 +11078,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           p2 = bB.GetWorldPoint(this.m_localAnchor2),
           dX = p2.x - p1.x,
           dY = p2.y - p1.y,
-          axis = bA.GetWorldVector(this.m_localXAxis1),
-          translation = axis.x * dX + axis.y * dY;
-      return translation;
+          axis = bA.GetWorldVector(this.m_localXAxis1);
+      return axis.x * dX + axis.y * dY;
    };
 
    /**
@@ -11176,9 +11114,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           v1 = bA.m_linearVelocity,
           v2 = bB.m_linearVelocity,
           w1 = bA.m_angularVelocity,
-          w2 = bB.m_angularVelocity,
-          speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
-      return speed;
+          w2 = bB.m_angularVelocity;
+      return (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
    };
 
    /**
@@ -11374,13 +11311,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             this.m_limitState = b2Joint.e_equalLimits;
          }
          else if (jointTransition <= this.m_lowerTranslation) {
-            if (this.m_limitState != b2Joint.e_atLowerLimit) {
+            if (this.m_limitState !== b2Joint.e_atLowerLimit) {
                this.m_limitState = b2Joint.e_atLowerLimit;
                this.m_impulse.y = 0.0;
             }
          }
          else if (jointTransition >= this.m_upperTranslation) {
-            if (this.m_limitState != b2Joint.e_atUpperLimit) {
+            if (this.m_limitState !== b2Joint.e_atUpperLimit) {
                this.m_limitState = b2Joint.e_atUpperLimit;
                this.m_impulse.y = 0.0;
             }
@@ -11393,7 +11330,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_limitState = b2Joint.e_inactiveLimit;
       }
-      if (this.m_enableMotor == false) {
+      if (this.m_enableMotor === false) {
          this.m_motorImpulse = 0.0;
       }
       if (step.warmStarting) {
@@ -11434,7 +11371,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           PY = 0,
           L1 = 0,
           L2 = 0;
-      if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
+      if (this.m_enableMotor && this.m_limitState !== b2Joint.e_equalLimits) {
          var Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
           impulse = this.m_motorMass * (this.m_motorSpeed - Cdot),
           oldImpulse = this.m_motorImpulse,
@@ -11453,20 +11390,20 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          w2 += this.m_invIB * L2;
       }
       var Cdot1 = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1;
-      if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
+      if (this.m_enableLimit && this.m_limitState !== b2Joint.e_inactiveLimit) {
          var Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
           f1 = this.m_impulse.Copy(),
           df = this.m_K.Solve(new b2Vec2(), (-Cdot1), (-Cdot2));
          this.m_impulse.Add(df);
-         if (this.m_limitState == b2Joint.e_atLowerLimit) {
+         if (this.m_limitState === b2Joint.e_atLowerLimit) {
             this.m_impulse.y = b2Math.Max(this.m_impulse.y, 0.0);
          }
-         else if (this.m_limitState == b2Joint.e_atUpperLimit) {
+         else if (this.m_limitState === b2Joint.e_atUpperLimit) {
             this.m_impulse.y = b2Math.Min(this.m_impulse.y, 0.0);
          }
          var b = (-Cdot1) - (this.m_impulse.y - f1.y) * this.m_K.col2.x,
           f2r = 0;
-         if (this.m_K.col1.x != 0.0) {
+         if (this.m_K.col1.x !== 0.0) {
             f2r = b / this.m_K.col1.x + f1.x;
          }
          else {
@@ -11488,7 +11425,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       else {
          var df2 = 0;
-         if (this.m_K.col1.x != 0.0) {
+         if (this.m_K.col1.x !== 0.0) {
             df2 = ((-Cdot1)) / this.m_K.col1.x;
          }
          else {
@@ -11600,7 +11537,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          i2 = this.m_invIB;
          var k11 = m1 + m2 + i1 * this.m_s1 * this.m_s1 + i2 * this.m_s2 * this.m_s2,
           impulse1 = 0;
-         if (k11 != 0.0) {
+         if (k11 !== 0.0) {
             impulse1 = ((-C1)) / k11;
          }
          else {
@@ -11703,7 +11640,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2LineJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -11728,7 +11665,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2LineJointDef = Box2D.Dynamics.Joints.b2LineJointDef = function b2LineJointDef(){
+   b2LineJointDef = Box2D.Dynamics.Joints.b2LineJointDef = function b2LineJointDef() {
 
       this.localAnchorA = new b2Vec2();
       this.localAnchorB = new b2Vec2();
@@ -11783,7 +11720,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2MouseJoint = Box2D.Dynamics.Joints.b2MouseJoint = function b2MouseJoint(def){
+   b2MouseJoint = Box2D.Dynamics.Joints.b2MouseJoint = function b2MouseJoint(def) {
 
       this.K = new b2Mat22();
       this.K1 = new b2Mat22();
@@ -11869,7 +11806,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2MouseJoint.prototype.SetTarget = function (target) {
-      if (this.m_bodyB.IsAwake() == false) {
+      if (this.m_bodyB.IsAwake() === false) {
          this.m_bodyB.SetAwake(true);
       }
       this.m_target = target;
@@ -11949,9 +11886,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           mass = b.GetMass(),
           omega = 2.0 * Math.PI * this.m_frequencyHz,
           d = 2.0 * mass * this.m_dampingRatio * omega,
-          k = mass * omega * omega;
+          k = mass * omega * omega,
+          rX,
+          rY,
+          tX;
       this.m_gamma = step.dt * (d + step.dt * k);
-      this.m_gamma = this.m_gamma != 0 ? 1 / this.m_gamma : 0.0;
+      this.m_gamma = this.m_gamma !== 0 ? 1 / this.m_gamma : 0.0;
       this.m_beta = step.dt * k * this.m_gamma;
       var tMat;tMat = b.m_xf.R,
           rX = this.m_localAnchor.x - b.m_sweep.localCenter.x,
@@ -12109,7 +12049,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2MouseJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -12134,7 +12074,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef = function b2MouseJointDef(){
+   b2MouseJointDef = Box2D.Dynamics.Joints.b2MouseJointDef = function b2MouseJointDef() {
 
       this.target = new b2Vec2();
       b2JointDef.call(this);
@@ -12166,7 +12106,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = function b2PrismaticJoint(def){
+   b2PrismaticJoint = Box2D.Dynamics.Joints.b2PrismaticJoint = function b2PrismaticJoint(def) {
 
       this.m_localAnchor1 = new b2Vec2();
       this.m_localAnchor2 = new b2Vec2();
@@ -12258,9 +12198,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           p2 = bB.GetWorldPoint(this.m_localAnchor2),
           dX = p2.x - p1.x,
           dY = p2.y - p1.y,
-          axis = bA.GetWorldVector(this.m_localXAxis1),
-          translation = axis.x * dX + axis.y * dY;
-      return translation;
+          axis = bA.GetWorldVector(this.m_localXAxis1);
+      return axis.x * dX + axis.y * dY;
    };
 
    /**
@@ -12295,9 +12234,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           v1 = bA.m_linearVelocity,
           v2 = bB.m_linearVelocity,
           w1 = bA.m_angularVelocity,
-          w2 = bB.m_angularVelocity,
-          speed = (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
-      return speed;
+          w2 = bB.m_angularVelocity;
+      return (dX * ((-w1 * axis.y)) + dY * (w1 * axis.x)) + (axis.x * (((v2.x + ((-w2 * r2Y))) - v1.x) - ((-w1 * r1Y))) + axis.y * (((v2.y + (w2 * r2X)) - v1.y) - (w1 * r1X)));
    };
 
    /**
@@ -12488,13 +12426,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             this.m_limitState = b2Joint.e_equalLimits;
          }
          else if (jointTransition <= this.m_lowerTranslation) {
-            if (this.m_limitState != b2Joint.e_atLowerLimit) {
+            if (this.m_limitState !== b2Joint.e_atLowerLimit) {
                this.m_limitState = b2Joint.e_atLowerLimit;
                this.m_impulse.z = 0.0;
             }
          }
          else if (jointTransition >= this.m_upperTranslation) {
-            if (this.m_limitState != b2Joint.e_atUpperLimit) {
+            if (this.m_limitState !== b2Joint.e_atUpperLimit) {
                this.m_limitState = b2Joint.e_atUpperLimit;
                this.m_impulse.z = 0.0;
             }
@@ -12507,7 +12445,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       else {
          this.m_limitState = b2Joint.e_inactiveLimit;
       }
-      if (this.m_enableMotor == false) {
+      if (this.m_enableMotor === false) {
          this.m_motorImpulse = 0.0;
       }
       if (step.warmStarting) {
@@ -12548,7 +12486,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           PY = 0,
           L1 = 0,
           L2 = 0;
-      if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
+      if (this.m_enableMotor && this.m_limitState !== b2Joint.e_equalLimits) {
          var Cdot = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
           impulse = this.m_motorMass * (this.m_motorSpeed - Cdot),
           oldImpulse = this.m_motorImpulse,
@@ -12568,15 +12506,15 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       }
       var Cdot1X = this.m_perp.x * (v2.x - v1.x) + this.m_perp.y * (v2.y - v1.y) + this.m_s2 * w2 - this.m_s1 * w1,
           Cdot1Y = w2 - w1;
-      if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
+      if (this.m_enableLimit && this.m_limitState !== b2Joint.e_inactiveLimit) {
          var Cdot2 = this.m_axis.x * (v2.x - v1.x) + this.m_axis.y * (v2.y - v1.y) + this.m_a2 * w2 - this.m_a1 * w1,
           f1 = this.m_impulse.Copy(),
           df = this.m_K.Solve33(new b2Vec3(), (-Cdot1X), (-Cdot1Y), (-Cdot2));
          this.m_impulse.Add(df);
-         if (this.m_limitState == b2Joint.e_atLowerLimit) {
+         if (this.m_limitState === b2Joint.e_atLowerLimit) {
             this.m_impulse.z = b2Math.Max(this.m_impulse.z, 0.0);
          }
-         else if (this.m_limitState == b2Joint.e_atUpperLimit) {
+         else if (this.m_limitState === b2Joint.e_atUpperLimit) {
             this.m_impulse.z = b2Math.Min(this.m_impulse.z, 0.0);
          }
          var bX = (-Cdot1X) - (this.m_impulse.z - f1.z) * this.m_K.col3.x,
@@ -12817,7 +12755,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PrismaticJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -12842,7 +12780,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef = function b2PrismaticJointDef(){
+   b2PrismaticJointDef = Box2D.Dynamics.Joints.b2PrismaticJointDef = function b2PrismaticJointDef() {
 
       this.localAnchorA = new b2Vec2();
       this.localAnchorB = new b2Vec2();
@@ -12899,7 +12837,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = function b2PulleyJoint(def){
+   b2PulleyJoint = Box2D.Dynamics.Joints.b2PulleyJoint = function b2PulleyJoint(def) {
 
       this.m_groundAnchor1 = new b2Vec2();
       this.m_groundAnchor2 = new b2Vec2();
@@ -13168,7 +13106,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           Cdot = 0,
           impulse = 0,
           oldImpulse = 0;
-      if (this.m_state == b2Joint.e_atUpperLimit) {
+      if (this.m_state === b2Joint.e_atUpperLimit) {
          v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
          v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
          v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y));
@@ -13189,7 +13127,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          bB.m_linearVelocity.y += bB.m_invMass * P2Y;
          bB.m_angularVelocity += bB.m_invI * (r2X * P2Y - r2Y * P2X);
       }
-      if (this.m_limitState1 == b2Joint.e_atUpperLimit) {
+      if (this.m_limitState1 === b2Joint.e_atUpperLimit) {
          v1X = bA.m_linearVelocity.x + ((-bA.m_angularVelocity * r1Y));
          v1Y = bA.m_linearVelocity.y + (bA.m_angularVelocity * r1X);
          Cdot = (-(this.m_u1.x * v1X + this.m_u1.y * v1Y));
@@ -13203,7 +13141,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          bA.m_linearVelocity.y += bA.m_invMass * P1Y;
          bA.m_angularVelocity += bA.m_invI * (r1X * P1Y - r1Y * P1X);
       }
-      if (this.m_limitState2 == b2Joint.e_atUpperLimit) {
+      if (this.m_limitState2 === b2Joint.e_atUpperLimit) {
          v2X = bB.m_linearVelocity.x + ((-bB.m_angularVelocity * r2Y));
          v2Y = bB.m_linearVelocity.y + (bB.m_angularVelocity * r2X);
          Cdot = (-(this.m_u2.x * v2X + this.m_u2.y * v2Y));
@@ -13250,7 +13188,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           oldLimitPositionImpulse = 0,
           tX = 0,
           linearError = 0.0;
-      if (this.m_state == b2Joint.e_atUpperLimit) {
+      if (this.m_state === b2Joint.e_atUpperLimit) {
          tMat = bA.m_xf.R;
          r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
@@ -13300,7 +13238,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          bA.SynchronizeTransform();
          bB.SynchronizeTransform();
       }
-      if (this.m_limitState1 == b2Joint.e_atUpperLimit) {
+      if (this.m_limitState1 === b2Joint.e_atUpperLimit) {
          tMat = bA.m_xf.R;
          r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
@@ -13329,7 +13267,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          bA.m_sweep.a += bA.m_invI * (r1X * p1Y - r1Y * p1X);
          bA.SynchronizeTransform();
       }
-      if (this.m_limitState2 == b2Joint.e_atUpperLimit) {
+      if (this.m_limitState2 === b2Joint.e_atUpperLimit) {
          tMat = bB.m_xf.R;
          r2X = this.m_localAnchor2.x - bB.m_sweep.localCenter.x;
          r2Y = this.m_localAnchor2.y - bB.m_sweep.localCenter.y;
@@ -13438,7 +13376,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2PulleyJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -13463,7 +13401,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2PulleyJointDef = Box2D.Dynamics.Joints.b2PulleyJointDef = function b2PulleyJointDef(){
+   b2PulleyJointDef = Box2D.Dynamics.Joints.b2PulleyJointDef = function b2PulleyJointDef() {
 
       this.groundAnchorA = new b2Vec2();
       this.groundAnchorB = new b2Vec2();
@@ -13537,7 +13475,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = function b2RevoluteJoint(def){
+   b2RevoluteJoint = Box2D.Dynamics.Joints.b2RevoluteJoint = function b2RevoluteJoint(def) {
 
       this.K = new b2Mat22();
       this.K1 = new b2Mat22();
@@ -13762,7 +13700,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           bB = this.m_bodyB,
           tMat,
           tX = 0;
-      if (this.m_enableMotor || this.m_enableLimit) {}
+
+      if (this.m_enableMotor || this.m_enableLimit) {
+          // You cannot create a rotation limit between bodies that
+          // both have fixed rotation.
+             b2Assert(bA.m_invI > 0.0 || bB.m_invI > 0.0);
+      }
       tMat = bA.m_xf.R;
       var r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x,
           r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
@@ -13789,7 +13732,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_mass.col2.z = this.m_mass.col3.y;
       this.m_mass.col3.z = i1 + i2;
       this.m_motorMass = 1.0 / (i1 + i2);
-      if (this.m_enableMotor == false) {
+      if (this.m_enableMotor === false) {
          this.m_motorImpulse = 0.0;
       }
       if (this.m_enableLimit) {
@@ -13798,13 +13741,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             this.m_limitState = b2Joint.e_equalLimits;
          }
          else if (jointAngle <= this.m_lowerAngle) {
-            if (this.m_limitState != b2Joint.e_atLowerLimit) {
+            if (this.m_limitState !== b2Joint.e_atLowerLimit) {
                this.m_impulse.z = 0.0;
             }
             this.m_limitState = b2Joint.e_atLowerLimit;
          }
          else if (jointAngle >= this.m_upperAngle) {
-            if (this.m_limitState != b2Joint.e_atUpperLimit) {
+            if (this.m_limitState !== b2Joint.e_atUpperLimit) {
                this.m_impulse.z = 0.0;
             }
             this.m_limitState = b2Joint.e_atUpperLimit;
@@ -13860,7 +13803,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           m2 = bB.m_invMass,
           i1 = bA.m_invI,
           i2 = bB.m_invI;
-      if (this.m_enableMotor && this.m_limitState != b2Joint.e_equalLimits) {
+      if (this.m_enableMotor && this.m_limitState !== b2Joint.e_equalLimits) {
          var Cdot = w2 - w1 - this.m_motorSpeed,
           impulse = this.m_motorMass * ((-Cdot)),
           oldImpulse = this.m_motorImpulse,
@@ -13870,7 +13813,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          w1 -= i1 * impulse;
          w2 += i2 * impulse;
       }
-      if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
+      if (this.m_enableLimit && this.m_limitState !== b2Joint.e_inactiveLimit) {
          tMat = bA.m_xf.R;
          r1X = this.m_localAnchor1.x - bA.m_sweep.localCenter.x;
          r1Y = this.m_localAnchor1.y - bA.m_sweep.localCenter.y;
@@ -13887,10 +13830,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           Cdot1Y = v2.y + (w2 * r2X) - v1.y - (w1 * r1X),
           Cdot2 = w2 - w1;
          this.m_mass.Solve33(this.impulse3, (-Cdot1X), (-Cdot1Y), (-Cdot2));
-         if (this.m_limitState == b2Joint.e_equalLimits) {
+         if (this.m_limitState === b2Joint.e_equalLimits) {
             this.m_impulse.Add(this.impulse3);
          }
-         else if (this.m_limitState == b2Joint.e_atLowerLimit) {
+         else if (this.m_limitState === b2Joint.e_atLowerLimit) {
             newImpulse = this.m_impulse.z + this.impulse3.z;
             if (newImpulse < 0.0) {
                this.m_mass.Solve22(this.reduced, (-Cdot1X), (-Cdot1Y));
@@ -13902,7 +13845,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                this.m_impulse.z = 0.0;
             }
          }
-         else if (this.m_limitState == b2Joint.e_atUpperLimit) {
+         else if (this.m_limitState === b2Joint.e_atUpperLimit) {
             newImpulse = this.m_impulse.z + this.impulse3.z;
             if (newImpulse > 0.0) {
                this.m_mass.Solve22(this.reduced, (-Cdot1X), (-Cdot1Y));
@@ -13959,7 +13902,6 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2RevoluteJoint.prototype.SolvePositionConstraints = function (baumgarte) {
-      baumgarte = baumgarte || 0;
       var oldLimitImpulse = 0,
           C = 0,
           tMat,
@@ -13970,21 +13912,21 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           tX = 0,
           impulseX = 0,
           impulseY = 0;
-      if (this.m_enableLimit && this.m_limitState != b2Joint.e_inactiveLimit) {
+      if (this.m_enableLimit && this.m_limitState !== b2Joint.e_inactiveLimit) {
          var angle = bB.m_sweep.a - bA.m_sweep.a - this.m_referenceAngle,
           limitImpulse = 0.0;
-         if (this.m_limitState == b2Joint.e_equalLimits) {
+         if (this.m_limitState === b2Joint.e_equalLimits) {
             C = b2Math.Clamp(angle - this.m_lowerAngle, (-b2Settings.b2_maxAngularCorrection), b2Settings.b2_maxAngularCorrection);
             limitImpulse = (-this.m_motorMass * C);
             angularError = b2Math.Abs(C);
          }
-         else if (this.m_limitState == b2Joint.e_atLowerLimit) {
+         else if (this.m_limitState === b2Joint.e_atLowerLimit) {
             C = angle - this.m_lowerAngle;
             angularError = (-C);
             C = b2Math.Clamp(C + b2Settings.b2_angularSlop, (-b2Settings.b2_maxAngularCorrection), 0.0);
             limitImpulse = (-this.m_motorMass * C);
          }
-         else if (this.m_limitState == b2Joint.e_atUpperLimit) {
+         else if (this.m_limitState === b2Joint.e_atUpperLimit) {
             C = angle - this.m_upperAngle;
             angularError = C;
             C = b2Math.Clamp(C - b2Settings.b2_angularSlop, 0.0, b2Settings.b2_maxAngularCorrection);
@@ -14139,7 +14081,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2RevoluteJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -14164,7 +14106,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef = function b2RevoluteJointDef(){
+   b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef = function b2RevoluteJointDef() {
 
       this.localAnchorA = new b2Vec2();
       this.localAnchorB = new b2Vec2();
@@ -14219,7 +14161,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param def
     *
     */
-   b2WeldJoint = Box2D.Dynamics.Joints.b2WeldJoint = function b2WeldJoint(def){
+   b2WeldJoint = Box2D.Dynamics.Joints.b2WeldJoint = function b2WeldJoint(def) {
 
       this.m_localAnchorA = new b2Vec2();
       this.m_localAnchorB = new b2Vec2();
@@ -14513,7 +14455,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2WeldJoint.prototype.b2Joint = function (def) {
-      b2Settings.b2Assert(def.bodyA != def.bodyB);
+      b2Assert(def.bodyA !== def.bodyB);
       this.m_type = def.type;
       this.m_prev = null;
       this.m_next = null;
@@ -14538,7 +14480,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2WeldJointDef = Box2D.Dynamics.Joints.b2WeldJointDef = function b2WeldJointDef(){
+   b2WeldJointDef = Box2D.Dynamics.Joints.b2WeldJointDef = function b2WeldJointDef() {
 
       this.localAnchorA = new b2Vec2();
       this.localAnchorB = new b2Vec2();
@@ -14585,7 +14527,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactListener = Box2D.Dynamics.b2ContactListener = function b2ContactListener(){
+   b2ContactListener = Box2D.Dynamics.b2ContactListener = function b2ContactListener() {
 
 
    };
@@ -14633,7 +14575,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactFilter = Box2D.Dynamics.b2ContactFilter = function b2ContactFilter(){
+   b2ContactFilter = Box2D.Dynamics.b2ContactFilter = function b2ContactFilter() {
 
 
    };
@@ -14650,11 +14592,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2ContactFilter.prototype.ShouldCollide = function (fixtureA, fixtureB) {
       var filter1 = fixtureA.GetFilterData(),
           filter2 = fixtureB.GetFilterData();
-      if (filter1.groupIndex == filter2.groupIndex && filter1.groupIndex != 0) {
+      if (filter1.groupIndex === filter2.groupIndex && filter1.groupIndex !== 0) {
          return filter1.groupIndex > 0;
       }
-      var collide = (filter1.maskBits & filter2.categoryBits) != 0 && (filter1.categoryBits & filter2.maskBits) != 0;
-      return collide;
+      return (filter1.maskBits & filter2.categoryBits) !== 0 && (filter1.categoryBits & filter2.maskBits) !== 0;
    };
 
    /**
@@ -14676,7 +14617,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Fixture = Box2D.Dynamics.b2Fixture = function b2Fixture(){
+   b2Fixture = Box2D.Dynamics.b2Fixture = function b2Fixture() {
       this.m_filter = new b2FilterData();
       this.m_aabb = new b2AABB();
       this.m_userData = null;
@@ -14716,7 +14657,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Fixture.prototype.SetSensor = function (sensor) {
-      if (this.m_isSensor == sensor) return;
+      if (this.m_isSensor === sensor) return;
       this.m_isSensor = sensor;
       if (this.m_body == null) return;
       var edge = this.m_body.GetContactList();
@@ -14724,7 +14665,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          var contact = edge.contact,
           fixtureA = contact.GetFixtureA(),
           fixtureB = contact.GetFixtureB();
-         if (fixtureA == this || fixtureB == this) contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
+         if (fixtureA === this || fixtureB === this) contact.SetSensor(fixtureA.IsSensor() || fixtureB.IsSensor());
          edge = edge.next;
       }
    };
@@ -14753,7 +14694,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          var contact = edge.contact,
           fixtureA = contact.GetFixtureA(),
           fixtureB = contact.GetFixtureB();
-         if (fixtureA == this || fixtureB == this) contact.FlagForFiltering();
+         if (fixtureA === this || fixtureB === this) contact.FlagForFiltering();
          edge = edge.next;
       }
    };
@@ -14998,7 +14939,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactManager = Box2D.Dynamics.b2ContactManager = function b2ContactManager(){
+   b2ContactManager = Box2D.Dynamics.b2ContactManager = function b2ContactManager() {
 
       this.m_world = null;
       this.m_contactCount = 0;
@@ -15023,21 +14964,21 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           fixtureB = (proxyUserDataB instanceof b2Fixture ? proxyUserDataB : null),
           bodyA = fixtureA.GetBody(),
           bodyB = fixtureB.GetBody();
-      if (bodyA == bodyB) return;
+      if (bodyA === bodyB) return;
       var edge = bodyB.GetContactList();
       while (edge) {
-         if (edge.other == bodyA) {
+         if (edge.other === bodyA) {
             var fA = edge.contact.GetFixtureA(),
           fB = edge.contact.GetFixtureB();
-            if (fA == fixtureA && fB == fixtureB) return;
-            if (fA == fixtureB && fB == fixtureA) return;
+            if (fA === fixtureA && fB === fixtureB) return;
+            if (fA === fixtureB && fB === fixtureA) return;
          }
          edge = edge.next;
       }
-      if (bodyB.ShouldCollide(bodyA) == false) {
+      if (bodyB.ShouldCollide(bodyA) === false) {
          return;
       }
-      if (this.m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false) {
+      if (this.m_contactFilter.ShouldCollide(fixtureA, fixtureB) === false) {
          return;
       }
       var c = this.m_contactFactory.Create(fixtureA, fixtureB);
@@ -15078,7 +15019,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2ContactManager.prototype.FindNewContacts = function () {
-      this.m_broadPhase.UpdatePairs(Box2D.generateCallback(this, this.AddPair));
+       var generateCallback = function(context, cb) {
+           return function () {
+               cb.apply(context, arguments);
+           };
+       };
+       this.m_broadPhase.UpdatePairs(generateCallback(this, this.AddPair));
    };
 
    /**
@@ -15101,7 +15047,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (c.m_next) {
          c.m_next.m_prev = c.m_prev;
       }
-      if (c == this.m_world.m_contactList) {
+      if (c === this.m_world.m_contactList) {
          this.m_world.m_contactList = c.m_next;
       }
       if (c.m_nodeA.prev) {
@@ -15110,7 +15056,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (c.m_nodeA.next) {
          c.m_nodeA.next.prev = c.m_nodeA.prev;
       }
-      if (c.m_nodeA == bodyA.m_contactList) {
+      if (c.m_nodeA === bodyA.m_contactList) {
          bodyA.m_contactList = c.m_nodeA.next;
       }
       if (c.m_nodeB.prev) {
@@ -15119,7 +15065,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (c.m_nodeB.next) {
          c.m_nodeB.next.prev = c.m_nodeB.prev;
       }
-      if (c.m_nodeB == bodyB.m_contactList) {
+      if (c.m_nodeB === bodyB.m_contactList) {
          bodyB.m_contactList = c.m_nodeB.next;
       }
       this.m_contactFactory.Destroy(c);
@@ -15139,18 +15085,18 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           fixtureB = c.GetFixtureB(),
           bodyA = fixtureA.GetBody(),
           bodyB = fixtureB.GetBody();
-         if (bodyA.IsAwake() == false && bodyB.IsAwake() == false) {
+         if (bodyA.IsAwake() === false && bodyB.IsAwake() === false) {
             c = c.GetNext();
             continue;
          }
          if (c.m_flags & b2Contact.e_filterFlag) {
-            if (bodyB.ShouldCollide(bodyA) == false) {
+            if (bodyB.ShouldCollide(bodyA) === false) {
                var cNuke = c;
                c = cNuke.GetNext();
                this.Destroy(cNuke);
                continue;
             }
-            if (this.m_contactFilter.ShouldCollide(fixtureA, fixtureB) == false) {
+            if (this.m_contactFilter.ShouldCollide(fixtureA, fixtureB) === false) {
                cNuke = c;
                c = cNuke.GetNext();
                this.Destroy(cNuke);
@@ -15161,7 +15107,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          var proxyA = fixtureA.m_proxy,
           proxyB = fixtureB.m_proxy,
           overlap = this.m_broadPhase.TestOverlap(proxyA, proxyB);
-         if (overlap == false) {
+         if (overlap === false) {
             cNuke = c;
             c = cNuke.GetNext();
             this.Destroy(cNuke);
@@ -15178,7 +15124,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param world
     *
     */
-   b2Body = Box2D.Dynamics.b2Body = function b2Body(bd, world){
+   b2Body = Box2D.Dynamics.b2Body = function b2Body(bd, world) {
 
      this.m_xf = new b2Transform();
      this.m_sweep = new b2Sweep();
@@ -15218,7 +15164,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
      this.m_angularDamping = bd.angularDamping;
      this.m_force.Set(0.0, 0.0);
      this.m_type = bd.type;
-     if (this.m_type == b2Body.b2_dynamicBody) {
+     if (this.m_type === b2Body.b2_dynamicBody) {
         this.m_mass = 1.0;
         this.m_invMass = 1.0;
      }
@@ -15298,10 +15244,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * CreateFixture
     *
     * @param def
+    * @return object
     *
     */
    b2Body.prototype.CreateFixture = function (def) {
-      if (this.m_world.IsLocked() == true) {
+      if (this.m_world.IsLocked() === true) {
          return null;
       }
       var fixture = new b2Fixture();
@@ -15343,14 +15290,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.DestroyFixture = function (fixture) {
-      if (this.m_world.IsLocked() == true) {
+      if (this.m_world.IsLocked() === true) {
          return;
       }
       var node = this.m_fixtureList,
           ppF = null,
           found = false;
       while (node != null) {
-         if (node == fixture) {
+         if (node === fixture) {
             if (ppF) ppF.m_next = fixture.m_next;
             else this.m_fixtureList = fixture.m_next;
             found = true;
@@ -15365,7 +15312,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          edge = edge.next;
          var fixtureA = c.GetFixtureA(),
           fixtureB = c.GetFixtureB();
-         if (fixture == fixtureA || fixture == fixtureB) {
+         if (fixture === fixtureA || fixture === fixtureB) {
             this.m_world.m_contactManager.Destroy(c);
          }
       }
@@ -15391,7 +15338,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2Body.prototype.SetPositionAndAngle = function (position, angle) {
       angle = angle || 0;
       var f;
-      if (this.m_world.IsLocked() == true) {
+      if (this.m_world.IsLocked() === true) {
          return;
       }
       this.m_xf.R.Set(angle);
@@ -15405,8 +15352,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_sweep.c0.SetV(this.m_sweep.c);
       this.m_sweep.a0 = this.m_sweep.a = angle;
       var broadPhase = this.m_world.m_contactManager.m_broadPhase;
-      for (f = this.m_fixtureList;
-      f; f = f.m_next) {
+      for (f = this.m_fixtureList; f; f = f.m_next) {
          f.Synchronize(broadPhase, this.m_xf, this.m_xf);
       }
       this.m_world.m_contactManager.FindNewContacts();
@@ -15500,7 +15446,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.SetLinearVelocity = function (v) {
-      if (this.m_type == b2Body.b2_staticBody) {
+      if (this.m_type === b2Body.b2_staticBody) {
          return;
       }
       this.m_linearVelocity.SetV(v);
@@ -15524,7 +15470,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Body.prototype.SetAngularVelocity = function (omega) {
       omega = omega || 0;
-      if (this.m_type == b2Body.b2_staticBody) {
+      if (this.m_type === b2Body.b2_staticBody) {
          return;
       }
       this.m_angularVelocity = omega;
@@ -15549,13 +15495,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2Body.prototype.GetDefinition = function () {
       var bd = new b2BodyDef();
       bd.type = this.GetType();
-      bd.allowSleep = (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag;
+      bd.allowSleep = (this.m_flags & b2Body.e_allowSleepFlag) === b2Body.e_allowSleepFlag;
       bd.angle = this.GetAngle();
       bd.angularDamping = this.m_angularDamping;
       bd.angularVelocity = this.m_angularVelocity;
-      bd.fixedRotation = (this.m_flags & b2Body.e_fixedRotationFlag) == b2Body.e_fixedRotationFlag;
-      bd.bullet = (this.m_flags & b2Body.e_bulletFlag) == b2Body.e_bulletFlag;
-      bd.awake = (this.m_flags & b2Body.e_awakeFlag) == b2Body.e_awakeFlag;
+      bd.fixedRotation = (this.m_flags & b2Body.e_fixedRotationFlag) === b2Body.e_fixedRotationFlag;
+      bd.bullet = (this.m_flags & b2Body.e_bulletFlag) === b2Body.e_bulletFlag;
+      bd.awake = (this.m_flags & b2Body.e_awakeFlag) === b2Body.e_awakeFlag;
       bd.linearDamping = this.m_linearDamping;
       bd.linearVelocity.SetV(this.GetLinearVelocity());
       bd.position = this.GetPosition();
@@ -15571,10 +15517,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.ApplyForce = function (force, point) {
-      if (this.m_type != b2Body.b2_dynamicBody) {
+      if (this.m_type !== b2Body.b2_dynamicBody) {
          return;
       }
-      if (this.IsAwake() == false) {
+      if (this.IsAwake() === false) {
          this.SetAwake(true);
       }
       this.m_force.x += force.x;
@@ -15590,10 +15536,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Body.prototype.ApplyTorque = function (torque) {
       torque = torque || 0;
-      if (this.m_type != b2Body.b2_dynamicBody) {
+      if (this.m_type !== b2Body.b2_dynamicBody) {
          return;
       }
-      if (this.IsAwake() == false) {
+      if (this.IsAwake() === false) {
          this.SetAwake(true);
       }
       this.m_torque += torque;
@@ -15607,10 +15553,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.ApplyImpulse = function (impulse, point) {
-      if (this.m_type != b2Body.b2_dynamicBody) {
+      if (this.m_type !== b2Body.b2_dynamicBody) {
          return;
       }
-      if (this.IsAwake() == false) {
+      if (this.IsAwake() === false) {
          this.SetAwake(true);
       }
       this.m_linearVelocity.x += this.m_invMass * impulse.x;
@@ -15675,8 +15621,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Body.prototype.Merge = function (other) {
       var f;
-      for (f = other.m_fixtureList;
-      f;) {
+      for (f = other.m_fixtureList; f;) {
          var next = f.m_next;
          other.m_fixtureCount--;
          f.m_next = this.m_fixtureList;
@@ -15701,7 +15646,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    /**
     * GetMass
     *
-    * @param 
+    * @param
+    * @return mass
     *
     */
    b2Body.prototype.GetMass = function () {
@@ -15711,7 +15657,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    /**
     * GetInertia
     *
-    * @param 
+    * @param
+    * @return inertia
     *
     */
    b2Body.prototype.GetInertia = function () {
@@ -15737,11 +15684,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.SetMassData = function (massData) {
-      b2Settings.b2Assert(this.m_world.IsLocked() == false);
-      if (this.m_world.IsLocked() == true) {
+      b2Assert(this.m_world.IsLocked() === false);
+      if (this.m_world.IsLocked() === true) {
          return;
       }
-      if (this.m_type != b2Body.b2_dynamicBody) {
+      if (this.m_type !== b2Body.b2_dynamicBody) {
          return;
       }
       this.m_invMass = 0.0;
@@ -15752,7 +15699,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_mass = 1.0;
       }
       this.m_invMass = 1.0 / this.m_mass;
-      if (massData.I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) == 0) {
+      if (massData.I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) === 0) {
          this.m_I = massData.I - this.m_mass * (massData.center.x * massData.center.x + massData.center.y * massData.center.y);
          this.m_invI = 1.0 / this.m_I;
       }
@@ -15776,12 +15723,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_I = 0.0;
       this.m_invI = 0.0;
       this.m_sweep.localCenter.SetZero();
-      if (this.m_type == b2Body.b2_staticBody || this.m_type == b2Body.b2_kinematicBody) {
+      if (this.m_type === b2Body.b2_staticBody || this.m_type === b2Body.b2_kinematicBody) {
          return;
       }
       var center = b2Vec2.Make(0, 0);
       for (var f = this.m_fixtureList; f; f = f.m_next) {
-         if (f.m_density == 0.0) {
+         if (f.m_density === 0.0) {
             continue;
          }
          var massData = f.GetMassData();
@@ -15799,10 +15746,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_mass = 1.0;
          this.m_invMass = 1.0;
       }
-      if (this.m_I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) == 0) {
+      if (this.m_I > 0.0 && (this.m_flags & b2Body.e_fixedRotationFlag) === 0) {
          this.m_I -= this.m_mass * (center.x * center.x + center.y * center.y);
          this.m_I *= this.m_inertiaScale;
-         b2Settings.b2Assert(this.m_I > 0);
+         b2Assert(this.m_I > 0);
          this.m_invI = 1.0 / this.m_I;
       }
       else {
@@ -15935,12 +15882,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2Body.prototype.SetType = function (type) {
       type = type || 0;
-      if (this.m_type == type) {
+      if (this.m_type === type) {
          return;
       }
       this.m_type = type;
       this.ResetMassData();
-      if (this.m_type == b2Body.b2_staticBody) {
+      if (this.m_type === b2Body.b2_staticBody) {
          this.m_linearVelocity.SetZero();
          this.m_angularVelocity = 0.0;
       }
@@ -15984,7 +15931,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.IsBullet = function () {
-      return (this.m_flags & b2Body.e_bulletFlag) == b2Body.e_bulletFlag;
+      return (this.m_flags & b2Body.e_bulletFlag) === b2Body.e_bulletFlag;
    };
 
    /**
@@ -16031,7 +15978,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.IsAwake = function () {
-      return (this.m_flags & b2Body.e_awakeFlag) == b2Body.e_awakeFlag;
+      return (this.m_flags & b2Body.e_awakeFlag) === b2Body.e_awakeFlag;
    };
 
    /**
@@ -16057,7 +16004,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.IsFixedRotation = function () {
-      return (this.m_flags & b2Body.e_fixedRotationFlag) == b2Body.e_fixedRotationFlag;
+      return (this.m_flags & b2Body.e_fixedRotationFlag) === b2Body.e_fixedRotationFlag;
    };
 
    /**
@@ -16067,7 +16014,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.SetActive = function (flag) {
-      if (flag == this.IsActive()) {
+      if (flag === this.IsActive()) {
          return;
       }
       var broadPhase,
@@ -16075,16 +16022,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (flag) {
          this.m_flags |= b2Body.e_activeFlag;
          broadPhase = this.m_world.m_contactManager.m_broadPhase;
-         for (f = this.m_fixtureList;
-         f; f = f.m_next) {
+         for (f = this.m_fixtureList; f; f = f.m_next) {
             f.CreateProxy(broadPhase, this.m_xf);
          }
       }
       else {
          this.m_flags &= ~b2Body.e_activeFlag;
          broadPhase = this.m_world.m_contactManager.m_broadPhase;
-         for (f = this.m_fixtureList;
-         f; f = f.m_next) {
+         for (f = this.m_fixtureList; f; f = f.m_next) {
             f.DestroyProxy(broadPhase);
          }
          var ce = this.m_contactList;
@@ -16104,7 +16049,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.IsActive = function () {
-      return (this.m_flags & b2Body.e_activeFlag) == b2Body.e_activeFlag;
+      return (this.m_flags & b2Body.e_activeFlag) === b2Body.e_activeFlag;
    };
 
    /**
@@ -16114,7 +16059,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.IsSleepingAllowed = function () {
-      return (this.m_flags & b2Body.e_allowSleepFlag) == b2Body.e_allowSleepFlag;
+      return (this.m_flags & b2Body.e_allowSleepFlag) === b2Body.e_allowSleepFlag;
    };
 
    /**
@@ -16212,8 +16157,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       xf1.position.y = this.m_sweep.c0.y - (tMat.col1.y * tVec.x + tMat.col2.y * tVec.y);
       var f,
           broadPhase = this.m_world.m_contactManager.m_broadPhase;
-      for (f = this.m_fixtureList;
-      f; f = f.m_next) {
+      for (f = this.m_fixtureList; f; f = f.m_next) {
          f.Synchronize(broadPhase, xf1, this.m_xf);
       }
    };
@@ -16239,11 +16183,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2Body.prototype.ShouldCollide = function (other) {
-      if (this.m_type != b2Body.b2_dynamicBody && other.m_type != b2Body.b2_dynamicBody) {
+      if (this.m_type !== b2Body.b2_dynamicBody && other.m_type !== b2Body.b2_dynamicBody) {
          return false;
       }
       for (var jn = this.m_jointList; jn; jn = jn.next) {
-         if (jn.other == other) if (jn.joint.m_collideConnected == false) {
+         if (jn.other === other) if (jn.joint.m_collideConnected === false) {
             return false;
          }
       }
@@ -16270,7 +16214,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DebugDraw = Box2D.Dynamics.b2DebugDraw = function b2DebugDraw(){
+   b2DebugDraw = Box2D.Dynamics.b2DebugDraw = function b2DebugDraw() {
       this.m_drawScale = 1.0;
       this.m_lineThickness = 1.0;
       this.m_alpha = 1.0;
@@ -16615,7 +16559,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param
     *
     */
-   b2BodyDef = Box2D.Dynamics.b2BodyDef = function b2BodyDef(){
+   b2BodyDef = Box2D.Dynamics.b2BodyDef = function b2BodyDef() {
 
       this.position = new b2Vec2();
       this.linearVelocity = new b2Vec2();
@@ -16650,7 +16594,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactFilter = Box2D.Dynamics.b2ContactFilter = function b2ContactFilter(){
+   b2ContactFilter = Box2D.Dynamics.b2ContactFilter = function b2ContactFilter() {
 
 
    };
@@ -16667,11 +16611,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2ContactFilter.prototype.ShouldCollide = function (fixtureA, fixtureB) {
       var filter1 = fixtureA.GetFilterData(),
           filter2 = fixtureB.GetFilterData();
-      if (filter1.groupIndex == filter2.groupIndex && filter1.groupIndex != 0) {
+      if (filter1.groupIndex === filter2.groupIndex && filter1.groupIndex !== 0) {
          return filter1.groupIndex > 0;
       }
-      var collide = (filter1.maskBits & filter2.categoryBits) != 0 && (filter1.categoryBits & filter2.maskBits) != 0;
-      return collide;
+      return (filter1.maskBits & filter2.categoryBits) !== 0 && (filter1.categoryBits & filter2.maskBits) !== 0;
    };
 
    /**
@@ -16693,9 +16636,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2ContactImpulse = Box2D.Dynamics.b2ContactImpulse = function b2ContactImpulse(){
-      this.normalImpulses = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
-      this.tangentImpulses = new Vector_a2j_Number(b2Settings.b2_maxManifoldPoints);
+   b2ContactImpulse = Box2D.Dynamics.b2ContactImpulse = function b2ContactImpulse() {
+      this.normalImpulses = [];
+      this.tangentImpulses = [];
+      for (var i=0; i<b2Settings.b2_maxManifoldPoints; i++) {
+         this.normalImpulses.push(0);
+         this.tangentImpulses.push(0);
+      }
 
    };
    b2ContactImpulse.constructor = b2ContactImpulse;
@@ -16706,7 +16653,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param
     *
     */
-   b2FixtureDef = Box2D.Dynamics.b2FixtureDef = function b2FixtureDef(){
+   b2FixtureDef = Box2D.Dynamics.b2FixtureDef = function b2FixtureDef() {
 
      this.filter = new b2FilterData();
      this.filter.categoryBits = 0x0001;
@@ -16731,11 +16678,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2Island = Box2D.Dynamics.b2Island = function b2Island(){
+   b2Island = Box2D.Dynamics.b2Island = function b2Island() {
 
-      this.m_bodies = new Vector();
-      this.m_contacts = new Vector();
-      this.m_joints = new Vector();
+      this.m_bodies = [];
+      this.m_contacts = [];
+      this.m_joints = [];
    };
    b2Island.constructor = b2Island;
 
@@ -16805,7 +16752,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       for (i = 0;
       i < this.m_bodyCount; ++i) {
          b = this.m_bodies[i];
-         if (b.GetType() != b2Body.b2_dynamicBody) continue;
+         if (b.GetType() !== b2Body.b2_dynamicBody) continue;
          b.m_linearVelocity.x += step.dt * (gravity.x + b.m_invMass * b.m_force.x);
          b.m_linearVelocity.y += step.dt * (gravity.y + b.m_invMass * b.m_force.y);
          b.m_angularVelocity += step.dt * b.m_invI * b.m_torque;
@@ -16838,7 +16785,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       for (i = 0;
       i < this.m_bodyCount; ++i) {
          b = this.m_bodies[i];
-         if (b.GetType() == b2Body.b2_staticBody) continue;
+         if (b.GetType() === b2Body.b2_staticBody) continue;
          var translationX = step.dt * b.m_linearVelocity.x,
           translationY = step.dt * b.m_linearVelocity.y;
          if ((translationX * translationX + translationY * translationY) > b2Settings.b2_maxTranslationSquared) {
@@ -16884,14 +16831,14 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          for (i = 0;
          i < this.m_bodyCount; ++i) {
             b = this.m_bodies[i];
-            if (b.GetType() == b2Body.b2_staticBody) {
+            if (b.GetType() === b2Body.b2_staticBody) {
                continue;
             }
-            if ((b.m_flags & b2Body.e_allowSleepFlag) == 0) {
+            if ((b.m_flags & b2Body.e_allowSleepFlag) === 0) {
                b.m_sleepTime = 0.0;
                minSleepTime = 0.0;
             }
-            if ((b.m_flags & b2Body.e_allowSleepFlag) == 0 || b.m_angularVelocity * b.m_angularVelocity > angTolSqr || b2Math.Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr) {
+            if ((b.m_flags & b2Body.e_allowSleepFlag) === 0 || b.m_angularVelocity * b.m_angularVelocity > angTolSqr || b2Math.Dot(b.m_linearVelocity, b.m_linearVelocity) > linTolSqr) {
                b.m_sleepTime = 0.0;
                minSleepTime = 0.0;
             }
@@ -16936,7 +16883,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       for (i = 0;
       i < this.m_bodyCount; ++i) {
          var b = this.m_bodies[i];
-         if (b.GetType() == b2Body.b2_staticBody) continue;
+         if (b.GetType() === b2Body.b2_staticBody) continue;
          var translationX = subStep.dt * b.m_linearVelocity.x,
           translationY = subStep.dt * b.m_linearVelocity.y;
          if ((translationX * translationX + translationY * translationY) > b2Settings.b2_maxTranslationSquared) {
@@ -17036,8 +16983,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param doSleep
     *
     */
-   b2World = Box2D.Dynamics.b2World = function b2World(gravity, doSleep){
-      this.s_stack = new Vector();
+   b2World = Box2D.Dynamics.b2World = function b2World(gravity, doSleep) {
+      this.s_stack = [];
       this.m_contactManager = new b2ContactManager();
       this.m_contactSolver = new b2ContactSolver();
       this.m_island = new b2Island();
@@ -17051,8 +16998,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       this.m_contactCount = 0;
       this.m_jointCount = 0;
       this.m_controllerCount = 0;
-      b2World.m_warmStarting = true;
-      b2World.m_continuousPhysics = true;
+      this.m_warmStarting = true;
+      this.m_continuousPhysics = true;
       this.m_allowSleep = doSleep;
       this.m_gravity = gravity;
       this.m_inv_dt0 = 0.0;
@@ -17067,7 +17014,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2World.s_backupA = new b2Sweep();
    b2World.s_backupB = new b2Sweep();
    b2World.s_timestep = new b2TimeStep();
-   b2World.s_queue = new Vector();
+   b2World.s_queue = [];
    b2World.s_jointColor = new b2Color(0.5, 0.8, 0.8);
    b2World.e_newFixture = 0x0001;
    b2World.e_locked = 0x0002;
@@ -17155,7 +17102,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2World.prototype.CreateBody = function (def) {
-      if (this.IsLocked() == true) {
+      if (this.IsLocked() === true) {
          return null;
       }
       var b = new b2Body(def, this);
@@ -17176,7 +17123,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2World.prototype.DestroyBody = function (b) {
-      if (this.IsLocked() == true) {
+      if (this.IsLocked() === true) {
          return;
       }
       var jn = b.m_jointList;
@@ -17219,7 +17166,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (b.m_next) {
          b.m_next.m_prev = b.m_prev;
       }
-      if (b == this.m_bodyList) {
+      if (b === this.m_bodyList) {
          this.m_bodyList = b.m_next;
       }--this.m_bodyCount;
    };
@@ -17253,10 +17200,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       j.m_bodyB.m_jointList = j.m_edgeB;
       var bodyA = def.bodyA,
           bodyB = def.bodyB;
-      if (def.collideConnected == false) {
+      if (def.collideConnected === false) {
          var edge = bodyB.GetContactList();
          while (edge) {
-            if (edge.other == bodyA) {
+            if (edge.other === bodyA) {
                edge.contact.FlagForFiltering();
             }
             edge = edge.next;
@@ -17279,7 +17226,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (j.m_next) {
          j.m_next.m_prev = j.m_prev;
       }
-      if (j == this.m_jointList) {
+      if (j === this.m_jointList) {
          this.m_jointList = j.m_next;
       }
       var bodyA = j.m_bodyA,
@@ -17292,7 +17239,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (j.m_edgeA.next) {
          j.m_edgeA.next.prev = j.m_edgeA.prev;
       }
-      if (j.m_edgeA == bodyA.m_jointList) {
+      if (j.m_edgeA === bodyA.m_jointList) {
          bodyA.m_jointList = j.m_edgeA.next;
       }
       j.m_edgeA.prev = null;
@@ -17303,17 +17250,17 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       if (j.m_edgeB.next) {
          j.m_edgeB.next.prev = j.m_edgeB.prev;
       }
-      if (j.m_edgeB == bodyB.m_jointList) {
+      if (j.m_edgeB === bodyB.m_jointList) {
          bodyB.m_jointList = j.m_edgeB.next;
       }
       j.m_edgeB.prev = null;
       j.m_edgeB.next = null;
       b2Joint.Destroy(j, null);
       --this.m_jointCount;
-      if (collideConnected == false) {
+      if (collideConnected === false) {
          var edge = bodyB.GetContactList();
          while (edge) {
-            if (edge.other == bodyA) {
+            if (edge.other === bodyA) {
                edge.contact.FlagForFiltering();
             }
             edge = edge.next;
@@ -17345,7 +17292,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
    b2World.prototype.RemoveController = function (c) {
       if (c.m_prev) c.m_prev.m_next = c.m_next;
       if (c.m_next) c.m_next.m_prev = c.m_prev;
-      if (this.m_controllerList == c) this.m_controllerList = c.m_next;
+      if (this.m_controllerList === c) this.m_controllerList = c.m_next;
       this.m_controllerCount--;
    };
 
@@ -17356,7 +17303,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2World.prototype.CreateController = function (controller) {
-      if (controller.m_world != this) throw new Error("Controller can only be a member of one world");
+      if (controller.m_world !== this) throw new Error("Controller can only be a member of one world");
       controller.m_next = this.m_controllerList;
       controller.m_prev = null;
       if (this.m_controllerList) this.m_controllerList.m_prev = controller;
@@ -17376,7 +17323,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
       controller.Clear();
       if (controller.m_next) controller.m_next.m_prev = controller.m_prev;
       if (controller.m_prev) controller.m_prev.m_next = controller.m_next;
-      if (controller == this.m_controllerList) this.m_controllerList = controller.m_next;
+      if (controller === this.m_controllerList) this.m_controllerList = controller.m_next;
       --this.m_controllerCount;
    };
 
@@ -17387,7 +17334,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2World.prototype.SetWarmStarting = function (flag) {
-      b2World.m_warmStarting = flag;
+      this.m_warmStarting = flag;
    };
 
    /**
@@ -17397,7 +17344,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2World.prototype.SetContinuousPhysics = function (flag) {
-      b2World.m_continuousPhysics = flag;
+      this.m_continuousPhysics = flag;
    };
 
    /**
@@ -17488,12 +17435,12 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          step.inv_dt = 0.0;
       }
       step.dtRatio = this.m_inv_dt0 * dt;
-      step.warmStarting = b2World.m_warmStarting;
+      step.warmStarting = this.m_warmStarting;
       this.m_contactManager.Collide();
       if (step.dt > 0.0) {
          this.Solve(step);
       }
-      if (b2World.m_continuousPhysics && step.dt > 0.0) {
+      if (this.m_continuousPhysics && step.dt > 0.0) {
          this.SolveTOI(step);
       }
       if (step.dt > 0.0) {
@@ -17548,19 +17495,19 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             for (f = b.GetFixtureList();
             f; f = f.m_next) {
                s = f.GetShape();
-               if (b.IsActive() == false) {
+               if (b.IsActive() === false) {
                   color.Set(0.5, 0.5, 0.3);
                   this.DrawShape(s, xf, color);
                }
-               else if (b.GetType() == b2Body.b2_staticBody) {
+               else if (b.GetType() === b2Body.b2_staticBody) {
                   color.Set(0.5, 0.9, 0.5);
                   this.DrawShape(s, xf, color);
                }
-               else if (b.GetType() == b2Body.b2_kinematicBody) {
+               else if (b.GetType() === b2Body.b2_kinematicBody) {
                   color.Set(0.5, 0.5, 0.9);
                   this.DrawShape(s, xf, color);
                }
-               else if (b.IsAwake() == false) {
+               else if (b.IsAwake() === false) {
                   color.Set(0.6, 0.6, 0.6);
                   this.DrawShape(s, xf, color);
                }
@@ -17597,7 +17544,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          vs = [new b2Vec2(), new b2Vec2(), new b2Vec2(), new b2Vec2()];
          for (b = this.m_bodyList;
          b; b = b.GetNext()) {
-            if (b.IsActive() == false) {
+            if (b.IsActive() === false) {
                continue;
             }
             for (f = b.GetFixtureList();
@@ -17745,7 +17692,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     */
    b2World.prototype.RayCastAll = function (point1, point2) {
       var __this = this,
-          result = new Vector();
+          result = [];
 
       function RayCastAllWrapper(fixture, point, normal, fraction) {
          fraction = fraction || 0;
@@ -17825,10 +17772,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          if (seed.m_flags & b2Body.e_islandFlag) {
             continue;
          }
-         if (seed.IsAwake() == false || seed.IsActive() == false) {
+         if (seed.IsAwake() === false || seed.IsActive() === false) {
             continue;
          }
-         if (seed.GetType() == b2Body.b2_staticBody) {
+         if (seed.GetType() === b2Body.b2_staticBody) {
             continue;
          }
          island.Clear();
@@ -17838,10 +17785,10 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          while (stackCount > 0) {
             b = stack[--stackCount];
             island.AddBody(b);
-            if (b.IsAwake() == false) {
+            if (b.IsAwake() === false) {
                b.SetAwake(true);
             }
-            if (b.GetType() == b2Body.b2_staticBody) {
+            if (b.GetType() === b2Body.b2_staticBody) {
                continue;
             }
             var other;
@@ -17849,7 +17796,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                if (ce.contact.m_flags & b2Contact.e_islandFlag) {
                   continue;
                }
-               if (ce.contact.IsSensor() == true || ce.contact.IsEnabled() == false || ce.contact.IsTouching() == false) {
+               if (ce.contact.IsSensor() === true || ce.contact.IsEnabled() === false || ce.contact.IsTouching() === false) {
                   continue;
                }
                island.AddContact(ce.contact);
@@ -17862,11 +17809,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                other.m_flags |= b2Body.e_islandFlag;
             }
             for (var jn = b.m_jointList; jn; jn = jn.next) {
-               if (jn.joint.m_islandFlag == true) {
+               if (jn.joint.m_islandFlag === true) {
                   continue;
                }
                other = jn.other;
-               if (other.IsActive() == false) {
+               if (other.IsActive() === false) {
                   continue;
                }
                island.AddJoint(jn.joint);
@@ -17881,22 +17828,20 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          island.Solve(step, this.m_gravity, this.m_allowSleep);
          for (var i = 0; i < island.m_bodyCount; ++i) {
             b = island.m_bodies[i];
-            if (b.GetType() == b2Body.b2_staticBody) {
+            if (b.GetType() === b2Body.b2_staticBody) {
                b.m_flags &= ~b2Body.e_islandFlag;
             }
          }
       }
-      for (i = 0;
-      i < stack.length; ++i) {
+      for (i = 0; i < stack.length; ++i) {
          if (!stack[i]) break;
          stack[i] = null;
       }
-      for (b = this.m_bodyList;
-      b; b = b.m_next) {
-         if (b.IsAwake() == false || b.IsActive() == false) {
+      for (b = this.m_bodyList; b; b = b.m_next) {
+         if (b.IsAwake() === false || b.IsActive() === false) {
             continue;
          }
-         if (b.GetType() == b2Body.b2_staticBody) {
+         if (b.GetType() === b2Body.b2_staticBody) {
             continue;
          }
          b.SynchronizeFixtures();
@@ -17921,26 +17866,22 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           island = this.m_island;
       island.Initialize(this.m_bodyCount, b2Settings.b2_maxTOIContactsPerIsland, b2Settings.b2_maxTOIJointsPerIsland, null, this.m_contactManager.m_contactListener, this.m_contactSolver);
       var queue = b2World.s_queue;
-      for (b = this.m_bodyList;
-      b; b = b.m_next) {
+      for (b = this.m_bodyList; b; b = b.m_next) {
          b.m_flags &= ~b2Body.e_islandFlag;
          b.m_sweep.t0 = 0.0;
       }
       var c;
-      for (c = this.m_contactList;
-      c; c = c.m_next) {
+      for (c = this.m_contactList; c; c = c.m_next) {
          c.m_flags &= ~ (b2Contact.e_toiFlag | b2Contact.e_islandFlag);
       }
-      for (j = this.m_jointList;
-      j; j = j.m_next) {
+      for (j = this.m_jointList; j; j = j.m_next) {
          j.m_islandFlag = false;
       }
       for (;;) {
          var minContact = null,
           minTOI = 1.0;
-         for (c = this.m_contactList;
-         c; c = c.m_next) {
-            if (c.IsSensor() == true || c.IsEnabled() == false || c.IsContinuous() == false) {
+         for (c = this.m_contactList; c; c = c.m_next) {
+            if (c.IsSensor() === true || c.IsEnabled() === false || c.IsContinuous() === false) {
                continue;
             }
             var toi = 1.0;
@@ -17952,7 +17893,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                fB = c.m_fixtureB;
                bA = fA.m_body;
                bB = fB.m_body;
-               if ((bA.GetType() != b2Body.b2_dynamicBody || bA.IsAwake() == false) && (bB.GetType() != b2Body.b2_dynamicBody || bB.IsAwake() == false)) {
+               if ((bA.GetType() !== b2Body.b2_dynamicBody || bA.IsAwake() === false) && (bB.GetType() !== b2Body.b2_dynamicBody || bB.IsAwake() === false)) {
                   continue;
                }
                var t0 = bA.m_sweep.t0;
@@ -17965,7 +17906,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                   bB.m_sweep.Advance(t0);
                }
                toi = c.ComputeTOI(bA.m_sweep, bB.m_sweep);
-               b2Settings.b2Assert(0.0 <= toi && toi <= 1.0);
+               b2Assert(0.0 <= toi && toi <= 1.0);
                if (toi > 0.0 && toi < 1.0) {
                   toi = (1.0 - toi) * t0 + toi;
                   if (toi > 1) toi = 1;
@@ -17991,18 +17932,18 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          bB.Advance(minTOI);
          minContact.Update(this.m_contactManager.m_contactListener);
          minContact.m_flags &= ~b2Contact.e_toiFlag;
-         if (minContact.IsSensor() == true || minContact.IsEnabled() == false) {
+         if (minContact.IsSensor() === true || minContact.IsEnabled() === false) {
             bA.m_sweep.Set(b2World.s_backupA);
             bB.m_sweep.Set(b2World.s_backupB);
             bA.SynchronizeTransform();
             bB.SynchronizeTransform();
             continue;
          }
-         if (minContact.IsTouching() == false) {
+         if (minContact.IsTouching() === false) {
             continue;
          }
          var seed = bA;
-         if (seed.GetType() != b2Body.b2_dynamicBody) {
+         if (seed.GetType() !== b2Body.b2_dynamicBody) {
             seed = bB;
          }
          island.Clear();
@@ -18014,21 +17955,21 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
             b = queue[queueStart++];
             --queueSize;
             island.AddBody(b);
-            if (b.IsAwake() == false) {
+            if (b.IsAwake() === false) {
                b.SetAwake(true);
             }
-            if (b.GetType() != b2Body.b2_dynamicBody) {
+            if (b.GetType() !== b2Body.b2_dynamicBody) {
                continue;
             }
             for (cEdge = b.m_contactList;
             cEdge; cEdge = cEdge.next) {
-               if (island.m_contactCount == island.m_contactCapacity) {
+               if (island.m_contactCount === island.m_contactCapacity) {
                   break;
                }
                if (cEdge.contact.m_flags & b2Contact.e_islandFlag) {
                   continue;
                }
-               if (cEdge.contact.IsSensor() == true || cEdge.contact.IsEnabled() == false || cEdge.contact.IsTouching() == false) {
+               if (cEdge.contact.IsSensor() === true || cEdge.contact.IsEnabled() === false || cEdge.contact.IsTouching() === false) {
                   continue;
                }
                island.AddContact(cEdge.contact);
@@ -18037,7 +17978,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                if (other.m_flags & b2Body.e_islandFlag) {
                   continue;
                }
-               if (other.GetType() != b2Body.b2_staticBody) {
+               if (other.GetType() !== b2Body.b2_staticBody) {
                   other.Advance(minTOI);
                   other.SetAwake(true);
                }
@@ -18046,16 +17987,16 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                other.m_flags |= b2Body.e_islandFlag;
             }
             for (var jEdge = b.m_jointList; jEdge; jEdge = jEdge.next) {
-               if (island.m_jointCount == island.m_jointCapacity) continue;
-               if (jEdge.joint.m_islandFlag == true) continue;
+               if (island.m_jointCount === island.m_jointCapacity) continue;
+               if (jEdge.joint.m_islandFlag === true) continue;
                other = jEdge.other;
-               if (other.IsActive() == false) {
+               if (other.IsActive() === false) {
                   continue;
                }
                island.AddJoint(jEdge.joint);
                jEdge.joint.m_islandFlag = true;
                if (other.m_flags & b2Body.e_islandFlag) continue;
-               if (other.GetType() != b2Body.b2_staticBody) {
+               if (other.GetType() !== b2Body.b2_staticBody) {
                   other.Advance(minTOI);
                   other.SetAwake(true);
                }
@@ -18073,14 +18014,13 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          subStep.positionIterations = step.positionIterations;
          island.SolveTOI(subStep);
          var i = 0;
-         for (i = 0;
-         i < island.m_bodyCount; ++i) {
+         for (i = 0; i < island.m_bodyCount; ++i) {
             b = island.m_bodies[i];
             b.m_flags &= ~b2Body.e_islandFlag;
-            if (b.IsAwake() == false) {
+            if (b.IsAwake() === false) {
                continue;
             }
-            if (b.GetType() != b2Body.b2_dynamicBody) {
+            if (b.GetType() !== b2Body.b2_dynamicBody) {
                continue;
             }
             b.SynchronizeFixtures();
@@ -18089,13 +18029,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
                cEdge.contact.m_flags &= ~b2Contact.e_toiFlag;
             }
          }
-         for (i = 0;
-         i < island.m_contactCount; ++i) {
+         for (i = 0; i < island.m_contactCount; ++i) {
             c = island.m_contacts[i];
             c.m_flags &= ~ (b2Contact.e_toiFlag | b2Contact.e_islandFlag);
          }
-         for (i = 0;
-         i < island.m_jointCount; ++i) {
+         for (i = 0; i < island.m_jointCount; ++i) {
             j = island.m_joints[i];
             j.m_islandFlag = false;
          }
@@ -18137,9 +18075,9 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
          this.m_debugDraw.DrawSegment(p1, p2, color);
          break;
       default:
-         if (b1 != this.m_groundBody) this.m_debugDraw.DrawSegment(x1, p1, color);
+         if (b1 !== this.m_groundBody) this.m_debugDraw.DrawSegment(x1, p1, color);
          this.m_debugDraw.DrawSegment(p1, p2, color);
-         if (b2 != this.m_groundBody) this.m_debugDraw.DrawSegment(x2, p2, color);
+         if (b2 !== this.m_groundBody) this.m_debugDraw.DrawSegment(x2, p2, color);
       }
    };
 
@@ -18168,12 +18106,11 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
           poly = ((shape instanceof b2PolygonShape ? shape : null)),
           vertexCount = parseInt(poly.GetVertexCount()),
           localVertices = poly.GetVertices(),
-          vertices = new Vector(vertexCount);
-            for (i = 0;
-            i < vertexCount; ++i) {
-               vertices[i] = b2Math.MulX(xf, localVertices[i]);
-            }
-            this.m_debugDraw.DrawSolidPolygon(vertices, vertexCount, color);
+          vertices = [];
+          for (i = 0; i < vertexCount; ++i) {
+              vertices.push(b2Math.MulX(xf, localVertices[i]));
+          }
+          this.m_debugDraw.DrawSolidPolygon(vertices, vertexCount, color);
          }
          break;
       case b2Shape.e_edgeShape:
@@ -18191,7 +18128,7 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     * @param 
     *
     */
-   b2DestructionListener = Box2D.Dynamics.b2DestructionListener = function b2DestructionListener(){
+   b2DestructionListener = Box2D.Dynamics.b2DestructionListener = function b2DestructionListener() {
 
 
    };
@@ -18212,9 +18149,8 @@ var ClipVertex, Features, b2AABB, b2Body, b2BodyDef, b2Bound, b2BoundValues,
     *
     */
    b2DestructionListener.prototype.SayGoodbyeFixture = function (fixture) {};
-
     return Box2D;
 }).call(this);
-if (module !== void 0) {
+if ('undefined' !== typeof module) {
     module.exports = Box2D;
 }
