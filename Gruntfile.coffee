@@ -20,7 +20,8 @@
 # get     - gets package dependencies using bower
 # deps    - list dependencies
 # gh      - publish gh-pages
-# release - run vulcanize on the build
+#
+# manually copy required bits from packages/module to web/packages/module
 #
 # project
 # | -- bin                    tools
@@ -48,14 +49,16 @@
 # + -- readme.md
 #
 #
+$fs = require('fs');
 $package = require("./package.json")
 $bower = require("./bower.json")
-$authorName = $package.author
+
 $projectName = $package.name
+$authorName = $package.author
 $libName = $bower.name
 $packageName = $libName.toLowerCase()
 
-
+$useFilelist = $fs.exists('lib/filelist')
 
 module.exports = ->
   @initConfig
@@ -65,7 +68,17 @@ module.exports = ->
     Compile lib to tmp
     ###
     coffee:
-      compile:
+      alt:
+        options:
+          bare: true
+          sourceMap: true
+        expand: true
+        flatten: false
+        cwd: "#{__dirname}/tmp"
+        src: "#{$packageName}.coffee"
+        dest: "web/packages/#{$packageName}/"
+        ext: ".js"
+      std:
         options:
           bare: true
           sourceMap: true
@@ -77,18 +90,18 @@ module.exports = ->
         ext: ".js"
 
     ###
-    Package up tmp
+     * Alternate build
+    ###
+    concat:
+      build:
+        cwd: __dirname
+        src: String($fs.readFileSync('lib/filelist')).split('\n')
+        dest: "web/packages/#{$packageName}/#{$packageName}.js"
+    ###
+     * Package up tmp
     ###
     browserify:
-#      dist:
-#        options:
-#          browserifyOptions:
-#            debug: true
-#            standalone: $libName
-#        cwd: __dirname
-#        src: ["tmp/lib/index.js"]
-#        dest: "dist/#{$packageName}.js"
-      web:
+      dist:
         options:
           browserifyOptions:
             debug: true
@@ -106,24 +119,16 @@ module.exports = ->
         dest: "web/packages/example/example.js"
 
     ###
-    Minify
+     * Minify
     ###
     uglify:
-#      dist:
-#        cwd: __dirname
-#        src: ["dist/#{$packageName}.js"]
-#        dest: "dist/#{$packageName}.min.js"
-      web:
+      dist:
         cwd: __dirname
         src: ["web/packages/#{$packageName}/#{$packageName}.js"]
         dest: "web/packages/#{$packageName}/#{$packageName}.min.js"
-      example:
-        cwd: __dirname
-        src: ["web/packages/example/example.js"]
-        dest: "web/packages/example/example.min.js"
 
     ###
-    Copy Resources
+     * Copy Resources
     ###
     copy:
       res:
@@ -139,7 +144,7 @@ module.exports = ->
 
 
     ###
-    Run the tests
+     * Run the tests
     ###
     simplemocha:
       test:
@@ -151,14 +156,14 @@ module.exports = ->
           reporter: 'tap'
 
     ###
-    Delete temporary files
+     * Delete temporary files
     ###
     clean:
       build:
         ["tmp/"]
 
     ###
-    Create archive package
+     * Create archive package
     ###
     compress:
       cocoonjs:
@@ -170,7 +175,7 @@ module.exports = ->
         dest: "/"
 
     ###
-    Copy archive to device
+     * Copy archive to device
     ###
     adbPush:
       cocoonjs:
@@ -180,7 +185,7 @@ module.exports = ->
 
 
     ###
-      get packages
+     * get packages
       ex: add to bower.json
           "packages": {
             "jquery": "jquery/dist/*.js"
@@ -197,35 +202,24 @@ module.exports = ->
       gh:
         cwd: __dirname
         command: "./bin/publish.sh  #{$authorName} #{$projectName}"
-      release:
-        cwd: __dirname
-        command: "./bin/vulcanize.sh"
-
 
   ###
-  Load grunt plugins
+   * Load grunt plugins
   ###
-  @loadNpmTasks 'grunt-adb-tools'
-  @loadNpmTasks 'grunt-browserify'
-  @loadNpmTasks 'grunt-bowercopy'
-  @loadNpmTasks 'grunt-contrib-clean'
-  @loadNpmTasks 'grunt-contrib-copy'
-  @loadNpmTasks 'grunt-contrib-coffee'
-  @loadNpmTasks 'grunt-contrib-compress'
-  @loadNpmTasks 'grunt-contrib-uglify'
-  @loadNpmTasks 'grunt-shell'
-  @loadNpmTasks 'grunt-simple-mocha'
+  require('load-grunt-tasks')(@)
 
   ###
-    Register task aliases
+   * Register task aliases
   ###
   @registerTask 'test', 'simplemocha'
   @registerTask 'zip', ['compress', 'adbPush']
 
-  @registerTask 'build', ['clean','coffee', 'browserify', 'uglify', 'copy:res', 'copy:build']
+  if $useFilelist
+    @registerTask 'build', ['clean','coffee:std', 'browserify', 'uglify', 'copy:res', 'copy:build']
+  else
+    @registerTask 'build', ['clean', 'concat:build', 'coffee:alt', 'uglify', 'copy:res', 'copy:build']
   @registerTask 'get', 'bowercopy'
   @registerTask 'gh', 'shell:gh'
-  @registerTask 'release', 'shell:release'
   @registerTask 'deps', ->
 
     rep = (c, n) -> Array(n).join(c)

@@ -15,6 +15,33 @@ options = {}
 #
 #  fs.writeFileSync("./tmp/Box2D.coffee", src.join('\n'))
 #  exec "coffee --output ./web -c ./tmp/Box2D.coffee"
+class b2Vec1
+  x: 0
+  y: 0
+  constructor: (x) ->
+    x or= new b2Vec3()
+
+class b2Vec2
+  x: 0
+  y: 0
+  constructor: (x = new b2Vec3()) ->
+
+class b2Vec3
+  x: 0
+  y: 0
+
+task 'test','test', ->
+  limit = 100000000
+  d1 = Date.now();
+  for i in [1...limit]
+    x1 = new b2Vec1()
+  d2 = Date.now()
+  for i in [1...limit]
+    x1 = {x: 0, y: 0}
+  d3 = Date.now()
+
+  console.log "class1: #{d2-d1}"
+  console.log "class2: #{d3-d2}"
 
 ###> ========================================================================
     Build the javascript classes

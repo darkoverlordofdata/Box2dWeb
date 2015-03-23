@@ -1324,7 +1324,7 @@ Box2D.postDefs = [];
    };
    b2Distance.b2Distance = function () {};
    b2Distance.Distance = function (output, cache, input) {
-      ++b2Distance.b2_gjkCalls;
+      //++b2Distance.b2_gjkCalls;
       var proxyA = input.proxyA;
       var proxyB = input.proxyB;
       var transformA = input.transformA;
@@ -1366,10 +1366,7 @@ Box2D.postDefs = [];
          }
          p = simplex.GetClosestPoint();
          distanceSqr2 = p.LengthSquared();
-          /**
-           * todo: this looks like a bug
-           */
-         //if (distanceSqr2 > distanceSqr1) {}
+         if (distanceSqr2 > distanceSqr1) {}
          distanceSqr1 = distanceSqr2;
          var d = simplex.GetSearchDirection();
          if (d.LengthSquared() < Number.MIN_VALUE * Number.MIN_VALUE) {
@@ -10880,4 +10877,5 @@ Box2D.postDefs = [];
 })(); //post-definitions
 var i;
 for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
-delete Box2D.postDefs;
+//delete Box2D.postDefs;
+

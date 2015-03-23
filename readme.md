@@ -19,7 +19,7 @@ Phase I: automated recompilation of the code to use modern idioms
     framework objects.
 
 
-Phase II: move scalar property definitions to the prototype and remove them from the constructor
+Phase II: performance cleanup
 
     In Progress.
     Set Strict Mode.
@@ -28,12 +28,13 @@ Phase II: move scalar property definitions to the prototype and remove them from
         undefined vars
         define function inside for/next
         new Array(1,...)
-    Performance tune array initializations
-    Remove dead code
-
-    Add properties to prototypes - this should also reduce overhead:
-    1. Avoids unnecessary initialization code
-    2. Results in fewer hidden classes
+    Performance:
+        tune array initializations
+        remove dead code
+        remove unnecessary parseInt
+        add properties to prototypes - this should also reduce overhead:
+        1. Avoids unnecessary initialization code
+        2. Results in fewer hidden classes
 
 
 ## Performace

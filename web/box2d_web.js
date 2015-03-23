@@ -1366,10 +1366,7 @@ Box2D.postDefs = [];
          }
          p = simplex.GetClosestPoint();
          distanceSqr2 = p.LengthSquared();
-          /**
-           * todo: this looks like a bug
-           */
-         //if (distanceSqr2 > distanceSqr1) {}
+         if (distanceSqr2 > distanceSqr1) {}
          distanceSqr1 = distanceSqr2;
          var d = simplex.GetSearchDirection();
          if (d.LengthSquared() < Number.MIN_VALUE * Number.MIN_VALUE) {
